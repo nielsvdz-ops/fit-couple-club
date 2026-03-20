@@ -1,10 +1,4 @@
 import Navbar from "../components/Navbar";
-const sectionTextStyle = {
-  color: "rgba(255,255,255,0.72)",
-  lineHeight: 1.8,
-  marginBottom: "14px",
-};
-
 const primaryButton = {
   background: "white",
   color: "black",
