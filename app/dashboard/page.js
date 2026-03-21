@@ -1,43 +1,89 @@
-import Navbar from "../../components/Navbar";
+import DashboardLayout from "../../components/DashboardLayout";
 
 export default function DashboardPage() {
-  return (
-    <main style={main}>
-      <Navbar />
-      <div style={container}>
-        <div style={{ marginBottom: "28px" }}>
-          <div style={eyebrowStyle}>Private Member Area</div>
-          <h1 style={pageTitle}>Your Fitness Journey Starts Here</h1>
-          <p style={textStyle}>Build your plan, choose your goal, and follow the structure that fits your body and lifestyle.</p>
-        </div>
+  const cards = [
+    [
+      "Build My Plan",
+      "/plan-builder",
+      "Choose your goal, focus area, and training days to generate your structure.",
+    ],
+    [
+      "Workouts",
+      "/workouts",
+      "See your weekly training split and exercise structure.",
+    ],
+    [
+      "Nutrition",
+      "/nutrition",
+      "Follow the eating direction that fits your body goal.",
+    ],
+    [
+      "Recipes",
+      "/recipes",
+      "Simple high-protein meals and healthy dishes.",
+    ],
+    [
+      "Programs",
+      "/programs",
+      "Use transformation systems and challenges.",
+    ],
+    [
+      "Couple Zone",
+      "/couple-zone",
+      "Train, eat, and stay accountable together.",
+    ],
+    [
+      "Account",
+      "/account",
+      "Manage your membership and settings.",
+    ],
+  ];
 
-        <div style={gridStyle}>
-          {[
-            ["Plan Builder", "/plan-builder", "Generate your personalized direction from goal, focus and training days"],
-            ["Choose Goal", "/goals", "Select the body goal you want to work toward"],
-            ["Choose Training Days", "/training-days", "Pick how many days per week you want to train"],
-            ["Workouts", "/workouts", "Get your matching training structure"],
-            ["Nutrition", "/nutrition", "Follow meal structures that match your goal"],
-            ["Recipes", "/recipes", "Use simple high-protein meals and daily food ideas"],
-            ["Programs", "/programs", "Join transformation systems and challenges"],
-            ["Couple Zone", "/couple-zone", "Use the platform together with your partner"],
-            ["Account", "/account", "Manage your plan and personal settings"],
-          ].map(([title, link, text]) => (
-            <a key={title} href={link} style={dashboardCardStyle}>
-              <div style={{ fontSize: "26px", fontWeight: "700", marginBottom: "10px" }}>{title}</div>
-              <div style={{ color: "rgba(255,255,255,0.65)", lineHeight: 1.7 }}>{text}</div>
-            </a>
-          ))}
-        </div>
+  return (
+    <DashboardLayout
+      title="Member Dashboard"
+      subtitle="Welcome back. Everything you need for your fitness journey is organized in one place."
+    >
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
+          gap: "20px",
+        }}
+      >
+        {cards.map(([title, href, text]) => (
+          <a
+            key={title}
+            href={href}
+            style={{
+              textDecoration: "none",
+              color: "white",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "20px",
+              padding: "24px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "24px",
+                fontWeight: "800",
+                marginBottom: "10px",
+              }}
+            >
+              {title}
+            </div>
+            <div
+              style={{
+                color: "rgba(255,255,255,0.68)",
+                lineHeight: 1.7,
+              }}
+            >
+              {text}
+            </div>
+          </a>
+        ))}
       </div>
-    </main>
+    </DashboardLayout>
   );
 }
-
-const main = { minHeight: "100vh", background: "#0a0a0a", color: "white" };
-const container = { maxWidth: "1200px", margin: "0 auto", padding: "60px 24px 80px" };
-const eyebrowStyle = { fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.18em", color: "rgba(255,255,255,0.5)" };
-const pageTitle = { fontSize: "54px", margin: "10px 0 12px" };
-const textStyle = { color: "rgba(255,255,255,0.68)", maxWidth: "760px", lineHeight: 1.8 };
-const gridStyle = { display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px" };
-const dashboardCardStyle = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "22px", padding: "26px", color: "white", textDecoration: "none" };
