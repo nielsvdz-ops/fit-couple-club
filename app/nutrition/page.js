@@ -1,31 +1,50 @@
-import Navbar from "../../components/Navbar";
+import DashboardLayout from "../../components/DashboardLayout";
 
 export default function NutritionPage() {
-  return (
-    <main style={main}>
-      <Navbar />
-      <div style={container}>
-        <h1 style={title}>Nutrition Plans</h1>
-        <p style={subtitle}>Eat according to your goal with simple structures that are realistic to follow.</p>
+  const plans = [
+    [
+      "Fat Loss Plan",
+      "High protein, controlled calories, simple repeatable meals.",
+    ],
+    [
+      "Muscle Gain Plan",
+      "Higher calories, more carbs around training, stronger recovery support.",
+    ],
+    [
+      "Balanced Lifestyle Plan",
+      "For staying lean, healthy, and energized long term.",
+    ],
+    [
+      "Couple Meal Plan",
+      "A simple shared structure for couples who want to stay on track together.",
+    ],
+  ];
 
-        {[
-          ["Fat Loss Plan", "High protein, controlled calories, and simple meals that help create consistency."],
-          ["Muscle Gain Plan", "Higher calories, more carbs around training, and meals that support recovery and growth."],
-          ["Balanced Lifestyle Plan", "For staying lean, athletic, and energized without overcomplicating food."],
-          ["Couple Meal Plan", "A shared food structure for partners who want to stay on track together."],
-        ].map(([plan, desc]) => (
-          <div key={plan} style={card}>
-            <div style={{ fontWeight: "700", fontSize: "22px", marginBottom: "8px" }}>{plan}</div>
-            <div style={{ color: "rgba(255,255,255,0.72)", lineHeight: 1.8 }}>{desc}</div>
+  return (
+    <DashboardLayout
+      title="Nutrition"
+      subtitle="Choose the eating direction that matches your body goal and lifestyle."
+    >
+      <div style={{ display: "grid", gap: "16px" }}>
+        {plans.map(([title, text]) => (
+          <div
+            key={title}
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "18px",
+              padding: "22px",
+            }}
+          >
+            <div style={{ fontSize: "22px", fontWeight: "800", marginBottom: "8px" }}>
+              {title}
+            </div>
+            <div style={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.8 }}>
+              {text}
+            </div>
           </div>
         ))}
       </div>
-    </main>
+    </DashboardLayout>
   );
 }
-
-const main = { minHeight: "100vh", background: "#0a0a0a", color: "white" };
-const container = { maxWidth: "1000px", margin: "0 auto", padding: "60px 24px" };
-const title = { fontSize: "42px", marginBottom: "10px" };
-const subtitle = { color: "rgba(255,255,255,0.7)", marginBottom: "30px", lineHeight: 1.8 };
-const card = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "18px", padding: "24px", marginBottom: "16px" };
