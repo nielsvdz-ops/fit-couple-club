@@ -1,87 +1,27 @@
 import DashboardLayout from "../../components/DashboardLayout";
+import DashboardCard from "../../components/DashboardCard";
 
 export default function DashboardPage() {
   const cards = [
-    [
-      "Build My Plan",
-      "/plan-builder",
-      "Choose your goal, focus area, and training days to generate your structure.",
-    ],
-    [
-      "Workouts",
-      "/workouts",
-      "See your weekly training split and exercise structure.",
-    ],
-    [
-      "Nutrition",
-      "/nutrition",
-      "Follow the eating direction that fits your body goal.",
-    ],
-    [
-      "Recipes",
-      "/recipes",
-      "Simple high-protein meals and healthy dishes.",
-    ],
-    [
-      "Programs",
-      "/programs",
-      "Use transformation systems and challenges.",
-    ],
-    [
-      "Couple Zone",
-      "/couple-zone",
-      "Train, eat, and stay accountable together.",
-    ],
-    [
-      "Account",
-      "/account",
-      "Manage your membership and settings.",
-    ],
+    ["Build My Plan", "Choose goal, focus, and training days to generate a useful plan.", "/plan-builder"],
+    ["Workouts", "See your workout structures and focus-specific sessions.", "/workouts"],
+    ["Nutrition", "Follow the eating direction that fits your goal.", "/nutrition"],
+    ["Recipes", "Use practical high-protein meals and meal ideas.", "/recipes"],
+    ["Programs", "Run structured transformations and challenges.", "/programs"],
+    ["Couple Zone", "Train and stay accountable together.", "/couple-zone"],
+    ["Progress", "Track weight, measurements, and check-ins.", "/progress"],
+    ["Billing", "See your current plan and future subscription controls.", "/billing"],
+    ["Account", "Manage settings and profile details.", "/account"],
   ];
 
   return (
     <DashboardLayout
       title="Member Dashboard"
-      subtitle="Welcome back. Everything you need for your fitness journey is organized in one place."
+      subtitle="Everything important is organized here so members can actually use the platform instead of getting lost."
     >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
-          gap: "20px",
-        }}
-      >
-        {cards.map(([title, href, text]) => (
-          <a
-            key={title}
-            href={href}
-            style={{
-              textDecoration: "none",
-              color: "white",
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: "20px",
-              padding: "24px",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "24px",
-                fontWeight: "800",
-                marginBottom: "10px",
-              }}
-            >
-              {title}
-            </div>
-            <div
-              style={{
-                color: "rgba(255,255,255,0.68)",
-                lineHeight: 1.7,
-              }}
-            >
-              {text}
-            </div>
-          </a>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "20px" }}>
+        {cards.map(([title, text, href]) => (
+          <DashboardCard key={title} title={title} text={text} href={href} />
         ))}
       </div>
     </DashboardLayout>
