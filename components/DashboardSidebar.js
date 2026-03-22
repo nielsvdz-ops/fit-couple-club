@@ -7,6 +7,8 @@ export default function DashboardSidebar() {
     ["Recipes", "/recipes"],
     ["Programs", "/programs"],
     ["Couple Zone", "/couple-zone"],
+    ["Progress", "/progress"],
+    ["Billing", "/billing"],
     ["Account", "/account"],
   ];
 
@@ -30,7 +32,6 @@ export default function DashboardSidebar() {
           fontSize: "24px",
           fontWeight: "800",
           marginBottom: "30px",
-          letterSpacing: "-0.02em",
         }}
       >
         Fit Couple Club
