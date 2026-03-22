@@ -1,36 +1,38 @@
 import DashboardLayout from "../../components/DashboardLayout";
 
 export default function AccountPage() {
+  const rows = [
+    ["Profile Name", "Niels"],
+    ["Email", "member@example.com"],
+    ["Current Plan", "Premium"],
+    ["Status", "Active"],
+  ];
+
   return (
     <DashboardLayout
       title="Account"
-      subtitle="Manage your membership, settings, and billing details."
+      subtitle="This page is the base for profile, security, and member settings."
     >
       <div style={{ display: "grid", gap: "16px", maxWidth: "800px" }}>
-        {[
-          ["Current Plan", "Premium"],
-          ["Billing Status", "Active"],
-          ["Password & Security", "Change password and manage login settings"],
-          ["Membership Controls", "Pause or cancel your subscription later"],
-        ].map(([title, text]) => (
-          <div
-            key={title}
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: "18px",
-              padding: "22px",
-            }}
-          >
-            <div style={{ fontWeight: "800", fontSize: "20px", marginBottom: "8px" }}>
-              {title}
-            </div>
-            <div style={{ color: "rgba(255,255,255,0.68)", lineHeight: 1.8 }}>
-              {text}
-            </div>
+        {rows.map(([label, value]) => (
+          <div key={label} style={card}>
+            <div style={{ color: "rgba(255,255,255,0.6)", marginBottom: "6px" }}>{label}</div>
+            <div style={{ fontSize: "20px", fontWeight: "800" }}>{value}</div>
           </div>
         ))}
+
+        <div style={card}>
+          <div style={{ fontSize: "20px", fontWeight: "800", marginBottom: "8px" }}>Security</div>
+          <div style={{ color: "rgba(255,255,255,0.68)", lineHeight: 1.7 }}>Later connect this to Supabase auth so members can change password and manage sessions.</div>
+        </div>
       </div>
     </DashboardLayout>
   );
 }
+
+const card = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "18px",
+  padding: "22px",
+};
