@@ -2,26 +2,15 @@ import { redirect } from "next/navigation";
 import { getUserAndSubscription } from "../../lib/getUser";
 import DashboardLayout from "../../components/DashboardLayout";
 
-export default async function DashboardPage() {
-  const { user, subscription } = await getUserAndSubscription();
-
-  // ❌ Not logged in
-  if (!user) {
-    redirect("/login");
-  }
-
-  // ❌ Not paid
-  if (!subscription || subscription.status !== "active") {
-    redirect("/pricing");
-  }
-
-  return (
-    <div>
-      <h1>Dashboard (Members only)</h1>
-    </div>
-  );
-}
-const categories = ["Breakfast", "Lunch", "Dinner", "Snacks", "Desserts", "Couple Meals", "Meal Prep"];
+const categories = [
+  "Breakfast",
+  "Lunch",
+  "Dinner",
+  "Snacks",
+  "Desserts",
+  "Couple Meals",
+  "Meal Prep",
+];
 
 const recipes = [
   { title: "High Protein Yogurt Bowl", category: "Breakfast", goal: "Fat Loss / Tone", calories: "390 kcal", macros: "34P / 38C / 10F", time: "5 min" },
@@ -41,7 +30,17 @@ const recipes = [
   { title: "Lean Beef Prep Boxes", category: "Meal Prep", goal: "Build Muscle", calories: "620 kcal", macros: "46P / 56C / 19F", time: "35 min" },
 ];
 
-export default function RecipesPage() {
+export default async function RecipesPage() {
+  const { user, subscription } = await getUserAndSubscription();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  if (!subscription || subscription.status !== "active") {
+    redirect("/pricing");
+  }
+
   return (
     <DashboardLayout
       title="Recipe Library"
@@ -60,7 +59,9 @@ export default function RecipesPage() {
             </select>
             <select style={filterInput}>
               <option>All Categories</option>
-              {categories.map((cat) => <option key={cat}>{cat}</option>)}
+              {categories.map((cat) => (
+                <option key={cat}>{cat}</option>
+              ))}
             </select>
           </div>
 
@@ -83,7 +84,14 @@ export default function RecipesPage() {
           <div style={grid}>
             {recipes.map((recipe) => (
               <div key={recipe.title} style={recipeCard}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "start" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: "12px",
+                    alignItems: "start",
+                  }}
+                >
                   <div>
                     <div style={recipeTitle}>{recipe.title}</div>
                     <div style={meta}>{recipe.category}</div>
@@ -92,9 +100,18 @@ export default function RecipesPage() {
                 </div>
 
                 <div style={macroRow}>
-                  <div style={macroBox}><span style={macroLabel}>Calories</span><span style={macroValue}>{recipe.calories}</span></div>
-                  <div style={macroBox}><span style={macroLabel}>Macros</span><span style={macroValue}>{recipe.macros}</span></div>
-                  <div style={macroBox}><span style={macroLabel}>Time</span><span style={macroValue}>{recipe.time}</span></div>
+                  <div style={macroBox}>
+                    <span style={macroLabel}>Calories</span>
+                    <span style={macroValue}>{recipe.calories}</span>
+                  </div>
+                  <div style={macroBox}>
+                    <span style={macroLabel}>Macros</span>
+                    <span style={macroValue}>{recipe.macros}</span>
+                  </div>
+                  <div style={macroBox}>
+                    <span style={macroLabel}>Time</span>
+                    <span style={macroValue}>{recipe.time}</span>
+                  </div>
                 </div>
 
                 <div style={recipeActions}>
@@ -141,7 +158,12 @@ const filterInput = {
   color: "white",
 };
 
-const chipWrap = { display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "18px" };
+const chipWrap = {
+  display: "flex",
+  gap: "10px",
+  flexWrap: "wrap",
+  marginTop: "18px",
+};
 
 const chip = {
   padding: "10px 14px",
@@ -168,7 +190,11 @@ const eyebrow = {
   marginBottom: "8px",
 };
 
-const sectionTitle = { margin: 0, fontSize: "28px", fontWeight: "800" };
+const sectionTitle = {
+  margin: 0,
+  fontSize: "28px",
+  fontWeight: "800",
+};
 
 const countBadge = {
   padding: "10px 14px",
@@ -191,8 +217,15 @@ const recipeCard = {
   padding: "18px",
 };
 
-const recipeTitle = { fontSize: "20px", fontWeight: "800", marginBottom: "6px" };
-const meta = { color: "rgba(255,255,255,0.62)" };
+const recipeTitle = {
+  fontSize: "20px",
+  fontWeight: "800",
+  marginBottom: "6px",
+};
+
+const meta = {
+  color: "rgba(255,255,255,0.62)",
+};
 
 const goalBadge = {
   padding: "8px 10px",
@@ -202,7 +235,11 @@ const goalBadge = {
   border: "1px solid rgba(255,255,255,0.08)",
 };
 
-const macroRow = { display: "grid", gap: "10px", marginTop: "16px" };
+const macroRow = {
+  display: "grid",
+  gap: "10px",
+  marginTop: "16px",
+};
 
 const macroBox = {
   background: "rgba(255,255,255,0.03)",
@@ -220,9 +257,17 @@ const macroLabel = {
   letterSpacing: "0.08em",
 };
 
-const macroValue = { display: "block", fontWeight: "700" };
+const macroValue = {
+  display: "block",
+  fontWeight: "700",
+};
 
-const recipeActions = { display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "16px" };
+const recipeActions = {
+  display: "flex",
+  gap: "10px",
+  flexWrap: "wrap",
+  marginTop: "16px",
+};
 
 const primaryButton = {
   padding: "12px 14px",
