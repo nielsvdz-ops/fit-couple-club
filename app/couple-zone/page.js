@@ -2,25 +2,6 @@ import { redirect } from "next/navigation";
 import { getUserAndSubscription } from "../../lib/getUser";
 import DashboardLayout from "../../components/DashboardLayout";
 
-export default async function DashboardPage() {
-  const { user, subscription } = await getUserAndSubscription();
-
-  // ❌ Not logged in
-  if (!user) {
-    redirect("/login");
-  }
-
-  // ❌ Not paid
-  if (!subscription || subscription.status !== "active") {
-    redirect("/pricing");
-  }
-
-  return (
-    <div>
-      <h1>Dashboard (Members only)</h1>
-    </div>
-  );
-}
 const tasks = [
   "Complete 4 workouts together this week",
   "Cook 3 healthy dinners together",
@@ -29,13 +10,35 @@ const tasks = [
 ];
 
 const tools = [
-  ["Partner Workout of the Week", "A shared workout both partners can complete together with one another’s support."],
-  ["Shared Grocery Focus", "Keep the house aligned with your goals instead of full of random snacks and chaos foods."],
-  ["Couple Check-In", "Review what worked, what didn’t, and what both of you improve next week."],
-  ["Date-Night Healthy Meals", "Meals for two that still match your fitness direction."],
+  [
+    "Partner Workout of the Week",
+    "A shared workout both partners can complete together with one another’s support.",
+  ],
+  [
+    "Shared Grocery Focus",
+    "Keep the house aligned with your goals instead of full of random snacks and chaos foods.",
+  ],
+  [
+    "Couple Check-In",
+    "Review what worked, what didn’t, and what both of you improve next week.",
+  ],
+  [
+    "Date-Night Healthy Meals",
+    "Meals for two that still match your fitness direction.",
+  ],
 ];
 
-export default function CoupleZonePage() {
+export default async function CoupleZonePage() {
+  const { user, subscription } = await getUserAndSubscription();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  if (!subscription || subscription.status !== "active") {
+    redirect("/pricing");
+  }
+
   return (
     <DashboardLayout
       title="Couple Zone"
@@ -46,13 +49,18 @@ export default function CoupleZonePage() {
           <div>
             <div style={eyebrow}>Shared Mission</div>
             <h2 style={sectionTitle}>Your couple challenge this week</h2>
-            <p style={muted}>Use one shared system so both of you know exactly what the standards are this week.</p>
+            <p style={muted}>
+              Use one shared system so both of you know exactly what the standards
+              are this week.
+            </p>
           </div>
 
           <div style={taskGrid}>
             {tasks.map((task) => (
               <div key={task} style={taskCard}>
-                <div style={{ fontWeight: "800", marginBottom: "8px" }}>Weekly task</div>
+                <div style={{ fontWeight: "800", marginBottom: "8px" }}>
+                  Weekly task
+                </div>
                 <div style={muted}>{task}</div>
               </div>
             ))}
@@ -62,7 +70,15 @@ export default function CoupleZonePage() {
         <section style={toolsGrid}>
           {tools.map(([title, text]) => (
             <div key={title} style={toolCard}>
-              <div style={{ fontSize: "22px", fontWeight: "800", marginBottom: "8px" }}>{title}</div>
+              <div
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "800",
+                  marginBottom: "8px",
+                }}
+              >
+                {title}
+              </div>
               <div style={muted}>{text}</div>
               <button style={ghostButton}>Open Tool</button>
             </div>
@@ -78,10 +94,22 @@ export default function CoupleZonePage() {
           </div>
 
           <div style={checkinGrid}>
-            <input placeholder="Did we train enough this week?" style={input} />
-            <input placeholder="Did we eat according to our goal?" style={input} />
-            <input placeholder="What should we improve next week?" style={input} />
-            <input placeholder="What did we do well together?" style={input} />
+            <input
+              placeholder="Did we train enough this week?"
+              style={input}
+            />
+            <input
+              placeholder="Did we eat according to our goal?"
+              style={input}
+            />
+            <input
+              placeholder="What should we improve next week?"
+              style={input}
+            />
+            <input
+              placeholder="What did we do well together?"
+              style={input}
+            />
           </div>
 
           <button style={primaryButton}>Save Couple Check-In</button>
@@ -133,11 +161,20 @@ const eyebrow = {
   marginBottom: "8px",
 };
 
-const sectionTitle = { margin: 0, fontSize: "28px", fontWeight: "800" };
+const sectionTitle = {
+  margin: 0,
+  fontSize: "28px",
+  fontWeight: "800",
+};
 
-const muted = { color: "rgba(255,255,255,0.68)", lineHeight: 1.8 };
+const muted = {
+  color: "rgba(255,255,255,0.68)",
+  lineHeight: 1.8,
+};
 
-const sectionTop = { marginBottom: "18px" };
+const sectionTop = {
+  marginBottom: "18px",
+};
 
 const checkinGrid = {
   display: "grid",
