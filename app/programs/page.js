@@ -2,25 +2,6 @@ import { redirect } from "next/navigation";
 import { getUserAndSubscription } from "../../lib/getUser";
 import DashboardLayout from "../../components/DashboardLayout";
 
-export default async function DashboardPage() {
-  const { user, subscription } = await getUserAndSubscription();
-
-  // ❌ Not logged in
-  if (!user) {
-    redirect("/login");
-  }
-
-  // ❌ Not paid
-  if (!subscription || subscription.status !== "active") {
-    redirect("/pricing");
-  }
-
-  return (
-    <div>
-      <h1>Dashboard (Members only)</h1>
-    </div>
-  );
-}
 const programs = [
   {
     title: "30-Day Lean Reset",
@@ -66,7 +47,17 @@ const programs = [
   },
 ];
 
-export default function ProgramsPage() {
+export default async function ProgramsPage() {
+  const { user, subscription } = await getUserAndSubscription();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  if (!subscription || subscription.status !== "active") {
+    redirect("/pricing");
+  }
+
   return (
     <DashboardLayout
       title="Programs"
@@ -128,8 +119,16 @@ const programTop = {
   alignItems: "start",
 };
 
-const programTitle = { fontSize: "24px", fontWeight: "800", marginBottom: "6px" };
-const muted = { color: "rgba(255,255,255,0.62)", lineHeight: 1.7 };
+const programTitle = {
+  fontSize: "24px",
+  fontWeight: "800",
+  marginBottom: "6px",
+};
+
+const muted = {
+  color: "rgba(255,255,255,0.62)",
+  lineHeight: 1.7,
+};
 
 const badge = {
   padding: "8px 10px",
@@ -148,7 +147,10 @@ const label = {
   marginBottom: "8px",
 };
 
-const bodyText = { color: "rgba(255,255,255,0.72)", lineHeight: 1.8 };
+const bodyText = {
+  color: "rgba(255,255,255,0.72)",
+  lineHeight: 1.8,
+};
 
 const list = {
   paddingLeft: "18px",
@@ -156,7 +158,12 @@ const list = {
   color: "rgba(255,255,255,0.72)",
 };
 
-const actions = { display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "16px" };
+const actions = {
+  display: "flex",
+  gap: "10px",
+  flexWrap: "wrap",
+  marginTop: "16px",
+};
 
 const primaryButton = {
   padding: "12px 14px",
