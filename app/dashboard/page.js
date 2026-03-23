@@ -1,27 +1,6 @@
-
-import { getUserAndSubscription } from "../../lib/getUser";
 import { redirect } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
 
-export default async function DashboardPage() {
-  const { user, subscription } = await getUserAndSubscription();
-
-  // ❌ Not logged in
-  if (!user) {
-    redirect("/login");
-  }
-
-  // ❌ Not paid
-  if (!subscription || subscription.status !== "active") {
-    redirect("/pricing");
-  }
-
-  return (
-    <div>
-      <h1>Dashboard (Members only)</h1>
-    </div>
-  );
-}
 export default async function DashboardPage() {
   const supabase = await createClient();
 
@@ -44,7 +23,14 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main style={{ minHeight: "100vh", background: "#0a0a0a", color: "white", padding: "40px" }}>
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "#0a0a0a",
+        color: "white",
+        padding: "40px",
+      }}
+    >
       <h1>Member Dashboard</h1>
       <p>Welcome {profile.full_name || user.email}</p>
       <p>Plan: {profile.membership_type}</p>
