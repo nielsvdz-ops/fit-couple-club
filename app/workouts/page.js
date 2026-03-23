@@ -2,26 +2,17 @@ import { redirect } from "next/navigation";
 import { getUserAndSubscription } from "../../lib/getUser";
 import DashboardLayout from "../../components/DashboardLayout";
 
-export default async function DashboardPage() {
+export default async function WorkoutsPage() {
   const { user, subscription } = await getUserAndSubscription();
 
-  // ❌ Not logged in
   if (!user) {
     redirect("/login");
   }
 
-  // ❌ Not paid
   if (!subscription || subscription.status !== "active") {
     redirect("/pricing");
   }
 
-  return (
-    <div>
-      <h1>Dashboard (Members only)</h1>
-    </div>
-  );
-}
-export default function WorkoutsPage() {
   const week = [
     ["Monday", "Chest + Triceps"],
     ["Tuesday", "Back + Biceps"],
