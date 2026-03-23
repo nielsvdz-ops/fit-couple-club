@@ -1,28 +1,8 @@
 "use client";
-import { redirect } from "next/navigation";
-import { getUserAndSubscription } from "../../lib/getUser";
+
 import { useState } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 
-export default async function DashboardPage() {
-  const { user, subscription } = await getUserAndSubscription();
-
-  // ❌ Not logged in
-  if (!user) {
-    redirect("/login");
-  }
-
-  // ❌ Not paid
-  if (!subscription || subscription.status !== "active") {
-    redirect("/pricing");
-  }
-
-  return (
-    <div>
-      <h1>Dashboard (Members only)</h1>
-    </div>
-  );
-}
 const nutritionPlans = {
   "Lose Fat": {
     summary:
