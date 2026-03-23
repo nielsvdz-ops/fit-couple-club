@@ -1,32 +1,40 @@
+"use client";
+
+import { useState } from "react";
+import { createClient } from "../../lib/supabase/client";
+
 export default function LoginPage() {
+  const supabase = createClient();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    setMessage("Signing in...");
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    window.location.href = "/dashboard";
+  }
+
   return (
-    <main style={{ minHeight: "100vh", padding: "80px 24px", background: "#0a0a0a", color: "white" }}>
-      <div style={{ maxWidth: "420px", margin: "0 auto" }}>
-        <h1 style={{ fontSize: "42px", marginBottom: "20px" }}>Login</h1>
-        <div style={{ display: "grid", gap: "16px" }}>
-          <input placeholder="Email" style={inputStyle} />
-          <input placeholder="Password" type="password" style={inputStyle} />
-          <button style={buttonStyle}>Login</button>
-        </div>
-      </div>
+    <main style={{ minHeight: "100vh", background: "#0a0a0a", color: "white", padding: "40px" }}>
+      <h1>Login</h1>
+      <form onSubmit={handleLogin} style={{ display: "grid", gap: "12px", maxWidth: "420px" }}>
+        <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" />
+        <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" />
+        <button type="submit">Sign In</button>
+      </form>
+      <p>{message}</p>
     </main>
   );
 }
-
-const inputStyle = {
-  padding: "14px 16px",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.15)",
-  background: "#111",
-  color: "white",
-};
-
-const buttonStyle = {
-  padding: "14px 16px",
-  borderRadius: "12px",
-  border: "none",
-  background: "white",
-  color: "black",
-  fontWeight: "700",
-  cursor: "pointer",
-};
