@@ -536,6 +536,23 @@ export default function PlanBuilderClient({ isPaid }) {
             Generate Plan
           </button>
 
+            {isPaid && generated && (
+  <div style={{ marginTop: "16px" }}>
+    <button
+      onClick={handleSavePlan}
+      disabled={isSaving}
+      style={generateButton}
+    >
+      {isSaving ? "Saving..." : "Save Plan"}
+    </button>
+
+    {saveMessage && (
+      <div style={{ marginTop: "10px", color: "rgba(255,255,255,0.7)" }}>
+        {saveMessage}
+      </div>
+    )}
+  </div>
+)}
           <div style={smallNote}>
             {isPaid
               ? "Premium unlocked: full weekly plan visible."
