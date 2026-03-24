@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import DashboardLayout from "./DashboardLayout";
+import { createClient } from "../lib/supabase/client";
 
 const GOALS = [
   "Build Muscle",
