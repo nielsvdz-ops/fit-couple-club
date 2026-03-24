@@ -25,10 +25,13 @@ export default function SignupPage() {
       return;
     }
 
-    setMessage("Account created. Now login.");
-    setAccountCreated(true);
-  }
+    setMessage("Account created. Redirecting to login...");
+setAccountCreated(true);
 
+setTimeout(() => {
+  window.location.href = "/login";
+}, 1500);
+  }
   return (
     <main
       style={{
