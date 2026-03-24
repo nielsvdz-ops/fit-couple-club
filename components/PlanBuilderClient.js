@@ -356,6 +356,13 @@ function getGoalNote(goal) {
 }
 
 export default function PlanBuilderClient({ isPaid }) {
+
+  const supabase = createClient();
+
+  const [saveMessage, setSaveMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  // your existing states below
   const [goal, setGoal] = useState("Build Muscle");
   const [focus, setFocus] = useState("Booty");
   const [days, setDays] = useState(4);
