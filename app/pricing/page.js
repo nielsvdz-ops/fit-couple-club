@@ -59,7 +59,7 @@ export default async function PricingPage() {
             </div>
 
             <h2 style={planTitle}>VIP</h2>
-            <div style={price}>€149<span style={priceSmall}>/month</span></div>
+            <div style={price}>€99<span style={priceSmall}>/month</span></div>
 
             <p style={vipText}>
               Premium support with <strong>1 monthly progress video call</strong>.
