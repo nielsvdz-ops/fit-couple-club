@@ -381,6 +381,63 @@ export default function PlanBuilderClient({ isPaid }) {
     };
   }, [goal, focus, days, variation]);
 
+  async function handleSavePlan() {
+  if (!generated) {
+    setSaveMessage("Generate a plan first.");
+    return;
+  }
+
+  if (!isPaid) {
+    setSaveMessage("Upgrade to save your plan.");
+    return;
+  }
+
+  setIsSaving(true);
+  setSaveMessage("Saving plan...");
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    setSaveMessage("You need to be logged in.");
+    setIsSaving(false);
+    return;
+  }
+
+  const payload = {
+    user_id: user.id,
+    goal,
+    focus_area: focus,
+    training_days: Number(days),
+    variation,
+    plan_name: currentPlan.name,
+    is_active: true,
+    plan_json: {
+      goal,
+      focus,
+      days: Number(days),
+      variation,
+      planName: currentPlan.name,
+      note: currentPlan.note,
+      goalNote: currentPlan.goalNote,
+      weekly: currentPlan.weekly,
+    },
+  };
+
+  const { error } = await supabase
+    .from("saved_plans")
+    .upsert(payload, { onConflict: "user_id" });
+
+  if (error) {
+    setSaveMessage(error.message);
+  } else {
+    setSaveMessage("Plan saved.");
+  }
+
+  setIsSaving(false);
+}
   function handleGoalChange(newGoal) {
     setGoal(newGoal);
     const nextFocusOptions = getFocusOptions(newGoal);
