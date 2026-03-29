@@ -28,18 +28,14 @@ export default async function CoupleZonePage() {
         <section style={heroCard}>
           <div style={eyebrow}>Shared Mission</div>
           <h2 style={title}>Your couple challenge this week</h2>
-          <p style={text}>
-            Complete 4 workouts together, cook 3 healthy dinners, and do 1 Sunday reflection talk.
-          </p>
+          <p style={text}>Complete 4 workouts together, cook 3 healthy dinners, and do 1 Sunday reflection talk.</p>
         </section>
 
         <section style={grid}>
           {tools.map((tool) => (
             <div key={tool} style={card}>
               <div style={cardTitle}>{tool}</div>
-              <div style={text}>
-                Use this area to build shared routines and stronger accountability.
-              </div>
+              <div style={text}>Use this area to build shared routines and stronger accountability.</div>
             </div>
           ))}
         </section>
@@ -48,47 +44,10 @@ export default async function CoupleZonePage() {
   );
 }
 
-const heroCard = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "22px",
-  padding: "24px",
-};
-
-const eyebrow = {
-  fontSize: "12px",
-  textTransform: "uppercase",
-  letterSpacing: "0.16em",
-  color: "rgba(255,255,255,0.45)",
-  marginBottom: "8px",
-};
-
-const title = {
-  margin: 0,
-  fontSize: "30px",
-  fontWeight: "800",
-};
-
-const text = {
-  color: "rgba(255,255,255,0.68)",
-  lineHeight: 1.8,
-};
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
-  gap: "18px",
-};
-
-const card = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "20px",
-  padding: "20px",
-};
-
-const cardTitle = {
-  fontSize: "22px",
-  fontWeight: "800",
-  marginBottom: "8px",
-};
+const heroCard = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "22px", padding: "24px" };
+const eyebrow = { fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.16em", color: "rgba(255,255,255,0.45)", marginBottom: "8px" };
+const title = { margin: 0, fontSize: "30px", fontWeight: "800" };
+const text = { color: "rgba(255,255,255,0.68)", lineHeight: 1.8 };
+const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "18px" };
+const card = { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "20px", padding: "20px" };
+const cardTitle = { fontSize: "22px", fontWeight: "800", marginBottom: "8px" };
