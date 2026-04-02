@@ -1,13 +1,15 @@
 "use client";
-import { getExerciseMedia } from "../lib/exerciseMedia";
+
 import { useMemo, useState } from "react";
+import { getExerciseMedia } from "../lib/exerciseMedia";
 
 const workoutPrograms = [
   {
     slug: "glutes",
     filterLabel: "Glutes",
     title: "Booty Builder",
-    subtitle: "Shape, grow, and strengthen the glutes with a structured lower-body emphasis.",
+    subtitle:
+      "Shape, grow, and strengthen the glutes with a structured lower-body emphasis.",
     starterVisible: 2,
     variations: [
       {
@@ -18,18 +20,22 @@ const workoutPrograms = [
         days: [
           {
             day: "Day 1 — Heavy Glutes",
-            warmup: ["5 min incline walk", "Banded abductions x 20", "Bodyweight squats x 15"],
-            finisher: "Banded frog pumps x 30 + abduction pulses x 20 for 2 rounds",
+            warmup: [
+              "5 min incline walk",
+              "Banded abductions x 20",
+              "Bodyweight squats x 15",
+            ],
+            finisher:
+              "Banded frog pumps x 30 + abduction pulses x 20 for 2 rounds",
             exercises: [
               {
-                name: "Barbell Hip Thrust",
+                name: "Hip Thrust",
                 sets: "4",
                 reps: "8–10",
                 rest: "90 sec",
                 cue: "Drive through heels and pause at the top.",
                 mistakes: "Overextending the lower back.",
-                substitute: "Smith Hip Thrust",
-                media: "/exercise-demos/hip-thrust.mp4",
+                substitute: "Glute Bridge",
               },
               {
                 name: "Romanian Deadlift",
@@ -38,8 +44,7 @@ const workoutPrograms = [
                 rest: "90 sec",
                 cue: "Push hips back and keep weight close.",
                 mistakes: "Turning it into a squat.",
-                substitute: "Dumbbell RDL",
-                media: "/exercise-demos/romanian-deadlift.mp4",
+                substitute: "Dumbbell Row",
               },
               {
                 name: "Bulgarian Split Squat",
@@ -48,25 +53,27 @@ const workoutPrograms = [
                 rest: "75 sec",
                 cue: "Lean slightly forward to hit glutes.",
                 mistakes: "Staying too upright.",
-                substitute: "Walking Lunge",
-                media: "/exercise-demos/bulgarian-split-squat.mp4",
+                substitute: "Lunges",
               },
             ],
           },
           {
             day: "Day 2 — Glute Volume",
-            warmup: ["Bike 5 min", "Glute bridge x 15", "Walking lunges x 10 each"],
+            warmup: [
+              "Bike 5 min",
+              "Glute bridge x 15",
+              "Walking lunges x 10 each",
+            ],
             finisher: "Seated abduction x 25 + hold 20 sec x 2",
             exercises: [
               {
-                name: "Smith Squat",
+                name: "Squat",
                 sets: "4",
                 reps: "10–12",
                 rest: "90 sec",
                 cue: "Deep, controlled reps.",
                 mistakes: "Half reps.",
                 substitute: "Goblet Squat",
-                media: "/exercise-demos/smith-squat.mp4",
               },
               {
                 name: "Step-Up",
@@ -75,8 +82,16 @@ const workoutPrograms = [
                 rest: "60 sec",
                 cue: "Drive from the lead leg only.",
                 mistakes: "Pushing from the back foot.",
-                substitute: "Split Squat",
-                media: "/exercise-demos/step-up.mp4",
+                substitute: "Bulgarian Split Squat",
+              },
+              {
+                name: "Leg Press",
+                sets: "3",
+                reps: "12–15",
+                rest: "75 sec",
+                cue: "Control the lowering phase and use full range.",
+                mistakes: "Locking the knees hard.",
+                substitute: "Hack Squat",
               },
             ],
           },
@@ -90,7 +105,11 @@ const workoutPrograms = [
         days: [
           {
             day: "Day 1 — Glute Strength",
-            warmup: ["Stairmaster 5 min", "Banded side steps x 20", "Air squats x 15"],
+            warmup: [
+              "Stairmaster 5 min",
+              "Banded side steps x 20",
+              "Air squats x 15",
+            ],
             finisher: "Banded glute bridge pulses x 25 x 2",
             exercises: [
               {
@@ -100,18 +119,25 @@ const workoutPrograms = [
                 rest: "120 sec",
                 cue: "Explode up, control down.",
                 mistakes: "Bouncing through reps.",
-                substitute: "Machine Hip Press",
-                media: "/exercise-demos/hip-thrust.mp4",
+                substitute: "Leg Press",
               },
               {
-                name: "Sumo Deadlift",
+                name: "Romanian Deadlift",
                 sets: "4",
                 reps: "6–8",
                 rest: "120 sec",
                 cue: "Push knees out and keep chest proud.",
                 mistakes: "Starting with hips too high.",
-                substitute: "Kettlebell Sumo Deadlift",
-                media: "/exercise-demos/sumo-deadlift.mp4",
+                substitute: "Squat",
+              },
+              {
+                name: "Hack Squat",
+                sets: "3",
+                reps: "10–12",
+                rest: "90 sec",
+                cue: "Keep tension constant and hit depth.",
+                mistakes: "Rushing the eccentric.",
+                substitute: "Leg Press",
               },
             ],
           },
@@ -125,28 +151,77 @@ const workoutPrograms = [
         days: [
           {
             day: "Day 1 — Lower Strength",
-            warmup: ["Incline walk 5 min", "Banded bridge x 20", "Single-leg hinge x 10 each"],
+            warmup: [
+              "Incline walk 5 min",
+              "Banded bridge x 20",
+              "Single-leg hinge x 10 each",
+            ],
             finisher: "Frog pumps x 40",
             exercises: [
               {
-                name: "Barbell Hip Thrust",
+                name: "Hip Thrust",
                 sets: "5",
                 reps: "5–8",
                 rest: "120 sec",
                 cue: "Build tension before every rep.",
                 mistakes: "Relaxing at the bottom.",
-                substitute: "Smith Hip Thrust",
-                media: "/exercise-demos/hip-thrust.mp4",
+                substitute: "Glute Bridge",
               },
               {
-                name: "Smith Split Squat",
+                name: "Bulgarian Split Squat",
                 sets: "4",
                 reps: "8–10 each leg",
                 rest: "75 sec",
                 cue: "Load the front glute.",
                 mistakes: "Too much push from the back leg.",
-                substitute: "Bulgarian Split Squat",
-                media: "/exercise-demos/smith-split-squat.mp4",
+                substitute: "Lunges",
+              },
+              {
+                name: "Romanian Deadlift",
+                sets: "4",
+                reps: "8",
+                rest: "120 sec",
+                cue: "Stretch the hamstrings and keep the spine neutral.",
+                mistakes: "Letting the weight drift away.",
+                substitute: "Leg Press",
+              },
+            ],
+          },
+          {
+            day: "Day 2 — Shape + Isolation",
+            warmup: [
+              "Bike 5 min",
+              "Bodyweight squats x 15",
+              "Banded abductions x 20",
+            ],
+            finisher: "Bodyweight squat pulse x 30 + hold 20 sec",
+            exercises: [
+              {
+                name: "Leg Extension",
+                sets: "4",
+                reps: "12–15",
+                rest: "60 sec",
+                cue: "Fully squeeze the quads at the top.",
+                mistakes: "Swinging through reps.",
+                substitute: "Goblet Squat",
+              },
+              {
+                name: "Seated Leg Curl",
+                sets: "4",
+                reps: "12–15",
+                rest: "60 sec",
+                cue: "Control the full return.",
+                mistakes: "Letting the stack slam down.",
+                substitute: "Romanian Deadlift",
+              },
+              {
+                name: "Leg Press",
+                sets: "3",
+                reps: "15",
+                rest: "75 sec",
+                cue: "Use a full range and steady tempo.",
+                mistakes: "Short reps.",
+                substitute: "Hack Squat",
               },
             ],
           },
@@ -159,7 +234,8 @@ const workoutPrograms = [
     slug: "upper",
     filterLabel: "Upper Body",
     title: "Upper Body Sculpt",
-    subtitle: "Build a lean, defined upper body with shape, posture, and strength.",
+    subtitle:
+      "Build a lean, defined upper body with shape, posture, and strength.",
     starterVisible: 2,
     variations: [
       {
@@ -170,28 +246,59 @@ const workoutPrograms = [
         days: [
           {
             day: "Day 1 — Push",
-            warmup: ["Band pull-aparts x 20", "Wall slides x 15", "Push-up hold 20 sec"],
-            finisher: "Lateral raise x 20",
+            warmup: [
+              "Band pull-aparts x 20",
+              "Wall slides x 15",
+              "Push-up hold 20 sec",
+            ],
+            finisher: "Push-up burnout",
             exercises: [
               {
-                name: "Dumbbell Press",
+                name: "Bench Press",
                 sets: "4",
                 reps: "8–12",
                 rest: "75 sec",
-                cue: "Lower with control.",
+                cue: "Lower with control and press with a stable base.",
                 mistakes: "Dropping too fast.",
-                substitute: "Machine Chest Press",
-                media: "/exercise-demos/dumbbell-press.mp4",
+                substitute: "Push-Up",
               },
               {
-                name: "Shoulder Press",
+                name: "Dumbbell Shoulder Press",
                 sets: "3",
                 reps: "10",
                 rest: "60 sec",
                 cue: "Brace your core before pressing.",
                 mistakes: "Arching the lower back.",
-                substitute: "Arnold Press",
-                media: "/exercise-demos/shoulder-press.mp4",
+                substitute: "Incline Dumbbell Press",
+              },
+            ],
+          },
+          {
+            day: "Day 2 — Pull",
+            warmup: [
+              "Rower 5 min",
+              "Band rows x 20",
+              "Scap squeeze x 15",
+            ],
+            finisher: "Straight Arm Pulldown x 20",
+            exercises: [
+              {
+                name: "Lat Pulldown",
+                sets: "4",
+                reps: "10–12",
+                rest: "75 sec",
+                cue: "Drive elbows down and keep chest lifted.",
+                mistakes: "Shrugging and swinging.",
+                substitute: "Pull-Up",
+              },
+              {
+                name: "Seated Row",
+                sets: "3",
+                reps: "10–12",
+                rest: "75 sec",
+                cue: "Pull to your lower ribs and squeeze the back.",
+                mistakes: "Using momentum.",
+                substitute: "Barbell Row",
               },
             ],
           },
@@ -205,18 +312,59 @@ const workoutPrograms = [
         days: [
           {
             day: "Day 1 — Upper Push",
-            warmup: ["Bike 5 min", "Shoulder circles x 20", "Band press x 15"],
+            warmup: [
+              "Bike 5 min",
+              "Shoulder circles x 20",
+              "Band press x 15",
+            ],
             finisher: "Push-up burnout",
             exercises: [
               {
-                name: "Incline Dumbbell Press",
+                name: "Incline Bench Press",
                 sets: "4",
-                reps: "10",
+                reps: "8–10",
+                rest: "75 sec",
+                cue: "Drive through the chest and keep control on the way down.",
+                mistakes: "Letting elbows flare too much.",
+                substitute: "Incline Dumbbell Press",
+              },
+              {
+                name: "Chest Fly",
+                sets: "3",
+                reps: "12–15",
+                rest: "45 sec",
+                cue: "Open under control and squeeze through the chest.",
+                mistakes: "Bending too much at the elbow.",
+                substitute: "Cable Fly",
+              },
+            ],
+          },
+          {
+            day: "Day 2 — Upper Pull",
+            warmup: [
+              "Rower 5 min",
+              "Band face pulls x 15",
+              "Light rows x 15",
+            ],
+            finisher: "Rear Delt Fly x 20",
+            exercises: [
+              {
+                name: "Dumbbell Row",
+                sets: "4",
+                reps: "10 each side",
                 rest: "60 sec",
-                cue: "Drive evenly through both hands.",
-                mistakes: "Losing tension at bottom.",
-                substitute: "Machine Incline Press",
-                media: "/exercise-demos/incline-dumbbell-press.mp4",
+                cue: "Drive the elbow back and keep torso stable.",
+                mistakes: "Twisting too much.",
+                substitute: "Barbell Row",
+              },
+              {
+                name: "Rear Delt Fly",
+                sets: "3",
+                reps: "15",
+                rest: "45 sec",
+                cue: "Move from the shoulders, not the traps.",
+                mistakes: "Shrugging through the rep.",
+                substitute: "Lat Pulldown",
               },
             ],
           },
@@ -230,8 +378,12 @@ const workoutPrograms = [
         days: [
           {
             day: "Day 1 — Chest + Shoulders",
-            warmup: ["Band external rotations x 15", "Push-up x 10", "Wall slides x 15"],
-            finisher: "Lateral raise drop set",
+            warmup: [
+              "Band external rotations x 15",
+              "Push-up x 10",
+              "Wall slides x 15",
+            ],
+            finisher: "Bench Press back-off set x 15",
             exercises: [
               {
                 name: "Bench Press",
@@ -239,9 +391,64 @@ const workoutPrograms = [
                 reps: "5–8",
                 rest: "120 sec",
                 cue: "Strong base and controlled descent.",
-                mistakes: "Bouncing bar and flaring elbows.",
-                substitute: "Machine Chest Press",
-                media: "/exercise-demos/bench-press.mp4",
+                mistakes: "Bouncing the bar and flaring elbows.",
+                substitute: "Incline Bench Press",
+              },
+              {
+                name: "Dumbbell Shoulder Press",
+                sets: "4",
+                reps: "8–10",
+                rest: "75 sec",
+                cue: "Keep ribs down and press vertically.",
+                mistakes: "Leaning back too hard.",
+                substitute: "Incline Dumbbell Press",
+              },
+              {
+                name: "Cable Fly",
+                sets: "3",
+                reps: "12–15",
+                rest: "45 sec",
+                cue: "Keep tension through the full range.",
+                mistakes: "Using body momentum.",
+                substitute: "Chest Fly",
+              },
+            ],
+          },
+          {
+            day: "Day 2 — Back Density",
+            warmup: [
+              "Rower 5 min",
+              "Band row x 20",
+              "Straight Arm Pulldown x 15",
+            ],
+            finisher: "Pull-Up AMRAP",
+            exercises: [
+              {
+                name: "Barbell Row",
+                sets: "4",
+                reps: "8–10",
+                rest: "90 sec",
+                cue: "Stay braced and pull toward the lower chest.",
+                mistakes: "Standing up through the row.",
+                substitute: "Seated Row",
+              },
+              {
+                name: "Lat Pulldown",
+                sets: "4",
+                reps: "10",
+                rest: "75 sec",
+                cue: "Lead with the elbows and keep chest proud.",
+                mistakes: "Pulling with the wrists.",
+                substitute: "Pull-Up",
+              },
+              {
+                name: "Straight Arm Pulldown",
+                sets: "3",
+                reps: "15",
+                rest: "45 sec",
+                cue: "Keep arms long and drive from the lats.",
+                mistakes: "Turning it into a press.",
+                substitute: "Rear Delt Fly",
               },
             ],
           },
@@ -254,7 +461,8 @@ const workoutPrograms = [
     slug: "legs",
     filterLabel: "Legs",
     title: "Leg Strength & Shape",
-    subtitle: "Quad, hamstring, glute, and calf development with balanced structure.",
+    subtitle:
+      "Quad, hamstring, glute, and calf development with balanced structure.",
     starterVisible: 2,
     variations: [
       {
@@ -265,7 +473,11 @@ const workoutPrograms = [
         days: [
           {
             day: "Day 1 — Quads + Glutes",
-            warmup: ["Bike 5 min", "Bodyweight squat x 15", "Walking lunge x 10 each"],
+            warmup: [
+              "Bike 5 min",
+              "Bodyweight squat x 15",
+              "Walking lunge x 10 each",
+            ],
             finisher: "Wall sit 45 sec x 2",
             exercises: [
               {
@@ -276,7 +488,15 @@ const workoutPrograms = [
                 cue: "Full depth with control.",
                 mistakes: "Half reps.",
                 substitute: "Leg Press",
-                media: "/exercise-demos/hack-squat.mp4",
+              },
+              {
+                name: "Leg Press",
+                sets: "4",
+                reps: "10–12",
+                rest: "75 sec",
+                cue: "Stay smooth and use a full range.",
+                mistakes: "Cutting depth short.",
+                substitute: "Goblet Squat",
               },
             ],
           },
@@ -300,8 +520,62 @@ const workoutPrograms = [
                 rest: "60 sec",
                 cue: "Control the return.",
                 mistakes: "Letting the weight slam back.",
-                substitute: "Lying Leg Curl",
-                media: "/exercise-demos/seated-leg-curl.mp4",
+                substitute: "Romanian Deadlift",
+              },
+              {
+                name: "Lunges",
+                sets: "3",
+                reps: "12 each leg",
+                rest: "60 sec",
+                cue: "Stay tall and step with control.",
+                mistakes: "Rushing the stride.",
+                substitute: "Bulgarian Split Squat",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "Variation 3 — Premium Leg Density",
+        tier: "Premium",
+        weeklySplit: "3 days / week",
+        goal: "Increase size, shape, and lower-body detail.",
+        days: [
+          {
+            day: "Day 1 — Strength Base",
+            warmup: [
+              "Bike 5 min",
+              "Air squat x 15",
+              "Walking lunges x 10 each",
+            ],
+            finisher: "Goblet squat x 20",
+            exercises: [
+              {
+                name: "Hack Squat",
+                sets: "5",
+                reps: "6–8",
+                rest: "120 sec",
+                cue: "Own the descent and drive hard through the floor.",
+                mistakes: "Bouncing out of the bottom.",
+                substitute: "Leg Press",
+              },
+              {
+                name: "Leg Press",
+                sets: "4",
+                reps: "10",
+                rest: "90 sec",
+                cue: "Keep constant tension and do not lock out hard.",
+                mistakes: "Short reps.",
+                substitute: "Squat",
+              },
+              {
+                name: "Leg Extension",
+                sets: "3",
+                reps: "15",
+                rest: "45 sec",
+                cue: "Squeeze the quads at the top.",
+                mistakes: "Swinging the weight.",
+                substitute: "Goblet Squat",
               },
             ],
           },
@@ -314,7 +588,8 @@ const workoutPrograms = [
     slug: "core",
     filterLabel: "Core",
     title: "Core & Waistline Control",
-    subtitle: "Build stronger abs, better bracing, and cleaner lines through the waist.",
+    subtitle:
+      "Build stronger abs, better bracing, and cleaner lines through the waist.",
     starterVisible: 2,
     variations: [
       {
@@ -335,8 +610,16 @@ const workoutPrograms = [
                 rest: "45 sec",
                 cue: "Curl down through the abs.",
                 mistakes: "Pulling mostly with the arms.",
-                substitute: "Machine Crunch",
-                media: "/exercise-demos/cable-crunch.mp4",
+                substitute: "Crunch",
+              },
+              {
+                name: "Push-Up",
+                sets: "3",
+                reps: "10–15",
+                rest: "45 sec",
+                cue: "Brace the core and keep the body in one straight line.",
+                mistakes: "Hips sagging.",
+                substitute: "Plank",
               },
             ],
           },
@@ -349,7 +632,8 @@ const workoutPrograms = [
     slug: "full-body",
     filterLabel: "Full Body",
     title: "Full Body Reset",
-    subtitle: "Athletic all-round training for people who want total-body progress.",
+    subtitle:
+      "Athletic all-round training for people who want total-body progress.",
     starterVisible: 2,
     variations: [
       {
@@ -369,9 +653,26 @@ const workoutPrograms = [
                 reps: "10",
                 rest: "60 sec",
                 cue: "Stay tall and controlled.",
-                mistakes: "Collapsing chest.",
+                mistakes: "Collapsing the chest.",
                 substitute: "Leg Press",
-                media: "/exercise-demos/goblet-squat.mp4",
+              },
+              {
+                name: "Bench Press",
+                sets: "3",
+                reps: "10",
+                rest: "75 sec",
+                cue: "Press with control and keep your shoulders stable.",
+                mistakes: "Bouncing the bar.",
+                substitute: "Push-Up",
+              },
+              {
+                name: "Lat Pulldown",
+                sets: "3",
+                reps: "10",
+                rest: "75 sec",
+                cue: "Pull elbows down and keep chest lifted.",
+                mistakes: "Swinging back too much.",
+                substitute: "Pull-Up",
               },
             ],
           },
@@ -390,10 +691,15 @@ export default function WorkoutsClient({ membershipType }) {
     label: program.filterLabel,
   }));
 
-  const [selectedFilter, setSelectedFilter] = useState(filterOptions[0]?.slug || "glutes");
+  const [selectedFilter, setSelectedFilter] = useState(
+    filterOptions[0]?.slug || "glutes"
+  );
 
   const selectedProgram = useMemo(() => {
-    return workoutPrograms.find((program) => program.slug === selectedFilter) || workoutPrograms[0];
+    return (
+      workoutPrograms.find((program) => program.slug === selectedFilter) ||
+      workoutPrograms[0]
+    );
   }, [selectedFilter]);
 
   const visibleVariations = isStarter
@@ -406,8 +712,9 @@ export default function WorkoutsClient({ membershipType }) {
         <div style={eyebrow}>Exclusive Training Library</div>
         <h2 style={heroTitle}>Choose your body focus</h2>
         <p style={heroText}>
-          Select the exact body area you want to train. Each section gives you a premium training system
-          with warm-ups, programmed sets, coaching cues, common mistakes, substitutions, and a visual demo area.
+          Select the exact body area you want to train. Each section gives you
+          a premium training system with warm-ups, programmed sets, coaching
+          cues, common mistakes, substitutions, and visual exercise demos.
         </p>
 
         <div style={filterTabs}>
@@ -417,7 +724,10 @@ export default function WorkoutsClient({ membershipType }) {
               onClick={() => setSelectedFilter(item.slug)}
               style={{
                 ...filterButton,
-                background: selectedFilter === item.slug ? "white" : "rgba(255,255,255,0.04)",
+                background:
+                  selectedFilter === item.slug
+                    ? "white"
+                    : "rgba(255,255,255,0.04)",
                 color: selectedFilter === item.slug ? "black" : "white",
               }}
             >
@@ -435,7 +745,8 @@ export default function WorkoutsClient({ membershipType }) {
           </div>
 
           <div style={programCount}>
-            {visibleVariations.length}/{selectedProgram.variations.length} variations visible
+            {visibleVariations.length}/{selectedProgram.variations.length}{" "}
+            variations visible
           </div>
         </div>
 
@@ -467,31 +778,40 @@ export default function WorkoutsClient({ membershipType }) {
                       </ul>
                     </div>
 
-                    <div style={{ display: "grid", gap: "12px", marginTop: "14px" }}>
+                    <div
+                      style={{
+                        display: "grid",
+                        gap: "12px",
+                        marginTop: "14px",
+                      }}
+                    >
                       {day.exercises.map((exercise) => (
                         <div key={exercise.name} style={exerciseCard}>
                           <div style={exerciseTop}>
                             <div style={{ flex: 1 }}>
                               <div style={exerciseName}>{exercise.name}</div>
                               <div style={exerciseMeta}>
-                                {exercise.sets} sets · {exercise.reps} · Rest {exercise.rest}
+                                {exercise.sets} sets · {exercise.reps} · Rest{" "}
+                                {exercise.rest}
                               </div>
                             </div>
 
                             <div style={mediaBox}>
                               {getExerciseMedia(exercise.name) ? (
-  <video
-    src={getExerciseMedia(exercise.name)}
-    style={mediaVideo}
-    autoPlay
-    muted
-    loop
-    playsInline
-    preload="metadata"
-  />
-) : (
-  <div style={missingMediaBox}>No demo yet</div>
-)}
+                                <video
+                                  src={getExerciseMedia(exercise.name)}
+                                  style={mediaVideo}
+                                  autoPlay
+                                  muted
+                                  loop
+                                  playsInline
+                                  preload="metadata"
+                                />
+                              ) : (
+                                <div style={missingMediaBox}>
+                                  Demo coming soon
+                                </div>
+                              )}
                             </div>
                           </div>
 
@@ -515,7 +835,8 @@ export default function WorkoutsClient({ membershipType }) {
                               <div style={detailItem}>
                                 <div style={detailLabel}>Progression</div>
                                 <div style={detailText}>
-                                  Add 1 rep or a small weight increase once top reps are achieved with clean form.
+                                  Add 1 rep or a small weight increase once top
+                                  reps are achieved with clean form.
                                 </div>
                               </div>
                             )}
@@ -535,19 +856,24 @@ export default function WorkoutsClient({ membershipType }) {
           ))}
         </div>
 
-        {isStarter && selectedProgram.variations.length > selectedProgram.starterVisible && (
-          <div style={lockedBox}>
-            <div style={lockedTitle}>Premium library locked</div>
-            <p style={lockedText}>
-              Unlock the full advanced exercise library, deeper progression guidance, and premium variation structure.
-            </p>
-            <a href="/pricing" style={unlockButton}>Unlock Full Workout System</a>
-          </div>
-        )}
+        {isStarter &&
+          selectedProgram.variations.length > selectedProgram.starterVisible && (
+            <div style={lockedBox}>
+              <div style={lockedTitle}>Premium library locked</div>
+              <p style={lockedText}>
+                Unlock the full advanced exercise library, deeper progression
+                guidance, and premium variation structure.
+              </p>
+              <a href="/pricing" style={unlockButton}>
+                Unlock Full Workout System
+              </a>
+            </div>
+          )}
       </section>
     </div>
   );
 }
+
 const missingMediaBox = {
   width: "100%",
   height: "100%",
@@ -559,8 +885,10 @@ const missingMediaBox = {
   textAlign: "center",
   padding: "10px",
 };
+
 const heroCard = {
-  background: "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
+  background:
+    "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
   border: "1px solid rgba(255,255,255,0.1)",
   borderRadius: "24px",
   padding: "28px",
