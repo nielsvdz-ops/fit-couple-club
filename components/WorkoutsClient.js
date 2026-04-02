@@ -479,15 +479,19 @@ export default function WorkoutsClient({ membershipType }) {
                             </div>
 
                             <div style={mediaBox}>
-                              <video
-                                src={exercise.media}
-                                style={mediaVideo}
-                                autoPlay
-                                muted
-                                loop
-                                playsInline
-                                preload="metadata"
-                              />
+                              {getExerciseMedia(exercise.name) ? (
+  <video
+    src={getExerciseMedia(exercise.name)}
+    style={mediaVideo}
+    autoPlay
+    muted
+    loop
+    playsInline
+    preload="metadata"
+  />
+) : (
+  <div style={missingMediaBox}>No demo yet</div>
+)}
                             </div>
                           </div>
 
