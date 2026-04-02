@@ -1,5 +1,5 @@
 "use client";
-
+import { getExerciseMedia } from "../lib/exerciseMedia";
 import { useMemo, useState } from "react";
 
 const workoutPrograms = [
