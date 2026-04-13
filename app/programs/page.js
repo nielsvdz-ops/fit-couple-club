@@ -14,7 +14,8 @@ const programs = [
     schedule: "4 training days / week",
     equipment: "Gym or home dumbbells",
     goal: "Lose fat, rebuild routine, improve consistency",
-    idealFor: "Members who want a clean reset and a structured starting point",
+    idealFor:
+      "Members who want a clean reset and a structured starting point.",
     result:
       "Best for creating momentum, better eating habits, and early visible body composition changes.",
     includes: [
@@ -23,6 +24,31 @@ const programs = [
       "Simple nutrition habits",
       "Weekly structure and progression",
     ],
+    trainingSplit: [
+      "2 full-body strength sessions",
+      "1 lower-body shaping day",
+      "1 upper-body + cardio finisher day",
+      "Daily steps target",
+    ],
+    weeklyFocus: [
+      "Week 1 — Build routine and movement quality",
+      "Week 2 — Improve consistency and recovery habits",
+      "Week 3 — Add small progression in reps or load",
+      "Week 4 — Finish strong with full adherence",
+    ],
+    sampleWeek: [
+      "Day 1 — Full Body Strength A",
+      "Day 2 — Incline walk + abs",
+      "Day 3 — Lower Body + glutes",
+      "Day 4 — Rest / 8k–10k steps",
+      "Day 5 — Upper Body + cardio finisher",
+      "Day 6 — Full Body Conditioning",
+      "Day 7 — Recovery walk + mobility",
+    ],
+    cardio:
+      "Aim for 8k–10k steps daily plus 2 structured cardio sessions each week.",
+    recovery:
+      "Prioritize sleep, hydration, and staying consistent instead of trying to be perfect.",
   },
   {
     title: "Lean Muscle Blueprint",
@@ -32,7 +58,8 @@ const programs = [
     schedule: "5 training days / week",
     equipment: "Full gym",
     goal: "Build lean muscle without sloppy bulking",
-    idealFor: "Members who want more size, better shape, and stronger performance",
+    idealFor:
+      "Members who want more size, better shape, and stronger performance.",
     result:
       "Focused on progressive overload, balanced hypertrophy, and enough volume for visible growth.",
     includes: [
@@ -41,6 +68,32 @@ const programs = [
       "Lower-body strength support",
       "Progress tracking focus",
     ],
+    trainingSplit: [
+      "Push hypertrophy",
+      "Lower-body strength",
+      "Pull hypertrophy",
+      "Leg hypertrophy",
+      "Upper pump / accessories",
+    ],
+    weeklyFocus: [
+      "Weeks 1–2 — Establish baseline loads and form",
+      "Weeks 3–4 — Progressive overload phase",
+      "Weeks 5–6 — Higher effort working sets",
+      "Weeks 7–8 — Final growth push",
+    ],
+    sampleWeek: [
+      "Day 1 — Push hypertrophy",
+      "Day 2 — Lower strength",
+      "Day 3 — Pull hypertrophy",
+      "Day 4 — Rest / light cardio",
+      "Day 5 — Legs hypertrophy",
+      "Day 6 — Upper pump / arms / delts",
+      "Day 7 — Rest",
+    ],
+    cardio:
+      "Keep cardio light to moderate, 1–2 sessions weekly, so recovery stays strong.",
+    recovery:
+      "Track lifts, keep food intake consistent, and avoid adding random junk volume.",
   },
   {
     title: "Build Curves / Booty Builder",
@@ -50,7 +103,8 @@ const programs = [
     schedule: "4 training days / week",
     equipment: "Gym preferred",
     goal: "Grow glutes, shape legs, and improve lower-body development",
-    idealFor: "Members wanting stronger glutes, better lower-body shape, and cleaner form",
+    idealFor:
+      "Members wanting stronger glutes, better lower-body shape, and cleaner form.",
     result:
       "Heavy glute emphasis with enough frequency and smart accessory work to drive real progress.",
     includes: [
@@ -59,6 +113,31 @@ const programs = [
       "1 upper-body balance day",
       "Progressive overload focus",
     ],
+    trainingSplit: [
+      "Glute strength day",
+      "Upper-body balance day",
+      "Glute hypertrophy day",
+      "Hamstrings + quads day",
+    ],
+    weeklyFocus: [
+      "Weeks 1–2 — Form, activation, setup",
+      "Weeks 3–4 — Volume progression",
+      "Weeks 5–6 — Load progression",
+      "Weeks 7–8 — Stronger peak effort phase",
+    ],
+    sampleWeek: [
+      "Day 1 — Glute strength",
+      "Day 2 — Upper body balance",
+      "Day 3 — Rest / walking",
+      "Day 4 — Glute hypertrophy",
+      "Day 5 — Hamstrings + quads",
+      "Day 6 — Rest / mobility",
+      "Day 7 — Optional steps + recovery",
+    ],
+    cardio:
+      "Keep cardio moderate so recovery and glute performance stay high.",
+    recovery:
+      "Best results come from strong form, stable nutrition, and enough rest between lower-body sessions.",
   },
   {
     title: "Couple Transformation Challenge",
@@ -68,7 +147,8 @@ const programs = [
     schedule: "4 shared training days / week",
     equipment: "Gym or home",
     goal: "Stay accountable together and improve consistency as a team",
-    idealFor: "Couples who want structure, shared check-ins, and better discipline together",
+    idealFor:
+      "Couples who want structure, shared check-ins, and better discipline together.",
     result:
       "Designed to build momentum, consistency, and a stronger shared routine instead of random workouts.",
     includes: [
@@ -77,6 +157,30 @@ const programs = [
       "Training split for 2 people",
       "Challenge-style progression",
     ],
+    trainingSplit: [
+      "2 shared strength sessions",
+      "1 lower-body + core day",
+      "1 challenge / conditioning day",
+      "Weekly partner check-in",
+    ],
+    weeklyFocus: [
+      "Weeks 1–2 — Build routine together",
+      "Weeks 3–4 — Improve consistency and effort",
+      "Weeks 5–6 — Finish strong without burnout",
+    ],
+    sampleWeek: [
+      "Day 1 — Shared full body strength",
+      "Day 2 — Walk / mobility / check-in",
+      "Day 3 — Lower body + core",
+      "Day 4 — Rest",
+      "Day 5 — Upper body + conditioning",
+      "Day 6 — Shared challenge session",
+      "Day 7 — Recovery walk",
+    ],
+    cardio:
+      "Use shared walks and simple movement goals to keep compliance high.",
+    recovery:
+      "The goal is sustainability and teamwork, not turning it into an all-or-nothing challenge.",
   },
   {
     title: "At-Home Shred Plan",
@@ -86,7 +190,7 @@ const programs = [
     schedule: "5 training days / week",
     equipment: "Bodyweight + dumbbells",
     goal: "Burn fat and stay consistent without needing a full gym",
-    idealFor: "Busy members training from home",
+    idealFor: "Busy members training from home.",
     result:
       "High consistency, moderate intensity, and easy-to-follow sessions that fit real schedules.",
     includes: [
@@ -95,6 +199,29 @@ const programs = [
       "Core work",
       "Optional dumbbell progressions",
     ],
+    trainingSplit: [
+      "3 resistance sessions",
+      "2 conditioning sessions",
+      "Daily movement goal",
+    ],
+    weeklyFocus: [
+      "Weeks 1–2 — Build home training rhythm",
+      "Weeks 3–4 — Add density and control",
+      "Weeks 5–6 — Increase pace and intensity",
+    ],
+    sampleWeek: [
+      "Day 1 — Full body dumbbell circuit",
+      "Day 2 — Core + bodyweight conditioning",
+      "Day 3 — Lower body home workout",
+      "Day 4 — Rest / steps",
+      "Day 5 — Upper body dumbbells",
+      "Day 6 — Conditioning finisher",
+      "Day 7 — Recovery walk",
+    ],
+    cardio:
+      "Aim for 8k–12k daily steps and 2 dedicated conditioning workouts.",
+    recovery:
+      "Keep sessions short and repeatable so home training feels sustainable.",
   },
   {
     title: "Beginner Strength Base",
@@ -104,7 +231,8 @@ const programs = [
     schedule: "3 training days / week",
     equipment: "Gym preferred",
     goal: "Build strength, confidence, and proper exercise foundations",
-    idealFor: "New members who want a structured introduction to lifting",
+    idealFor:
+      "New members who want a structured introduction to lifting.",
     result:
       "Teaches foundational movement patterns while building strength safely and progressively.",
     includes: [
@@ -113,6 +241,30 @@ const programs = [
       "Technique and consistency focus",
       "Simple progression system",
     ],
+    trainingSplit: [
+      "3 full-body strength sessions",
+      "Compound lift priority",
+      "Technique-first progression",
+    ],
+    weeklyFocus: [
+      "Weeks 1–2 — Learn movement patterns",
+      "Weeks 3–4 — Build confidence under load",
+      "Weeks 5–6 — Controlled progressive overload",
+      "Weeks 7–8 — Stronger base and cleaner execution",
+    ],
+    sampleWeek: [
+      "Day 1 — Full Body A",
+      "Day 2 — Rest / light walking",
+      "Day 3 — Full Body B",
+      "Day 4 — Rest",
+      "Day 5 — Full Body C",
+      "Day 6 — Optional recovery walk",
+      "Day 7 — Rest",
+    ],
+    cardio:
+      "Keep cardio low to moderate so strength progress is not compromised.",
+    recovery:
+      "Focus on technique quality, rest between sets, and leaving the gym feeling capable, not destroyed.",
   },
   {
     title: "Upper Body Shape Builder",
@@ -122,7 +274,8 @@ const programs = [
     schedule: "4 training days / week",
     equipment: "Gym or dumbbells",
     goal: "Build shoulders, back, arms, and upper-body shape",
-    idealFor: "Members who want a more athletic upper body and better balance",
+    idealFor:
+      "Members who want a more athletic upper body and better balance.",
     result:
       "Extra upper-body volume for visible shape, posture, and definition improvements.",
     includes: [
@@ -131,6 +284,30 @@ const programs = [
       "Posture-focused work",
       "Balanced lower-body maintenance",
     ],
+    trainingSplit: [
+      "Push-focused upper day",
+      "Pull-focused upper day",
+      "Shoulders + arms volume day",
+      "Lower-body maintenance day",
+    ],
+    weeklyFocus: [
+      "Weeks 1–2 — Build base volume",
+      "Weeks 3–4 — Increase effort and control",
+      "Weeks 5–6 — Push shape-focused overload",
+    ],
+    sampleWeek: [
+      "Day 1 — Push upper body",
+      "Day 2 — Pull upper body",
+      "Day 3 — Rest / mobility",
+      "Day 4 — Shoulders + arms",
+      "Day 5 — Lower-body maintenance",
+      "Day 6 — Optional cardio",
+      "Day 7 — Rest",
+    ],
+    cardio:
+      "Use 1–2 light cardio sessions weekly to support recovery and body composition.",
+    recovery:
+      "Shoulders and elbows need smart volume management, so quality reps matter more than junk sets.",
   },
   {
     title: "Summer Shred Accelerator",
@@ -140,7 +317,8 @@ const programs = [
     schedule: "5 training days / week",
     equipment: "Gym",
     goal: "Get leaner faster while keeping muscle",
-    idealFor: "Members already training consistently who want a sharper cut phase",
+    idealFor:
+      "Members already training consistently who want a sharper cut phase.",
     result:
       "Combines lifting, strategic cardio, and structure to drive a harder visual transformation phase.",
     includes: [
@@ -149,6 +327,29 @@ const programs = [
       "Ab finishers",
       "Recovery and intensity balance",
     ],
+    trainingSplit: [
+      "4 resistance sessions",
+      "1 conditioning-focused day",
+      "Higher activity targets",
+    ],
+    weeklyFocus: [
+      "Weeks 1–2 — Lock in routine and food adherence",
+      "Weeks 3–4 — Increase output carefully",
+      "Weeks 5–6 — Final cut-phase push",
+    ],
+    sampleWeek: [
+      "Day 1 — Upper body strength",
+      "Day 2 — Lower body strength",
+      "Day 3 — Cardio + abs",
+      "Day 4 — Upper hypertrophy",
+      "Day 5 — Lower hypertrophy",
+      "Day 6 — Conditioning / long walk",
+      "Day 7 — Recovery",
+    ],
+    cardio:
+      "Use 2–3 cardio sessions and aggressive daily step consistency during the 6-week phase.",
+    recovery:
+      "Because output is higher, recovery needs to stay deliberate or performance will crash.",
   },
   {
     title: "Glute & Core Sculpt",
@@ -158,7 +359,8 @@ const programs = [
     schedule: "4 training days / week",
     equipment: "Gym or home dumbbells",
     goal: "Improve glute shape, waistline support, and lower-body tone",
-    idealFor: "Members wanting a more sculpted look with glute and core focus",
+    idealFor:
+      "Members wanting a more sculpted look with glute and core focus.",
     result:
       "Pairs smart glute training with core stability and controlled volume for a cleaner body-shaping plan.",
     includes: [
@@ -167,6 +369,29 @@ const programs = [
       "Lower-body accessory work",
       "Recovery-friendly weekly structure",
     ],
+    trainingSplit: [
+      "2 glute-focused sessions",
+      "1 core + conditioning day",
+      "1 lower-body support day",
+    ],
+    weeklyFocus: [
+      "Weeks 1–2 — Activation and routine",
+      "Weeks 3–4 — Shape-focused volume",
+      "Weeks 5–6 — Stronger effort and control",
+    ],
+    sampleWeek: [
+      "Day 1 — Glutes + core",
+      "Day 2 — Upper / posture support",
+      "Day 3 — Rest / walking",
+      "Day 4 — Glute hypertrophy",
+      "Day 5 — Lower accessory + core circuits",
+      "Day 6 — Recovery / mobility",
+      "Day 7 — Optional steps",
+    ],
+    cardio:
+      "Keep cardio moderate and use steps to support fat loss without hurting lower-body recovery.",
+    recovery:
+      "Consistency, clean reps, and stable effort matter more than chasing exhaustion.",
   },
   {
     title: "Athletic Performance Builder",
@@ -176,7 +401,7 @@ const programs = [
     schedule: "5 training days / week",
     equipment: "Full gym",
     goal: "Improve power, conditioning, movement quality, and athleticism",
-    idealFor: "Members who want to look fit and perform better",
+    idealFor: "Members who want to look fit and perform better.",
     result:
       "Blends strength, explosive work, and conditioning for a more complete athletic body.",
     includes: [
@@ -185,6 +410,30 @@ const programs = [
       "Conditioning work",
       "Mobility support",
     ],
+    trainingSplit: [
+      "2 strength sessions",
+      "2 athletic movement / explosive sessions",
+      "1 conditioning-focused session",
+    ],
+    weeklyFocus: [
+      "Weeks 1–2 — Movement quality and base conditioning",
+      "Weeks 3–4 — Add speed and power emphasis",
+      "Weeks 5–6 — Higher athletic output",
+      "Weeks 7–8 — Strong finish with quality execution",
+    ],
+    sampleWeek: [
+      "Day 1 — Lower strength + jumps",
+      "Day 2 — Upper strength + throws",
+      "Day 3 — Conditioning intervals",
+      "Day 4 — Mobility / recovery",
+      "Day 5 — Athletic lower day",
+      "Day 6 — Athletic upper + core",
+      "Day 7 — Rest",
+    ],
+    cardio:
+      "Conditioning is already part of the program, so avoid stacking random extra fatigue.",
+    recovery:
+      "Sleep, warm-up quality, and joint care are essential because this plan is more demanding.",
   },
   {
     title: "Busy Schedule Body Recomp",
@@ -194,7 +443,8 @@ const programs = [
     schedule: "3 training days / week",
     equipment: "Gym or home",
     goal: "Build muscle and lose fat with minimal weekly time",
-    idealFor: "Members with limited time who still want visible progress",
+    idealFor:
+      "Members with limited time who still want visible progress.",
     result:
       "A realistic recomposition option for people who cannot train 5–6 times per week.",
     includes: [
@@ -203,6 +453,30 @@ const programs = [
       "Body recomposition focus",
       "Recovery-friendly design",
     ],
+    trainingSplit: [
+      "3 efficient full-body sessions",
+      "Optional low-intensity cardio",
+      "Minimal but effective weekly structure",
+    ],
+    weeklyFocus: [
+      "Weeks 1–2 — Efficient routine setup",
+      "Weeks 3–4 — Build progression",
+      "Weeks 5–6 — Higher quality training effort",
+      "Weeks 7–8 — Finish with consistency",
+    ],
+    sampleWeek: [
+      "Day 1 — Full Body A",
+      "Day 2 — Rest / steps",
+      "Day 3 — Full Body B",
+      "Day 4 — Rest / mobility",
+      "Day 5 — Full Body C",
+      "Day 6 — Optional cardio",
+      "Day 7 — Recovery",
+    ],
+    cardio:
+      "Use steps and 1 optional cardio session weekly to support body recomposition.",
+    recovery:
+      "This plan wins through adherence, not through doing too much.",
   },
   {
     title: "Confidence Starter Program",
@@ -212,7 +486,8 @@ const programs = [
     schedule: "3 training days / week",
     equipment: "Home or gym",
     goal: "Create confidence, habit consistency, and beginner momentum",
-    idealFor: "New members who feel overwhelmed and need a simple entry point",
+    idealFor:
+      "New members who feel overwhelmed and need a simple entry point.",
     result:
       "A low-pressure starting program designed to get members moving and staying on track.",
     includes: [
@@ -221,6 +496,30 @@ const programs = [
       "Habit-building approach",
       "Clear weekly wins",
     ],
+    trainingSplit: [
+      "3 beginner-friendly sessions",
+      "Walking and mobility support",
+      "Low-pressure progression",
+    ],
+    weeklyFocus: [
+      "Week 1 — Get moving",
+      "Week 2 — Improve comfort and routine",
+      "Week 3 — Build confidence",
+      "Week 4 — Finish with momentum",
+    ],
+    sampleWeek: [
+      "Day 1 — Full body basics",
+      "Day 2 — Walk + light stretch",
+      "Day 3 — Lower body basics",
+      "Day 4 — Rest",
+      "Day 5 — Upper body basics",
+      "Day 6 — Optional walk",
+      "Day 7 — Recovery",
+    ],
+    cardio:
+      "Keep cardio light and use walking to build consistency without overwhelm.",
+    recovery:
+      "The best recovery strategy is staying calm, staying consistent, and not quitting after imperfect days.",
   },
 ];
 
@@ -246,7 +545,7 @@ export default async function ProgramsPage() {
   return (
     <DashboardLayout
       title="Programs"
-      subtitle="Premium and VIP members get access to structured transformation programs with clear goals, training splits, and real use-case guidance."
+      subtitle="Premium and VIP members get access to structured transformation programs with clear goals, training splits, weekly structure, and real use-case guidance."
       membershipType={profile?.membership_type}
     >
       <div style={pageWrap}>
@@ -255,8 +554,8 @@ export default async function ProgramsPage() {
           <h2 style={heroTitle}>Choose a program that matches your real goal</h2>
           <p style={heroText}>
             These programs are built to feel practical and usable, not vague.
-            Members can compare durations, difficulty, equipment needs, and
-            expected outcomes before choosing a path.
+            Members can compare durations, difficulty, equipment needs, training
+            split, and expected outcomes before choosing a path.
           </p>
 
           <div style={filterRow}>
@@ -327,8 +626,48 @@ export default async function ProgramsPage() {
                 </ul>
               </div>
 
+              <div style={sectionBlock}>
+                <div style={sectionLabel}>Training split</div>
+                <ul style={list}>
+                  {program.trainingSplit.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div style={sectionBlock}>
+                <div style={sectionLabel}>Weekly progression</div>
+                <ul style={list}>
+                  {program.weeklyFocus.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div style={sectionBlock}>
+                <div style={sectionLabel}>Sample week</div>
+                <div style={weekGrid}>
+                  {program.sampleWeek.map((day) => (
+                    <div key={day} style={dayCard}>
+                      {day}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={tipsGrid}>
+                <div style={tipCard}>
+                  <div style={metaLabel}>Cardio guidance</div>
+                  <div style={tipText}>{program.cardio}</div>
+                </div>
+                <div style={tipCard}>
+                  <div style={metaLabel}>Recovery guidance</div>
+                  <div style={tipText}>{program.recovery}</div>
+                </div>
+              </div>
+
               <div style={ctaRow}>
-                <button style={primaryButton}>View Program</button>
+                <button style={primaryButton}>Start Program</button>
                 <button style={secondaryButton}>Save for Later</button>
               </div>
             </article>
@@ -416,7 +755,7 @@ const statLabel = {
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(380px,1fr))",
   gap: "18px",
 };
 
@@ -521,6 +860,38 @@ const list = {
   lineHeight: 1.85,
 };
 
+const weekGrid = {
+  display: "grid",
+  gap: "10px",
+};
+
+const dayCard = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "14px",
+  padding: "12px 14px",
+  color: "rgba(255,255,255,0.8)",
+  lineHeight: 1.6,
+};
+
+const tipsGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gap: "12px",
+};
+
+const tipCard = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "16px",
+  padding: "14px",
+};
+
+const tipText = {
+  color: "rgba(255,255,255,0.72)",
+  lineHeight: 1.7,
+};
+
 const ctaRow = {
   display: "flex",
   gap: "10px",
@@ -534,6 +905,8 @@ const primaryButton = {
   padding: "12px 16px",
   fontWeight: "800",
   cursor: "pointer",
+  background: "white",
+  color: "#111",
 };
 
 const secondaryButton = {
