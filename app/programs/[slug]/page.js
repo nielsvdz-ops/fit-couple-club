@@ -40,8 +40,22 @@ export default async function ProgramDetailPage({ params }) {
             <div style={levelBadge}>{program.level}</div>
           </div>
 
-          <h2 style={heroTitle}>{program.title}</h2>
+          <h1 style={heroTitle}>{program.title}</h1>
           <p style={heroText}>{program.heroSummary}</p>
+
+          <div style={heroMediaWrap}>
+            {program.heroGif ? (
+              <img
+                src={program.heroGif}
+                alt={`${program.title} preview`}
+                style={heroGif}
+              />
+            ) : (
+              <div style={heroGifPlaceholder}>
+                Add an AI GIF or motion preview here for {program.title}
+              </div>
+            )}
+          </div>
 
           <div style={metaGrid}>
             <div style={metaCard}>
@@ -66,13 +80,13 @@ export default async function ProgramDetailPage({ params }) {
         <section style={twoColGrid}>
           <div style={sectionCard}>
             <div style={sectionEyebrow}>Program result</div>
-            <h3 style={sectionTitle}>What this program is built to do</h3>
+            <h2 style={sectionTitle}>What this program is built to do</h2>
             <p style={bodyText}>{program.result}</p>
           </div>
 
           <div style={sectionCard}>
             <div style={sectionEyebrow}>What’s inside</div>
-            <h3 style={sectionTitle}>Program structure</h3>
+            <h2 style={sectionTitle}>Program structure</h2>
             <ul style={list}>
               {program.includes.map((item) => (
                 <li key={item}>{item}</li>
@@ -82,35 +96,81 @@ export default async function ProgramDetailPage({ params }) {
         </section>
 
         <section style={sectionCard}>
+          <div style={sectionEyebrow}>How to use this program</div>
+          <h2 style={sectionTitle}>Step by step</h2>
+
+          <div style={stepsGrid}>
+            <div style={stepCard}>
+              <div style={stepNumber}>Step 1</div>
+              <div style={stepText}>
+                Read the full overview first so you understand the goal, duration,
+                and weekly structure.
+              </div>
+            </div>
+
+            <div style={stepCard}>
+              <div style={stepNumber}>Step 2</div>
+              <div style={stepText}>
+                Follow the weekly roadmap in order instead of mixing random weeks
+                or days together.
+              </div>
+            </div>
+
+            <div style={stepCard}>
+              <div style={stepNumber}>Step 3</div>
+              <div style={stepText}>
+                Use the weekly schedule as your training structure and track
+                consistency before increasing intensity.
+              </div>
+            </div>
+
+            <div style={stepCard}>
+              <div style={stepNumber}>Step 4</div>
+              <div style={stepText}>
+                Use the cardio and recovery guidance to support results without
+                burning yourself out.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section style={sectionCard}>
           <div style={sectionEyebrow}>Training split</div>
-          <h3 style={sectionTitle}>How the week is organized</h3>
-          <ul style={list}>
+          <h2 style={sectionTitle}>How the week is organized</h2>
+
+          <div style={pillGrid}>
             {program.trainingSplit.map((item) => (
-              <li key={item}>{item}</li>
+              <div key={item} style={pill}>
+                {item}
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
 
         <section style={sectionCard}>
           <div style={sectionEyebrow}>Weekly roadmap</div>
-          <h3 style={sectionTitle}>Week-by-week structure</h3>
+          <h2 style={sectionTitle}>Week-by-week structure</h2>
 
           <div style={weeksGrid}>
             {program.weeklyPlan.map((weekBlock) => (
               <div key={weekBlock.week} style={weekCard}>
                 <div style={weekHeader}>
-                  <div style={weekTitle}>{weekBlock.week}</div>
-                  <div style={weekFocus}>{weekBlock.focus}</div>
+                  <div>
+                    <div style={weekLabel}>{weekBlock.week}</div>
+                    <div style={weekTitle}>{weekBlock.focus}</div>
+                  </div>
                 </div>
 
                 <p style={bodyText}>{weekBlock.notes}</p>
 
                 <div style={miniLabel}>Weekly schedule</div>
-                <ul style={list}>
+                <div style={daysGrid}>
                   {weekBlock.days.map((day) => (
-                    <li key={day}>{day}</li>
+                    <div key={day} style={dayCard}>
+                      {day}
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             ))}
           </div>
@@ -119,24 +179,24 @@ export default async function ProgramDetailPage({ params }) {
         <section style={twoColGrid}>
           <div style={sectionCard}>
             <div style={sectionEyebrow}>Cardio guidance</div>
-            <h3 style={sectionTitle}>How to support the training</h3>
+            <h2 style={sectionTitle}>How to support the training</h2>
             <p style={bodyText}>{program.cardioGuidance}</p>
           </div>
 
           <div style={sectionCard}>
             <div style={sectionEyebrow}>Recovery guidance</div>
-            <h3 style={sectionTitle}>How to recover properly</h3>
+            <h2 style={sectionTitle}>How to recover properly</h2>
             <p style={bodyText}>{program.recoveryGuidance}</p>
           </div>
         </section>
 
         <section style={ctaCard}>
           <div style={sectionEyebrow}>Next level upgrade</div>
-          <h3 style={sectionTitle}>Connect this program to your workout pages</h3>
+          <h2 style={sectionTitle}>Connect each day to your workout library</h2>
           <p style={bodyText}>
-            The strongest next step is linking each day inside this program to
-            the exact workout videos and exercise pages already inside your
-            platform.
+            The strongest next step is linking every day inside the weekly schedule
+            to the exact workout page, video, or exercise library already inside
+            your platform.
           </p>
         </section>
       </div>
@@ -202,6 +262,34 @@ const heroText = {
   lineHeight: 1.8,
   marginTop: "12px",
   maxWidth: "900px",
+};
+
+const heroMediaWrap = {
+  marginTop: "18px",
+};
+
+const heroGif = {
+  width: "100%",
+  borderRadius: "22px",
+  border: "1px solid rgba(255,255,255,0.08)",
+  display: "block",
+  maxHeight: "440px",
+  objectFit: "cover",
+};
+
+const heroGifPlaceholder = {
+  width: "100%",
+  minHeight: "260px",
+  borderRadius: "22px",
+  border: "1px dashed rgba(255,255,255,0.16)",
+  background: "rgba(255,255,255,0.03)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "rgba(255,255,255,0.58)",
+  fontWeight: "700",
+  textAlign: "center",
+  padding: "24px",
 };
 
 const metaGrid = {
@@ -279,6 +367,50 @@ const list = {
   lineHeight: 1.85,
 };
 
+const stepsGrid = {
+  display: "grid",
+  gap: "14px",
+  marginTop: "16px",
+};
+
+const stepCard = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "18px",
+  padding: "16px",
+};
+
+const stepNumber = {
+  fontSize: "12px",
+  textTransform: "uppercase",
+  letterSpacing: "0.12em",
+  color: "rgba(255,255,255,0.45)",
+  marginBottom: "8px",
+  fontWeight: "800",
+};
+
+const stepText = {
+  color: "rgba(255,255,255,0.82)",
+  lineHeight: 1.7,
+  fontWeight: "600",
+};
+
+const pillGrid = {
+  display: "flex",
+  gap: "10px",
+  flexWrap: "wrap",
+  marginTop: "16px",
+};
+
+const pill = {
+  padding: "10px 14px",
+  borderRadius: "999px",
+  border: "1px solid rgba(255,255,255,0.1)",
+  background: "rgba(255,255,255,0.04)",
+  fontWeight: "700",
+  fontSize: "14px",
+};
+
 const weeksGrid = {
   display: "grid",
   gap: "18px",
@@ -301,17 +433,17 @@ const weekHeader = {
   marginBottom: "10px",
 };
 
+const weekLabel = {
+  fontSize: "12px",
+  textTransform: "uppercase",
+  letterSpacing: "0.12em",
+  color: "rgba(255,255,255,0.45)",
+  marginBottom: "6px",
+};
+
 const weekTitle = {
   fontSize: "22px",
   fontWeight: "800",
-};
-
-const weekFocus = {
-  background: "rgba(255,255,255,0.08)",
-  borderRadius: "999px",
-  padding: "8px 12px",
-  fontWeight: "700",
-  fontSize: "13px",
 };
 
 const miniLabel = {
@@ -321,4 +453,18 @@ const miniLabel = {
   color: "rgba(255,255,255,0.45)",
   marginTop: "14px",
   marginBottom: "8px",
+};
+
+const daysGrid = {
+  display: "grid",
+  gap: "10px",
+};
+
+const dayCard = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "14px",
+  padding: "12px 14px",
+  color: "rgba(255,255,255,0.8)",
+  lineHeight: 1.6,
 };
