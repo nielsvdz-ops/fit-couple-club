@@ -13,6 +13,10 @@ export async function generateStaticParams() {
   }));
 }
 
+function isDetailedDay(day) {
+  return typeof day === "object" && day !== null && !Array.isArray(day);
+}
+
 export default async function ProgramDetailPage({ params }) {
   const { user, profile } = await getCurrentUserAndProfile();
 
@@ -22,6 +26,10 @@ export default async function ProgramDetailPage({ params }) {
   const program = getProgramBySlug(params.slug);
 
   if (!program) notFound();
+
+  const firstDetailedWeek = program.weeklyPlan.find(
+    (week) => Array.isArray(week.days) && week.days.some(isDetailedDay)
+  );
 
   return (
     <DashboardLayout
@@ -103,32 +111,29 @@ export default async function ProgramDetailPage({ params }) {
             <div style={stepCard}>
               <div style={stepNumber}>Step 1</div>
               <div style={stepText}>
-                Read the full overview first so you understand the goal, duration,
-                and weekly structure.
+                Read the overview first so you understand the goal, duration,
+                equipment needs, and weekly structure.
               </div>
             </div>
-
             <div style={stepCard}>
               <div style={stepNumber}>Step 2</div>
               <div style={stepText}>
-                Follow the weekly roadmap in order instead of mixing random weeks
-                or days together.
+                Follow the weekly roadmap in order instead of mixing random days
+                from different phases.
               </div>
             </div>
-
             <div style={stepCard}>
               <div style={stepNumber}>Step 3</div>
               <div style={stepText}>
-                Use the weekly schedule as your training structure and track
-                consistency before increasing intensity.
+                Use the detailed workouts below to see exactly what to do, how
+                much, and how to perform the session.
               </div>
             </div>
-
             <div style={stepCard}>
               <div style={stepNumber}>Step 4</div>
               <div style={stepText}>
-                Use the cardio and recovery guidance to support results without
-                burning yourself out.
+                Track consistency, reps, loads, recovery, and only increase effort
+                when execution stays clean.
               </div>
             </div>
           </div>
@@ -146,6 +151,95 @@ export default async function ProgramDetailPage({ params }) {
             ))}
           </div>
         </section>
+
+        {firstDetailedWeek && (
+          <section style={sectionCard}>
+            <div style={sectionEyebrow}>Detailed workout execution</div>
+            <h2 style={sectionTitle}>Step-by-step workout overview</h2>
+            <p style={bodyText}>
+              This section shows the fully detailed version of the workout week so
+              members know exactly what to do inside each session.
+            </p>
+
+            <div style={detailedDayGrid}>
+              {firstDetailedWeek.days.filter(isDetailedDay).map((day) => (
+                <div key={`${day.day}-${day.title}`} style={detailedDayCard}>
+                  <div style={detailedDayTop}>
+                    <div>
+                      <div style={dayLabel}>{day.day}</div>
+                      <div style={detailedDayTitle}>{day.title}</div>
+                    </div>
+                    <div style={focusBadge}>{day.focus}</div>
+                  </div>
+
+                  {day.gif ? (
+                    <img
+                      src={day.gif}
+                      alt={`${day.title} preview`}
+                      style={workoutGif}
+                    />
+                  ) : (
+                    <div style={workoutGifPlaceholder}>
+                      AI GIF for {day.title}
+                    </div>
+                  )}
+
+                  <p style={bodyText}>{day.description}</p>
+
+                  {Array.isArray(day.warmup) && day.warmup.length > 0 && (
+                    <div style={detailSection}>
+                      <div style={miniLabel}>Warm-up</div>
+                      <ul style={list}>
+                        {day.warmup.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {Array.isArray(day.steps) && day.steps.length > 0 && (
+                    <div style={detailSection}>
+                      <div style={miniLabel}>Exercises</div>
+                      <div style={exerciseGrid}>
+                        {day.steps.map((step) => (
+                          <div
+                            key={`${day.title}-${step.exercise}`}
+                            style={exerciseCard}
+                          >
+                            <div style={exerciseName}>{step.exercise}</div>
+                            <div style={exerciseMetaRow}>
+                              <span style={exerciseMetaPill}>
+                                Sets: {step.sets}
+                              </span>
+                              <span style={exerciseMetaPill}>
+                                Reps: {step.reps}
+                              </span>
+                              <span style={exerciseMetaPill}>
+                                Rest: {step.rest}
+                              </span>
+                            </div>
+                            <p style={exerciseNotes}>{step.notes}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {Array.isArray(day.finisher) && day.finisher.length > 0 && (
+                    <div style={detailSection}>
+                      <div style={miniLabel}>Finisher / Cooldown</div>
+                      <ul style={list}>
+                        {day.finisher.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section style={sectionCard}>
           <div style={sectionEyebrow}>Weekly roadmap</div>
@@ -165,9 +259,16 @@ export default async function ProgramDetailPage({ params }) {
 
                 <div style={miniLabel}>Weekly schedule</div>
                 <div style={daysGrid}>
-                  {weekBlock.days.map((day) => (
-                    <div key={day} style={dayCard}>
-                      {day}
+                  {weekBlock.days.map((day, index) => (
+                    <div
+                      key={
+                        typeof day === "string"
+                          ? day
+                          : `${weekBlock.week}-${day.day}-${index}`
+                      }
+                      style={dayCard}
+                    >
+                      {typeof day === "string" ? day : `${day.day} — ${day.title}`}
                     </div>
                   ))}
                 </div>
@@ -192,11 +293,11 @@ export default async function ProgramDetailPage({ params }) {
 
         <section style={ctaCard}>
           <div style={sectionEyebrow}>Next level upgrade</div>
-          <h2 style={sectionTitle}>Connect each day to your workout library</h2>
+          <h2 style={sectionTitle}>Make every workout day clickable</h2>
           <p style={bodyText}>
-            The strongest next step is linking every day inside the weekly schedule
-            to the exact workout page, video, or exercise library already inside
-            your platform.
+            The strongest next step is linking each detailed workout day to its own
+            dedicated execution page with exercise videos, form demos, and progress
+            tracking.
           </p>
         </section>
       </div>
@@ -273,7 +374,7 @@ const heroGif = {
   borderRadius: "22px",
   border: "1px solid rgba(255,255,255,0.08)",
   display: "block",
-  maxHeight: "440px",
+  maxHeight: "420px",
   objectFit: "cover",
 };
 
@@ -411,29 +512,29 @@ const pill = {
   fontSize: "14px",
 };
 
-const weeksGrid = {
+const detailedDayGrid = {
   display: "grid",
   gap: "18px",
   marginTop: "18px",
 };
 
-const weekCard = {
+const detailedDayCard = {
   background: "rgba(255,255,255,0.03)",
   border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "18px",
+  borderRadius: "20px",
   padding: "18px",
 };
 
-const weekHeader = {
+const detailedDayTop = {
   display: "flex",
   justifyContent: "space-between",
+  alignItems: "flex-start",
   gap: "12px",
-  alignItems: "center",
   flexWrap: "wrap",
-  marginBottom: "10px",
+  marginBottom: "14px",
 };
 
-const weekLabel = {
+const dayLabel = {
   fontSize: "12px",
   textTransform: "uppercase",
   letterSpacing: "0.12em",
@@ -441,30 +542,36 @@ const weekLabel = {
   marginBottom: "6px",
 };
 
-const weekTitle = {
-  fontSize: "22px",
+const detailedDayTitle = {
+  fontSize: "24px",
   fontWeight: "800",
 };
 
-const miniLabel = {
-  fontSize: "11px",
-  textTransform: "uppercase",
-  letterSpacing: "0.12em",
-  color: "rgba(255,255,255,0.45)",
-  marginTop: "14px",
-  marginBottom: "8px",
+const focusBadge = {
+  background: "rgba(255,255,255,0.08)",
+  borderRadius: "999px",
+  padding: "8px 12px",
+  fontWeight: "700",
+  fontSize: "13px",
 };
 
-const daysGrid = {
-  display: "grid",
-  gap: "10px",
+const workoutGif = {
+  width: "100%",
+  borderRadius: "18px",
+  border: "1px solid rgba(255,255,255,0.08)",
+  display: "block",
+  maxHeight: "340px",
+  objectFit: "cover",
+  marginBottom: "16px",
 };
 
-const dayCard = {
+const workoutGifPlaceholder = {
+  width: "100%",
+  minHeight: "180px",
+  borderRadius: "18px",
+  border: "1px dashed rgba(255,255,255,0.16)",
   background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "14px",
-  padding: "12px 14px",
-  color: "rgba(255,255,255,0.8)",
-  lineHeight: 1.6,
-};
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "rgba(255,255,255,
