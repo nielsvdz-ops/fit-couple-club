@@ -52,7 +52,7 @@ export default async function ProgramDetailPage({ params }) {
               />
             ) : (
               <div style={heroGifPlaceholder}>
-                Add an AI GIF or hero motion preview here for {program.title}
+                Add an AI GIF or motion preview here for {program.title}
               </div>
             )}
           </div>
@@ -126,64 +126,138 @@ export default async function ProgramDetailPage({ params }) {
                 <div style={miniLabel}>Workout days</div>
 
                 <div style={dayGrid}>
-                  {weekBlock.days.map((dayItem) => (
-                    <div
-                      key={`${weekBlock.week}-${typeof dayItem === "string" ? dayItem : `${dayItem.day}-${dayItem.title}`}`}
-                      style={dayCard}
-                    >
-                      {typeof dayItem === "string" ? (
-                        <div style={legacyDayText}>{dayItem}</div>
-                      ) : (
-                        <>
-                          <div style={dayTop}>
-                            <div>
-                              <div style={dayLabel}>{dayItem.day}</div>
-                              <div style={dayTitle}>{dayItem.title}</div>
-                            </div>
-                            {dayItem.focus ? (
-                              <div style={focusBadge}>{dayItem.focus}</div>
-                            ) : null}
-                          </div>
+                  {weekBlock.days.map((dayItem, index) => {
+                    const isString = typeof dayItem === "string";
 
-                          <div style={dayGifWrap}>
-                            {dayItem.gif ? (
-                              <img
-                                src={dayItem.gif}
-                                alt={`${dayItem.title} preview`}
-                                style={dayGif}
-                              />
-                            ) : (
-                              <div style={dayGifPlaceholder}>
-                                AI GIF for {dayItem.title}
+                    return (
+                      <div
+                        key={`${weekBlock.week}-${
+                          isString
+                            ? dayItem
+                            : `${dayItem.day}-${dayItem.title}-${index}`
+                        }`}
+                        style={dayCard}
+                      >
+                        {isString ? (
+                          <div style={legacyDayText}>{dayItem}</div>
+                        ) : (
+                          <>
+                            <div style={dayTop}>
+                              <div>
+                                <div style={dayLabel}>{dayItem.day}</div>
+                                <div style={dayTitle}>{dayItem.title}</div>
                               </div>
-                            )}
-                          </div>
 
-                          {dayItem.steps?.length ? (
-                            <div style={daySection}>
-                              <div style={miniLabel}>Step by step</div>
-                              <ol style={orderedList}>
-                                {dayItem.steps.map((step) => (
-                                  <li key={step}>{step}</li>
-                                ))}
-                              </ol>
+                              {dayItem.focus ? (
+                                <div style={focusBadge}>{dayItem.focus}</div>
+                              ) : null}
                             </div>
-                          ) : null}
 
-                          {dayItem.exercises?.length ? (
-                            <div style={daySection}>
-                              <div style={miniLabel}>Exercises</div>
-                              <ul style={list}>
-                                {dayItem.exercises.map((exercise) => (
-                                  <li key={exercise}>{exercise}</li>
-                                ))}
-                              </ul>
+                            {dayItem.description ? (
+                              <p style={dayDescription}>{dayItem.description}</p>
+                            ) : null}
+
+                            <div style={dayMediaWrap}>
+                              {dayItem.gif ? (
+                                <img
+                                  src={dayItem.gif}
+                                  alt={`${dayItem.title} preview`}
+                                  style={dayGif}
+                                />
+                              ) : (
+                                <div style={dayGifPlaceholder}>
+                                  AI GIF for {dayItem.title}
+                                </div>
+                              )}
                             </div>
-                          ) : null}
-                        </>
-                      )}
-                    </div>
-                  ))}
+
+                            {Array.isArray(dayItem.warmup) &&
+                            dayItem.warmup.length > 0 ? (
+                              <div style={daySection}>
+                                <div style={miniLabel}>Warm-up</div>
+                                <ul style={list}>
+                                  {dayItem.warmup.map((item) => (
+                                    <li key={item}>{item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ) : null}
+
+                            {Array.isArray(dayItem.steps) &&
+                            dayItem.steps.length > 0 ? (
+                              <div style={daySection}>
+                                <div style={miniLabel}>Exercises</div>
+                                <div style={exerciseGrid}>
+                                  {dayItem.steps.map((step, stepIndex) => {
+                                    const stepIsString =
+                                      typeof step === "string" ||
+                                      step === null ||
+                                      step === undefined;
+
+                                    return (
+                                      <div
+                                        key={`${dayItem.title}-${stepIndex}-${
+                                          stepIsString ? step : step.exercise
+                                        }`}
+                                        style={exerciseCard}
+                                      >
+                                        {stepIsString ? (
+                                          <div style={exerciseName}>{step}</div>
+                                        ) : (
+                                          <>
+                                            <div style={exerciseHeader}>
+                                              <div style={exerciseName}>
+                                                {step.exercise}
+                                              </div>
+                                              <div style={exerciseMetaRow}>
+                                                {step.sets ? (
+                                                  <span style={exerciseMetaPill}>
+                                                    {step.sets} sets
+                                                  </span>
+                                                ) : null}
+                                                {step.reps ? (
+                                                  <span style={exerciseMetaPill}>
+                                                    {step.reps}
+                                                  </span>
+                                                ) : null}
+                                                {step.rest ? (
+                                                  <span style={exerciseMetaPill}>
+                                                    Rest {step.rest}
+                                                  </span>
+                                                ) : null}
+                                              </div>
+                                            </div>
+
+                                            {step.notes ? (
+                                              <p style={exerciseNotes}>
+                                                {step.notes}
+                                              </p>
+                                            ) : null}
+                                          </>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ) : null}
+
+                            {Array.isArray(dayItem.finisher) &&
+                            dayItem.finisher.length > 0 ? (
+                              <div style={daySection}>
+                                <div style={miniLabel}>Finisher / cooldown</div>
+                                <ul style={list}>
+                                  {dayItem.finisher.map((item) => (
+                                    <li key={item}>{item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ) : null}
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -364,13 +438,6 @@ const list = {
   lineHeight: 1.85,
 };
 
-const orderedList = {
-  paddingLeft: "20px",
-  margin: 0,
-  color: "rgba(255,255,255,0.74)",
-  lineHeight: 1.85,
-};
-
 const pillGrid = {
   display: "flex",
   gap: "10px",
@@ -428,6 +495,7 @@ const miniLabel = {
   letterSpacing: "0.12em",
   color: "rgba(255,255,255,0.45)",
   marginBottom: "8px",
+  marginTop: "14px",
 };
 
 const dayGrid = {
@@ -479,7 +547,14 @@ const focusBadge = {
   fontSize: "13px",
 };
 
-const dayGifWrap = {
+const dayDescription = {
+  color: "rgba(255,255,255,0.72)",
+  lineHeight: 1.7,
+  marginTop: 0,
+  marginBottom: "14px",
+};
+
+const dayMediaWrap = {
   marginBottom: "14px",
 };
 
@@ -509,4 +584,52 @@ const dayGifPlaceholder = {
 
 const daySection = {
   marginTop: "12px",
+};
+
+const exerciseGrid = {
+  display: "grid",
+  gap: "10px",
+};
+
+const exerciseCard = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "14px",
+  padding: "12px 14px",
+};
+
+const exerciseHeader = {
+  display: "grid",
+  gap: "8px",
+};
+
+const exerciseName = {
+  fontSize: "16px",
+  fontWeight: "800",
+  color: "white",
+  lineHeight: 1.35,
+};
+
+const exerciseMetaRow = {
+  display: "flex",
+  gap: "8px",
+  flexWrap: "wrap",
+};
+
+const exerciseMetaPill = {
+  width: "fit-content",
+  padding: "4px 10px",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  color: "rgba(255,255,255,0.82)",
+  fontSize: "12px",
+  fontWeight: "700",
+};
+
+const exerciseNotes = {
+  color: "rgba(255,255,255,0.68)",
+  lineHeight: 1.65,
+  marginTop: "8px",
+  marginBottom: 0,
 };
