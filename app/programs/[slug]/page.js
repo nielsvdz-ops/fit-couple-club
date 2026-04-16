@@ -1,3 +1,4 @@
+import WorkoutGif from "../../../components/WorkoutGif";
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
@@ -44,18 +45,14 @@ export default async function ProgramDetailPage({ params }) {
           <p style={heroText}>{program.heroSummary}</p>
 
           <div style={heroMediaWrap}>
-            {program.heroGif ? (
-              <img
-                src={program.heroGif}
-                alt={`${program.title} preview`}
-                style={heroGif}
-              />
-            ) : (
-              <div style={heroGifPlaceholder}>
-                Add an AI GIF or motion preview here for {program.title}
-              </div>
-            )}
-          </div>
+  <WorkoutGif
+    src={program.heroGif}
+    alt={`${program.title} preview`}
+    style={heroGif}
+    placeholderStyle={heroGifPlaceholder}
+    placeholderText={`AI GIF preview for ${program.title}`}
+  />
+</div>
 
           <div style={metaGrid}>
             <div style={metaCard}>
@@ -158,18 +155,18 @@ export default async function ProgramDetailPage({ params }) {
                             ) : null}
 
                             <div style={dayMediaWrap}>
-                              {dayItem.gif ? (
-                                <img
-                                  src={dayItem.gif}
-                                  alt={`${dayItem.title} preview`}
-                                  style={dayGif}
-                                />
-                              ) : (
-                                <div style={dayGifPlaceholder}>
-                                  AI GIF for {dayItem.title}
-                                </div>
-                              )}
-                            </div>
+  {dayItem.gif ? (
+    <img
+      src={dayItem.gif}
+      alt={`${dayItem.title} preview`}
+      style={dayGif}
+    />
+  ) : (
+    <div style={dayGifPlaceholder}>
+      AI GIF for {dayItem.title}
+    </div>
+  )}
+</div>
 
                             {Array.isArray(dayItem.warmup) &&
                             dayItem.warmup.length > 0 ? (
