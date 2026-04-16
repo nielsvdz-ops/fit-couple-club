@@ -6,12 +6,44 @@ import DashboardLayout from "../../../components/DashboardLayout";
 import { getCurrentUserAndProfile } from "../../../lib/getProfile";
 import { canAccessPremiumPages } from "../../../lib/access";
 import { getProgramBySlug, programs } from "../../../lib/programsData";
-import WorkoutGif from "../../../components/WorkoutGif";
+import { getExerciseMedia } from "../../../lib/exerciseMedia";
 
 export async function generateStaticParams() {
   return programs.map((program) => ({
     slug: program.slug,
   }));
+}
+
+function isVideoFile(src) {
+  if (!src) return false;
+  return (
+    src.toLowerCase().endsWith(".mp4") ||
+    src.toLowerCase().endsWith(".webm") ||
+    src.toLowerCase().endsWith(".ogg")
+  );
+}
+
+function ExerciseMedia({ src, alt, placeholderText }) {
+  if (!src) {
+    return <div style={exerciseMediaPlaceholder}>{placeholderText}</div>;
+  }
+
+  if (isVideoFile(src)) {
+    return (
+      <video
+        src={src}
+        aria-label={alt}
+        style={exerciseMedia}
+        autoPlay
+        loop
+        muted
+        playsInline
+        controls={false}
+      />
+    );
+  }
+
+  return <img src={src} alt={alt} style={exerciseMedia} />;
 }
 
 export default async function ProgramDetailPage({ params }) {
@@ -45,13 +77,30 @@ export default async function ProgramDetailPage({ params }) {
           <p style={heroText}>{program.heroSummary}</p>
 
           <div style={heroMediaWrap}>
-            <WorkoutGif
-              src={program.heroGif}
-              alt={`${program.title} preview`}
-              style={heroGif}
-              placeholderStyle={heroGifPlaceholder}
-              placeholderText={`AI GIF preview for ${program.title}`}
-            />
+            {program.heroGif ? (
+              isVideoFile(program.heroGif) ? (
+                <video
+                  src={program.heroGif}
+                  aria-label={`${program.title} preview`}
+                  style={heroGif}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  controls={false}
+                />
+              ) : (
+                <img
+                  src={program.heroGif}
+                  alt={`${program.title} preview`}
+                  style={heroGif}
+                />
+              )
+            ) : (
+              <div style={heroGifPlaceholder}>
+                Add a hero media preview for {program.title}
+              </div>
+            )}
           </div>
 
           <div style={metaGrid}>
@@ -177,60 +226,63 @@ export default async function ProgramDetailPage({ params }) {
                                       step === null ||
                                       step === undefined;
 
+                                    if (stepIsString) {
+                                      return (
+                                        <div
+                                          key={`${dayItem.title}-${stepIndex}`}
+                                          style={exerciseCard}
+                                        >
+                                          <div style={exerciseName}>{step}</div>
+                                        </div>
+                                      );
+                                    }
+
+                                    const mediaSrc = getExerciseMedia(
+                                      step.exercise
+                                    );
+
                                     return (
                                       <div
-                                        key={`${dayItem.title}-${stepIndex}-${
-                                          stepIsString ? step : step.exercise
-                                        }`}
+                                        key={`${dayItem.title}-${stepIndex}-${step.exercise}`}
                                         style={exerciseCard}
                                       >
-                                        {stepIsString ? (
-                                          <div style={exerciseName}>{step}</div>
-                                        ) : (
-                                          <>
-                                            <div style={exerciseHeader}>
-                                              <div style={exerciseName}>
-                                                {step.exercise}
-                                              </div>
+                                        <div style={exerciseHeader}>
+                                          <div style={exerciseName}>
+                                            {step.exercise}
+                                          </div>
 
-                                              <div style={exerciseMetaRow}>
-                                                {step.sets ? (
-                                                  <span style={exerciseMetaPill}>
-                                                    {step.sets} sets
-                                                  </span>
-                                                ) : null}
-                                                {step.reps ? (
-                                                  <span style={exerciseMetaPill}>
-                                                    {step.reps}
-                                                  </span>
-                                                ) : null}
-                                                {step.rest ? (
-                                                  <span style={exerciseMetaPill}>
-                                                    Rest {step.rest}
-                                                  </span>
-                                                ) : null}
-                                              </div>
-                                            </div>
-
-                                            <div style={exerciseGifWrap}>
-                                              <WorkoutGif
-                                                src={step.gif}
-                                                alt={`${step.exercise} demo`}
-                                                style={exerciseGif}
-                                                placeholderStyle={
-                                                  exerciseGifPlaceholder
-                                                }
-                                                placeholderText={`GIF for ${step.exercise}`}
-                                              />
-                                            </div>
-
-                                            {step.notes ? (
-                                              <p style={exerciseNotes}>
-                                                {step.notes}
-                                              </p>
+                                          <div style={exerciseMetaRow}>
+                                            {step.sets ? (
+                                              <span style={exerciseMetaPill}>
+                                                {step.sets} sets
+                                              </span>
                                             ) : null}
-                                          </>
-                                        )}
+                                            {step.reps ? (
+                                              <span style={exerciseMetaPill}>
+                                                {step.reps}
+                                              </span>
+                                            ) : null}
+                                            {step.rest ? (
+                                              <span style={exerciseMetaPill}>
+                                                Rest {step.rest}
+                                              </span>
+                                            ) : null}
+                                          </div>
+                                        </div>
+
+                                        <div style={exerciseMediaWrap}>
+                                          <ExerciseMedia
+                                            src={mediaSrc}
+                                            alt={`${step.exercise} demo`}
+                                            placeholderText={`No demo yet for ${step.exercise}`}
+                                          />
+                                        </div>
+
+                                        {step.notes ? (
+                                          <p style={exerciseNotes}>
+                                            {step.notes}
+                                          </p>
+                                        ) : null}
                                       </div>
                                     );
                                   })}
@@ -595,21 +647,22 @@ const exerciseMetaPill = {
   fontWeight: "700",
 };
 
-const exerciseGifWrap = {
+const exerciseMediaWrap = {
   marginTop: "10px",
   marginBottom: "10px",
 };
 
-const exerciseGif = {
+const exerciseMedia = {
   width: "100%",
   maxHeight: "220px",
   objectFit: "cover",
   borderRadius: "14px",
   border: "1px solid rgba(255,255,255,0.08)",
   display: "block",
+  background: "rgba(255,255,255,0.02)",
 };
 
-const exerciseGifPlaceholder = {
+const exerciseMediaPlaceholder = {
   width: "100%",
   minHeight: "140px",
   borderRadius: "14px",
