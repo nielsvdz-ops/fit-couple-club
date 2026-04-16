@@ -1,4 +1,3 @@
-import WorkoutGif from "../../../components/WorkoutGif";
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
@@ -7,6 +6,7 @@ import DashboardLayout from "../../../components/DashboardLayout";
 import { getCurrentUserAndProfile } from "../../../lib/getProfile";
 import { canAccessPremiumPages } from "../../../lib/access";
 import { getProgramBySlug, programs } from "../../../lib/programsData";
+import WorkoutGif from "../../../components/WorkoutGif";
 
 export async function generateStaticParams() {
   return programs.map((program) => ({
@@ -45,14 +45,14 @@ export default async function ProgramDetailPage({ params }) {
           <p style={heroText}>{program.heroSummary}</p>
 
           <div style={heroMediaWrap}>
-  <WorkoutGif
-    src={program.heroGif}
-    alt={`${program.title} preview`}
-    style={heroGif}
-    placeholderStyle={heroGifPlaceholder}
-    placeholderText={`AI GIF preview for ${program.title}`}
-  />
-</div>
+            <WorkoutGif
+              src={program.heroGif}
+              alt={`${program.title} preview`}
+              style={heroGif}
+              placeholderStyle={heroGifPlaceholder}
+              placeholderText={`AI GIF preview for ${program.title}`}
+            />
+          </div>
 
           <div style={metaGrid}>
             <div style={metaCard}>
@@ -154,16 +154,6 @@ export default async function ProgramDetailPage({ params }) {
                               <p style={dayDescription}>{dayItem.description}</p>
                             ) : null}
 
-                            <div style={dayMediaWrap}>
-  <WorkoutGif
-    src={dayItem.gif}
-    alt={`${dayItem.title} preview`}
-    style={dayGif}
-    placeholderStyle={dayGifPlaceholder}
-    placeholderText={`AI GIF for ${dayItem.title}`}
-  />
-</div>
-
                             {Array.isArray(dayItem.warmup) &&
                             dayItem.warmup.length > 0 ? (
                               <div style={daySection}>
@@ -202,6 +192,7 @@ export default async function ProgramDetailPage({ params }) {
                                               <div style={exerciseName}>
                                                 {step.exercise}
                                               </div>
+
                                               <div style={exerciseMetaRow}>
                                                 {step.sets ? (
                                                   <span style={exerciseMetaPill}>
@@ -219,6 +210,18 @@ export default async function ProgramDetailPage({ params }) {
                                                   </span>
                                                 ) : null}
                                               </div>
+                                            </div>
+
+                                            <div style={exerciseGifWrap}>
+                                              <WorkoutGif
+                                                src={step.gif}
+                                                alt={`${step.exercise} demo`}
+                                                style={exerciseGif}
+                                                placeholderStyle={
+                                                  exerciseGifPlaceholder
+                                                }
+                                                placeholderText={`GIF for ${step.exercise}`}
+                                              />
                                             </div>
 
                                             {step.notes ? (
@@ -547,34 +550,6 @@ const dayDescription = {
   marginBottom: "14px",
 };
 
-const dayMediaWrap = {
-  marginBottom: "14px",
-};
-
-const dayGif = {
-  width: "100%",
-  maxHeight: "280px",
-  objectFit: "cover",
-  borderRadius: "16px",
-  border: "1px solid rgba(255,255,255,0.08)",
-  display: "block",
-};
-
-const dayGifPlaceholder = {
-  width: "100%",
-  minHeight: "180px",
-  borderRadius: "16px",
-  border: "1px dashed rgba(255,255,255,0.16)",
-  background: "rgba(255,255,255,0.03)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "rgba(255,255,255,0.58)",
-  fontWeight: "700",
-  textAlign: "center",
-  padding: "18px",
-};
-
 const daySection = {
   marginTop: "12px",
 };
@@ -618,6 +593,35 @@ const exerciseMetaPill = {
   color: "rgba(255,255,255,0.82)",
   fontSize: "12px",
   fontWeight: "700",
+};
+
+const exerciseGifWrap = {
+  marginTop: "10px",
+  marginBottom: "10px",
+};
+
+const exerciseGif = {
+  width: "100%",
+  maxHeight: "220px",
+  objectFit: "cover",
+  borderRadius: "14px",
+  border: "1px solid rgba(255,255,255,0.08)",
+  display: "block",
+};
+
+const exerciseGifPlaceholder = {
+  width: "100%",
+  minHeight: "140px",
+  borderRadius: "14px",
+  border: "1px dashed rgba(255,255,255,0.16)",
+  background: "rgba(255,255,255,0.03)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "rgba(255,255,255,0.58)",
+  fontWeight: "700",
+  textAlign: "center",
+  padding: "16px",
 };
 
 const exerciseNotes = {
