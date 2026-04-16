@@ -155,17 +155,13 @@ export default async function ProgramDetailPage({ params }) {
                             ) : null}
 
                             <div style={dayMediaWrap}>
-  {dayItem.gif ? (
-    <img
-      src={dayItem.gif}
-      alt={`${dayItem.title} preview`}
-      style={dayGif}
-    />
-  ) : (
-    <div style={dayGifPlaceholder}>
-      AI GIF for {dayItem.title}
-    </div>
-  )}
+  <WorkoutGif
+    src={dayItem.gif}
+    alt={`${dayItem.title} preview`}
+    style={dayGif}
+    placeholderStyle={dayGifPlaceholder}
+    placeholderText={`AI GIF for ${dayItem.title}`}
+  />
 </div>
 
                             {Array.isArray(dayItem.warmup) &&
