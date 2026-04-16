@@ -703,5 +703,4 @@ const exerciseNotes = {
   marginBottom: 0,
 };
 
-@media (max-width: 700px) {
-}
+
