@@ -246,43 +246,47 @@ export default async function ProgramDetailPage({ params }) {
                                         key={`${dayItem.title}-${stepIndex}-${step.exercise}`}
                                         style={exerciseCard}
                                       >
-                                        <div style={exerciseHeader}>
-                                          <div style={exerciseName}>
-                                            {step.exercise}
+                                        <div style={exerciseContent}>
+                                          <div style={exerciseTextCol}>
+                                            <div style={exerciseHeader}>
+                                              <div style={exerciseName}>
+                                                {step.exercise}
+                                              </div>
+
+                                              <div style={exerciseMetaRow}>
+                                                {step.sets ? (
+                                                  <span style={exerciseMetaPill}>
+                                                    {step.sets} sets
+                                                  </span>
+                                                ) : null}
+                                                {step.reps ? (
+                                                  <span style={exerciseMetaPill}>
+                                                    {step.reps}
+                                                  </span>
+                                                ) : null}
+                                                {step.rest ? (
+                                                  <span style={exerciseMetaPill}>
+                                                    Rest {step.rest}
+                                                  </span>
+                                                ) : null}
+                                              </div>
+                                            </div>
+
+                                            {step.notes ? (
+                                              <p style={exerciseNotes}>
+                                                {step.notes}
+                                              </p>
+                                            ) : null}
                                           </div>
 
-                                          <div style={exerciseMetaRow}>
-                                            {step.sets ? (
-                                              <span style={exerciseMetaPill}>
-                                                {step.sets} sets
-                                              </span>
-                                            ) : null}
-                                            {step.reps ? (
-                                              <span style={exerciseMetaPill}>
-                                                {step.reps}
-                                              </span>
-                                            ) : null}
-                                            {step.rest ? (
-                                              <span style={exerciseMetaPill}>
-                                                Rest {step.rest}
-                                              </span>
-                                            ) : null}
+                                          <div style={exerciseMediaCol}>
+                                            <ExerciseMedia
+                                              src={mediaSrc}
+                                              alt={`${step.exercise} demo`}
+                                              placeholderText={`No demo yet for ${step.exercise}`}
+                                            />
                                           </div>
                                         </div>
-
-                                        <div style={exerciseMediaWrap}>
-                                          <ExerciseMedia
-                                            src={mediaSrc}
-                                            alt={`${step.exercise} demo`}
-                                            placeholderText={`No demo yet for ${step.exercise}`}
-                                          />
-                                        </div>
-
-                                        {step.notes ? (
-                                          <p style={exerciseNotes}>
-                                            {step.notes}
-                                          </p>
-                                        ) : null}
                                       </div>
                                     );
                                   })}
@@ -618,6 +622,21 @@ const exerciseCard = {
   padding: "12px 14px",
 };
 
+const exerciseContent = {
+  display: "grid",
+  gridTemplateColumns: "minmax(0,1fr) 140px",
+  gap: "14px",
+  alignItems: "start",
+};
+
+const exerciseTextCol = {
+  minWidth: 0,
+};
+
+const exerciseMediaCol = {
+  width: "140px",
+};
+
 const exerciseHeader = {
   display: "grid",
   gap: "8px",
@@ -648,14 +667,13 @@ const exerciseMetaPill = {
 };
 
 const exerciseMediaWrap = {
-  marginTop: "10px",
-  marginBottom: "10px",
+  width: "100%",
 };
 
 const exerciseMedia = {
-  width: "100%",
-  maxHeight: "220px",
-  objectFit: "cover",
+  width: "140px",
+  height: "180px",
+  objectFit: "contain",
   borderRadius: "14px",
   border: "1px solid rgba(255,255,255,0.08)",
   display: "block",
@@ -663,8 +681,8 @@ const exerciseMedia = {
 };
 
 const exerciseMediaPlaceholder = {
-  width: "100%",
-  minHeight: "140px",
+  width: "140px",
+  height: "180px",
   borderRadius: "14px",
   border: "1px dashed rgba(255,255,255,0.16)",
   background: "rgba(255,255,255,0.03)",
@@ -674,12 +692,16 @@ const exerciseMediaPlaceholder = {
   color: "rgba(255,255,255,0.58)",
   fontWeight: "700",
   textAlign: "center",
-  padding: "16px",
+  padding: "12px",
+  fontSize: "12px",
 };
 
 const exerciseNotes = {
   color: "rgba(255,255,255,0.68)",
   lineHeight: 1.65,
-  marginTop: "8px",
+  marginTop: "10px",
   marginBottom: 0,
 };
+
+@media (max-width: 700px) {
+}
