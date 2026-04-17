@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-
+import VipClient from "../../components/VipClient";
 import { redirect } from "next/navigation";
 import DashboardLayout from "../../components/DashboardLayout";
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
