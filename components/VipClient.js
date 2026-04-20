@@ -25,50 +25,57 @@ export default function VipClient() {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
-    if (!error) {
-      setRequests(data || []);
+    if (error) {
+      console.error("LOAD REQUESTS ERROR:", error);
+      return;
     }
+
+    setRequests(data || []);
   }
 
   async function requestCall() {
-    setSubmitting(true);
-    setMessage("Requesting...");
+    try {
+      setSubmitting(true);
+      setMessage("Requesting...");
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    if (!user) {
+      if (!user) {
+        setMessage("Login required");
+        return;
+      }
+
+      const response = await fetch("/api/vip-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          preferredDate: date || null,
+          notes: notes || "",
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setMessage(result.error || "Failed to send request");
+        return;
+      }
+
+      setMessage("Call request sent ✅");
+      setDate("");
+      setNotes("");
+      await loadRequests();
+    } catch (error) {
+      console.error("REQUEST CALL ERROR:", error);
+      setMessage("Something went wrong");
+    } finally {
       setSubmitting(false);
-      setMessage("Login required");
-      return;
     }
-
-    const response = await fetch("/api/vip-request", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: user.id,
-        preferredDate: date || null,
-        notes: notes || "",
-      }),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      setSubmitting(false);
-      setMessage(result.error || "Failed to send request");
-      return;
-    }
-
-    setMessage("Call request sent ✅");
-    setDate("");
-    setNotes("");
-    await loadRequests();
-    setSubmitting(false);
   }
 
   useEffect(() => {
