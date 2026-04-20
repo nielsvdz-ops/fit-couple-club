@@ -10,6 +10,7 @@ export default function VipClient() {
   const [date, setDate] = useState("");
   const [notes, setNotes] = useState("");
   const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   async function loadRequests() {
     const {
@@ -18,16 +19,19 @@ export default function VipClient() {
 
     if (!user) return;
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("vip_requests")
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
-    setRequests(data || []);
+    if (!error) {
+      setRequests(data || []);
+    }
   }
 
   async function requestCall() {
+    setSubmitting(true);
     setMessage("Requesting...");
 
     const {
@@ -35,24 +39,36 @@ export default function VipClient() {
     } = await supabase.auth.getUser();
 
     if (!user) {
+      setSubmitting(false);
       setMessage("Login required");
       return;
     }
 
-    const { error } = await supabase.from("vip_requests").insert({
-      user_id: user.id,
-      preferred_date: date || null,
-      notes,
+    const response = await fetch("/api/vip-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user.id,
+        preferredDate: date || null,
+        notes: notes || "",
+      }),
     });
 
-    if (error) {
-      setMessage(error.message);
-    } else {
-      setMessage("Call request sent ✅");
-      setDate("");
-      setNotes("");
-      loadRequests();
+    const result = await response.json();
+
+    if (!response.ok) {
+      setSubmitting(false);
+      setMessage(result.error || "Failed to send request");
+      return;
     }
+
+    setMessage("Call request sent ✅");
+    setDate("");
+    setNotes("");
+    await loadRequests();
+    setSubmitting(false);
   }
 
   useEffect(() => {
@@ -61,7 +77,6 @@ export default function VipClient() {
 
   return (
     <div style={{ display: "grid", gap: "22px" }}>
-      {/* REQUEST */}
       <section style={card}>
         <div style={eyebrow}>VIP Benefit</div>
         <h2 style={title}>Request your monthly call</h2>
@@ -84,15 +99,18 @@ export default function VipClient() {
             style={textarea}
           />
 
-          <button onClick={requestCall} style={button}>
-            Request Call
+          <button
+            onClick={requestCall}
+            style={button}
+            disabled={submitting}
+          >
+            {submitting ? "Requesting..." : "Request Call"}
           </button>
 
           {message && <div style={info}>{message}</div>}
         </div>
       </section>
 
-      {/* HISTORY */}
       <section style={card}>
         <div style={cardTitle}>Your requests</div>
 
@@ -113,7 +131,6 @@ export default function VipClient() {
         )}
       </section>
 
-      {/* VALUE BLOCK */}
       <section style={grid}>
         <div style={card}>
           <div style={cardTitle}>Monthly Evaluation</div>
@@ -140,7 +157,6 @@ export default function VipClient() {
   );
 }
 
-/* styles */
 const card = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
@@ -161,11 +177,25 @@ const eyebrow = {
   color: "rgba(255,255,255,0.45)",
 };
 
-const title = { fontSize: "28px", fontWeight: "800", marginTop: "6px" };
-const cardTitle = { fontSize: "22px", fontWeight: "800" };
+const title = {
+  fontSize: "28px",
+  fontWeight: "800",
+  marginTop: "6px",
+};
 
-const text = { color: "rgba(255,255,255,0.7)", lineHeight: 1.7 };
-const textSmall = { color: "rgba(255,255,255,0.6)" };
+const cardTitle = {
+  fontSize: "22px",
+  fontWeight: "800",
+};
+
+const text = {
+  color: "rgba(255,255,255,0.7)",
+  lineHeight: 1.7,
+};
+
+const textSmall = {
+  color: "rgba(255,255,255,0.6)",
+};
 
 const input = {
   padding: "12px",
@@ -191,9 +221,12 @@ const button = {
   color: "black",
   fontWeight: "800",
   cursor: "pointer",
+  border: "none",
 };
 
-const info = { color: "rgba(255,255,255,0.7)" };
+const info = {
+  color: "rgba(255,255,255,0.7)",
+};
 
 const requestCard = {
   padding: "12px",
@@ -208,5 +241,10 @@ const status = (s) => ({
       ? "#facc15"
       : s === "approved"
       ? "#22c55e"
+      : s === "scheduled"
+      ? "#60a5fa"
+      : s === "completed"
+      ? "#c084fc"
       : "rgba(255,255,255,0.6)",
+  textTransform: "capitalize",
 });
