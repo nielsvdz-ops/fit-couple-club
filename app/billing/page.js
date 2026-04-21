@@ -11,11 +11,17 @@ export default async function BillingPage() {
   if (!user) redirect("/login");
   if (!canAccessStarterPages(profile)) redirect("/pricing");
 
-  // 🔥 scarcity logic (fake for now, later connect to DB)
-  const takenSpots = 2;
-  const maxSpots = 10;
-  const spotsLeft = maxSpots - takenSpots;
-  const percentage = (takenSpots / maxSpots) * 100;
+  // 🔥 VIP scarcity
+  const vipTaken = 14;
+  const vipMax = 99;
+  const vipLeft = vipMax - vipTaken;
+  const vipPercentage = (vipTaken / vipMax) * 100;
+
+  // 🔥 Coaching scarcity
+  const coachingTaken = 2;
+  const coachingMax = 10;
+  const coachingLeft = coachingMax - coachingTaken;
+  const coachingPercentage = (coachingTaken / coachingMax) * 100;
 
   return (
     <DashboardLayout
@@ -72,6 +78,22 @@ export default async function BillingPage() {
               ✔ Custom Adjustments<br/><br/>
               Coaching with guidance.
             </div>
+
+            {/* 🔥 VIP SCARCITY */}
+            <div style={scarcityBox}>
+              <div style={scarcityText}>
+                {vipTaken}/{vipMax} members — {vipLeft} spots left
+              </div>
+
+              <div style={progressBar}>
+                <div
+                  style={{
+                    ...progressFillBlue,
+                    width: `${vipPercentage}%`,
+                  }}
+                />
+              </div>
+            </div>
           </div>
 
           {/* COACHING */}
@@ -86,17 +108,17 @@ export default async function BillingPage() {
               Highest level transformation.
             </div>
 
-            {/* 🔥 SCARCITY */}
+            {/* 🔥 COACHING SCARCITY */}
             <div style={scarcityBox}>
               <div style={scarcityText}>
-                {takenSpots}/{maxSpots} spots taken — {spotsLeft} left
+                {coachingTaken}/{coachingMax} spots taken — {coachingLeft} left
               </div>
 
               <div style={progressBar}>
                 <div
                   style={{
-                    ...progressFill,
-                    width: `${percentage}%`,
+                    ...progressFillYellow,
+                    width: `${coachingPercentage}%`,
                   }}
                 />
               </div>
@@ -155,8 +177,8 @@ const card = {
 };
 
 const vipCard = {
-  background: "rgba(255,255,255,0.07)",
-  border: "1px solid rgba(255,255,255,0.14)",
+  background: "rgba(96,165,250,0.08)",
+  border: "1px solid rgba(96,165,250,0.25)",
   borderRadius: "20px",
   padding: "20px",
 };
@@ -191,9 +213,14 @@ const progressBar = {
   overflow: "hidden",
 };
 
-const progressFill = {
+const progressFillYellow = {
   height: "100%",
   background: "#facc15",
+};
+
+const progressFillBlue = {
+  height: "100%",
+  background: "#60a5fa",
 };
 
 const applyButton = {
