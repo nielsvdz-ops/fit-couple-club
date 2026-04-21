@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import DashboardLayout from "../../components/DashboardLayout";
+import CheckoutButton from "../../components/CheckoutButton";
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
 import { canAccessStarterPages } from "../../lib/access";
 
@@ -11,15 +12,17 @@ export default async function BillingPage() {
   if (!user) redirect("/login");
   if (!canAccessStarterPages(profile)) redirect("/pricing");
 
-  // 🔥 VIP scarcity
+  const userEmail = user?.email || "";
+
+  // VIP scarcity
   const vipTaken = 14;
   const vipMax = 99;
   const vipLeft = vipMax - vipTaken;
   const vipPercentage = (vipTaken / vipMax) * 100;
 
-  // 🔥 Coaching scarcity
+  // Coaching scarcity
   const coachingTaken = 2;
-  const coachingMax = 10;
+  const coachingMax = 15;
   const coachingLeft = coachingMax - coachingTaken;
   const coachingPercentage = (coachingTaken / coachingMax) * 100;
 
@@ -30,58 +33,80 @@ export default async function BillingPage() {
       membershipType={profile?.membership_type}
     >
       <div style={{ display: "grid", gap: "22px", maxWidth: "1000px" }}>
-        
-        {/* CURRENT PLAN */}
         <section style={statusCard}>
           <div>
             <div style={eyebrow}>Current Membership</div>
-            <h2 style={title}>{profile?.membership_type}</h2>
+            <h2 style={title}>{profile?.membership_type || "Starter"}</h2>
             <p style={text}>Status: Active</p>
           </div>
         </section>
 
-        {/* PLANS */}
         <section style={grid}>
-          
-          {/* STARTER */}
           <div style={card}>
             <div style={cardTitle}>Starter — €19.99</div>
             <div style={text}>
-              ✔ Dashboard<br/>
-              ✔ Plan Builder<br/>
-              ✔ Workouts<br/>
-              ✔ Nutrition & Recipes<br/><br/>
+              ✔ Dashboard
+              <br />
+              ✔ Plan Builder
+              <br />
+              ✔ Workouts
+              <br />
+              ✔ Nutrition & Recipes
+              <br />
+              <br />
               Perfect to get started with structure.
             </div>
+
+            <CheckoutButton
+              plan="starter"
+              label="Choose Starter"
+              email={userEmail}
+              variant="green"
+            />
           </div>
 
-          {/* PREMIUM */}
           <div style={card}>
             <div style={cardTitle}>Premium — €39.99</div>
             <div style={text}>
-              ✔ Everything in Starter<br/>
-              ✔ Programs & Rotations<br/>
-              ✔ Couple Zone<br/>
-              ✔ Progress Tracking<br/>
-              ✔ Saved Plans<br/><br/>
+              ✔ Everything in Starter
+              <br />
+              ✔ Programs & Rotations
+              <br />
+              ✔ Couple Zone
+              <br />
+              ✔ Progress Tracking
+              <br />
+              ✔ Saved Plans
+              <br />
+              <br />
               Built for serious transformation.
             </div>
+
+            <CheckoutButton
+              plan="premium"
+              label="Upgrade to Premium"
+              email={userEmail}
+              variant="green"
+            />
           </div>
 
-          {/* VIP */}
           <div style={vipCard}>
             <div style={cardTitle}>VIP — €99</div>
             <div style={text}>
-              ✔ Everything in Premium<br/>
-              ✔ 1 Monthly Video Call<br/>
-              ✔ Priority Support<br/>
-              ✔ Custom Adjustments<br/><br/>
+              ✔ Everything in Premium
+              <br />
+              ✔ 1 Monthly Video Call
+              <br />
+              ✔ Priority Support
+              <br />
+              ✔ Custom Adjustments
+              <br />
+              <br />
               Coaching with guidance.
             </div>
 
-            {/* 🔥 VIP SCARCITY */}
             <div style={scarcityBox}>
-              <div style={scarcityText}>
+              <div style={vipScarcityText}>
                 {vipTaken}/{vipMax} members — {vipLeft} spots left
               </div>
 
@@ -94,21 +119,33 @@ export default async function BillingPage() {
                 />
               </div>
             </div>
+
+            <CheckoutButton
+              plan="vip"
+              label="Go VIP"
+              email={userEmail}
+              variant="blue"
+            />
           </div>
 
-          {/* COACHING */}
           <div style={coachingCard}>
             <div style={cardTitle}>Coaching — €349</div>
 
             <div style={text}>
-              ✔ Everything in VIP<br/>
-              ✔ Weekly 1-on-1 Calls<br/>
-              ✔ Fully Custom Plan<br/>
-              ✔ Direct Support Access<br/><br/>
-              Highest level transformation.
+              ✔ Everything in VIP
+              <br />
+              ✔ Weekly 1-on-1 Calls
+              <br />
+              ✔ Fully Custom Plan
+              <br />
+              ✔ Direct Support Access
+              <br />
+              ✔ Coaching by Niels & Rosanna
+              <br />
+              <br />
+              Highest level transformation with direct guidance.
             </div>
 
-            {/* 🔥 COACHING SCARCITY */}
             <div style={scarcityBox}>
               <div style={scarcityText}>
                 {coachingTaken}/{coachingMax} spots taken — {coachingLeft} left
@@ -124,18 +161,18 @@ export default async function BillingPage() {
               </div>
             </div>
 
-            <button style={applyButton}>
-              Apply for Coaching
-            </button>
+            <CheckoutButton
+              plan="coaching"
+              label="Start Coaching"
+              email={userEmail}
+              variant="yellow"
+            />
           </div>
-
         </section>
       </div>
     </DashboardLayout>
   );
 }
-
-/* STYLES */
 
 const statusCard = {
   background: "rgba(255,255,255,0.04)",
@@ -184,7 +221,8 @@ const vipCard = {
 };
 
 const coachingCard = {
-  background: "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))",
+  background:
+    "linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))",
   border: "1px solid rgba(255,255,255,0.2)",
   borderRadius: "20px",
   padding: "20px",
@@ -206,6 +244,12 @@ const scarcityText = {
   color: "#facc15",
 };
 
+const vipScarcityText = {
+  fontSize: "13px",
+  marginBottom: "6px",
+  color: "#60a5fa",
+};
+
 const progressBar = {
   height: "6px",
   background: "rgba(255,255,255,0.1)",
@@ -221,15 +265,4 @@ const progressFillYellow = {
 const progressFillBlue = {
   height: "100%",
   background: "#60a5fa",
-};
-
-const applyButton = {
-  marginTop: "16px",
-  padding: "12px",
-  borderRadius: "10px",
-  background: "#facc15",
-  color: "black",
-  fontWeight: "800",
-  border: "none",
-  cursor: "pointer",
 };
