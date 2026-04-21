@@ -25,57 +25,69 @@ export default function VipClient() {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("LOAD REQUESTS ERROR:", error);
-      return;
+    if (!error) {
+      setRequests(data || []);
     }
-
-    setRequests(data || []);
   }
 
   async function requestCall() {
-    try {
-      setSubmitting(true);
-      setMessage("Requesting...");
+    setSubmitting(true);
+    setMessage("Requesting...");
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-      if (!user) {
-        setMessage("Login required");
-        return;
-      }
-
-      const response = await fetch("/api/vip-request", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          preferredDate: date || null,
-          notes: notes || "",
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        setMessage(result.error || "Failed to send request");
-        return;
-      }
-
-      setMessage("Call request sent ✅");
-      setDate("");
-      setNotes("");
-      await loadRequests();
-    } catch (error) {
-      console.error("REQUEST CALL ERROR:", error);
-      setMessage("Something went wrong");
-    } finally {
+    if (!user) {
       setSubmitting(false);
+      setMessage("Login required");
+      return;
     }
+
+    let fullName = "";
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .single();
+
+    if (profile?.full_name) {
+      fullName = profile.full_name;
+    }
+
+    const response = await fetch("/api/vip-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user.id,
+        email: user.email || "",
+        fullName: fullName || "",
+        preferredDate: date || null,
+        notes: notes || "",
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      setSubmitting(false);
+      setMessage(result.error || "Failed to send request");
+      return;
+    }
+
+    if (result.warning) {
+      setMessage(`Call request saved ✅ ${result.warning}`);
+    } else {
+      setMessage("Call request sent ✅");
+    }
+
+    setDate("");
+    setNotes("");
+    await loadRequests();
+    setSubmitting(false);
   }
 
   useEffect(() => {
