@@ -3,8 +3,9 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import DashboardLayout from "../../components/DashboardLayout";
+import UpgradeLockScreen from "../../components/UpgradeLockScreen";
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
-import { canAccessPremiumPages } from "../../lib/access";
+import { canAccessFitnessPages } from "../../lib/access";
 import { programs } from "../../lib/programsData";
 
 const categories = [
@@ -24,17 +25,33 @@ export default async function ProgramsPage() {
   const { user, profile } = await getCurrentUserAndProfile();
 
   if (!user) redirect("/login");
-  if (!canAccessPremiumPages(profile)) redirect("/pricing");
+
+  if (!canAccessFitnessPages(profile)) {
+    return (
+      <DashboardLayout
+        title="Programs"
+        subtitle="Structured transformation programs with clear goals, training splits, weekly structure, and real use-case guidance."
+        membershipType={profile?.membership_type}
+      >
+        <UpgradeLockScreen
+          title="Unlock programs"
+          text="Programs are included with Full Access and above."
+          requiredPlan="Full Access"
+          buttonLabel="Upgrade to Full Access"
+        />
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout
       title="Programs"
-      subtitle="Premium and VIP members get access to structured transformation programs with clear goals, training splits, weekly structure, and real use-case guidance."
+      subtitle="Structured transformation programs with clear goals, training splits, weekly structure, and real use-case guidance."
       membershipType={profile?.membership_type}
     >
       <div style={pageWrap}>
         <section style={heroCard}>
-          <div style={eyebrow}>Premium Program Library</div>
+          <div style={eyebrow}>Program Library</div>
           <h2 style={heroTitle}>Choose a program that matches your real goal</h2>
           <p style={heroText}>
             These programs are built to feel practical and usable, not vague.
@@ -131,65 +148,6 @@ export default async function ProgramsPage() {
                     </li>
                   ))}
                 </ul>
-              </div>
-
-              <div style={sectionBlock}>
-                <div style={sectionLabel}>Preview of the weekly structure</div>
-                <div style={weekGrid}>
-                  {program.weeklyPlan[0]?.days?.map((dayItem, index) => {
-                    const isString = typeof dayItem === "string";
-
-                    return (
-                      <div
-                        key={`${program.slug}-${
-                          isString
-                            ? dayItem
-                            : `${dayItem.day}-${dayItem.title}-${index}`
-                        }`}
-                        style={dayCard}
-                      >
-                        {isString ? (
-                          <div style={legacyDayText}>{dayItem}</div>
-                        ) : (
-                          <div style={previewWorkoutCard}>
-                            <div style={previewDayLabel}>{dayItem.day}</div>
-
-                            <div style={previewWorkoutTitle}>{dayItem.title}</div>
-
-                            {dayItem.focus ? (
-                              <div style={previewWorkoutFocus}>
-                                {dayItem.focus}
-                              </div>
-                            ) : null}
-
-                            {dayItem.type ? (
-                              <div style={previewTypePill}>{dayItem.type}</div>
-                            ) : null}
-
-                            {Array.isArray(dayItem.steps) &&
-                            dayItem.steps.length > 0 ? (
-                              <div style={previewExerciseCount}>
-                                {dayItem.steps.length} exercises
-                              </div>
-                            ) : null}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div style={tipsGrid}>
-                <div style={tipCard}>
-                  <div style={metaLabel}>Cardio guidance</div>
-                  <div style={tipText}>{program.cardioGuidance}</div>
-                </div>
-
-                <div style={tipCard}>
-                  <div style={metaLabel}>Recovery guidance</div>
-                  <div style={tipText}>{program.recoveryGuidance}</div>
-                </div>
               </div>
 
               <div style={ctaRow}>
@@ -387,79 +345,6 @@ const list = {
   margin: 0,
   color: "rgba(255,255,255,0.74)",
   lineHeight: 1.85,
-};
-
-const weekGrid = {
-  display: "grid",
-  gap: "10px",
-};
-
-const dayCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "14px",
-  padding: "12px 14px",
-  color: "rgba(255,255,255,0.8)",
-  lineHeight: 1.6,
-};
-
-const legacyDayText = {
-  fontWeight: "600",
-};
-
-const previewWorkoutCard = {
-  display: "grid",
-  gap: "6px",
-};
-
-const previewDayLabel = {
-  fontSize: "11px",
-  textTransform: "uppercase",
-  letterSpacing: "0.12em",
-  color: "rgba(255,255,255,0.45)",
-};
-
-const previewWorkoutTitle = {
-  fontSize: "16px",
-  fontWeight: "800",
-};
-
-const previewWorkoutFocus = {
-  fontSize: "13px",
-  color: "rgba(255,255,255,0.7)",
-};
-
-const previewTypePill = {
-  width: "fit-content",
-  padding: "4px 10px",
-  borderRadius: "999px",
-  background: "rgba(255,255,255,0.08)",
-  fontSize: "12px",
-  fontWeight: "700",
-  textTransform: "capitalize",
-};
-
-const previewExerciseCount = {
-  fontSize: "12px",
-  color: "rgba(255,255,255,0.6)",
-};
-
-const tipsGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-  gap: "12px",
-};
-
-const tipCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "16px",
-  padding: "14px",
-};
-
-const tipText = {
-  color: "rgba(255,255,255,0.72)",
-  lineHeight: 1.7,
 };
 
 const ctaRow = {
