@@ -9,13 +9,16 @@ export async function POST(req) {
 
     let priceId = "";
 
-    if (plan === "starter") priceId = process.env.STRIPE_PRICE_STARTER;
-    if (plan === "premium") priceId = process.env.STRIPE_PRICE_PREMIUM;
+    if (plan === "nutrition") priceId = process.env.STRIPE_PRICE_NUTRITION;
+    if (plan === "full_access") priceId = process.env.STRIPE_PRICE_FULL_ACCESS;
     if (plan === "vip") priceId = process.env.STRIPE_PRICE_VIP;
     if (plan === "coaching") priceId = process.env.STRIPE_PRICE_COACHING;
 
     if (!priceId) {
-      return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
+      return NextResponse.json(
+        { error: `Invalid plan: ${plan}` },
+        { status: 400 }
+      );
     }
 
     const session = await stripe.checkout.sessions.create({
