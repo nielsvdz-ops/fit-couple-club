@@ -1,41 +1,50 @@
 "use client";
 
-export default function DashboardLayout({ title, subtitle, children, membershipType }) {
-  const membership = String(membershipType || "").toLowerCase();
+export default function DashboardLayout({
+  title,
+  subtitle,
+  children,
+  membershipType,
+}) {
+  const membership = String(membershipType || "").toLowerCase().trim();
 
-  const starterLinks = [
+  const canAccessNutrition =
+    membership === "nutrition" ||
+    membership === "full_access" ||
+    membership === "vip" ||
+    membership === "coaching";
+
+  const canAccessFitness =
+    membership === "full_access" ||
+    membership === "vip" ||
+    membership === "coaching";
+
+  const canAccessVip =
+    membership === "vip" || membership === "coaching";
+
+  const navItems = [
     ["Dashboard", "/dashboard"],
-    ["Plan Builder", "/plan-builder"],
-    ["Workouts", "/workouts"],
-    ["Nutrition", "/nutrition"],
-    ["Recipes", "/recipes"],
+    ...(canAccessNutrition ? [["Nutrition", "/nutrition"], ["Recipes", "/recipes"]] : []),
+    ...(canAccessFitness
+      ? [
+          ["Plan Builder", "/plan-builder"],
+          ["Workouts", "/workouts"],
+          ["Programs", "/programs"],
+          ["Couple Zone", "/couple-zone"],
+          ["Progress", "/progress"],
+        ]
+      : []),
+    ...(canAccessVip ? [["VIP", "/vip"]] : []),
     ["Billing", "/billing"],
     ["Account", "/account"],
   ];
-
-  const premiumExtra = [
-    ["Programs", "/programs"],
-    ["Couple Zone", "/couple-zone"],
-    ["Progress", "/progress"],
-  ];
-
-  const vipExtra = [["VIP", "/vip"]];
-
-  let navItems = [...starterLinks];
-
-  if (membership === "premium" || membership === "vip") {
-    navItems = [...starterLinks.slice(0, 5), ...premiumExtra, ...starterLinks.slice(5)];
-  }
-
-  if (membership === "vip") {
-    navItems = [...starterLinks.slice(0, 5), ...premiumExtra, ...vipExtra, ...starterLinks.slice(5)];
-  }
 
   return (
     <div style={layout}>
       <aside style={sidebar}>
         <div style={brand}>Fit Couple Club</div>
-        <div style={memberTag}>{membership || "member"}</div>
+        <div style={memberTag}>{formatMembershipLabel(membership)}</div>
+
         <div style={nav}>
           {navItems.map(([label, href]) => (
             <a key={label} href={href} style={navLink}>
@@ -52,6 +61,14 @@ export default function DashboardLayout({ title, subtitle, children, membershipT
       </main>
     </div>
   );
+}
+
+function formatMembershipLabel(membership) {
+  if (membership === "nutrition") return "Nutrition";
+  if (membership === "full_access") return "Full Access";
+  if (membership === "vip") return "VIP";
+  if (membership === "coaching") return "Coaching";
+  return "Member";
 }
 
 const layout = {
@@ -82,7 +99,6 @@ const memberTag = {
   borderRadius: "999px",
   background: "rgba(255,255,255,0.06)",
   border: "1px solid rgba(255,255,255,0.1)",
-  textTransform: "capitalize",
   fontWeight: "800",
   marginBottom: "24px",
 };
