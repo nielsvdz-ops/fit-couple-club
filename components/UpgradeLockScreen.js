@@ -18,9 +18,9 @@ export default function UpgradeLockScreen({
         </div>
 
         <div style={featureList}>
-          <div style={featureItem}>✔ Unlock full access instantly</div>
+          <div style={featureItem}>✔ Unlock access instantly</div>
           <div style={featureItem}>✔ Keep your current account</div>
-          <div style={featureItem}>✔ Upgrade from billing in one step</div>
+          <div style={featureItem}>✔ Upgrade in one step from billing</div>
         </div>
 
         <div style={buttonRow}>
