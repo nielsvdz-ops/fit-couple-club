@@ -37,10 +37,10 @@ export async function POST(req) {
       }
 
       const membershipType =
-        plan === "starter"
-          ? "starter"
-          : plan === "premium"
-          ? "premium"
+        plan === "nutrition"
+          ? "nutrition"
+          : plan === "full_access"
+          ? "full_access"
           : plan === "vip"
           ? "vip"
           : plan === "coaching"
@@ -48,6 +48,7 @@ export async function POST(req) {
           : null;
 
       if (!membershipType) {
+        console.error("INVALID PLAN FROM STRIPE:", plan);
         return new Response("Invalid membership type", { status: 200 });
       }
 
