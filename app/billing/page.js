@@ -29,79 +29,68 @@ export default async function BillingPage() {
   return (
     <DashboardLayout
       title="Billing"
-      subtitle="Manage your plan and upgrade your results."
+      subtitle="Choose your plan and upgrade your results."
       membershipType={profile?.membership_type}
     >
       <div style={{ display: "grid", gap: "22px", maxWidth: "1000px" }}>
+        
+        {/* CURRENT PLAN */}
         <section style={statusCard}>
           <div>
             <div style={eyebrow}>Current Membership</div>
-            <h2 style={title}>{profile?.membership_type || "Starter"}</h2>
+            <h2 style={title}>{profile?.membership_type || "Free"}</h2>
             <p style={text}>Status: Active</p>
           </div>
         </section>
 
         <section style={grid}>
+
+          {/* 🥗 NUTRITION */}
           <div style={card}>
-            <div style={cardTitle}>Starter — €19.99</div>
+            <div style={cardTitle}>Nutrition — €19.99</div>
             <div style={text}>
-              ✔ Dashboard
-              <br />
-              ✔ Plan Builder
-              <br />
-              ✔ Workouts
-              <br />
-              ✔ Nutrition & Recipes
-              <br />
-              <br />
-              Perfect to get started with structure.
+              ✔ Meal plans<br/>
+              ✔ Recipes<br/>
+              ✔ Nutrition guidance<br/><br/>
+              Perfect if you want results without going to the gym.
             </div>
 
             <CheckoutButton
-              plan="starter"
-              label="Choose Starter"
+              plan="nutrition"
+              label="Get Nutrition"
               email={userEmail}
               variant="green"
             />
           </div>
 
-          <div style={card}>
-            <div style={cardTitle}>Premium — €39.99</div>
+          {/* 🔥 FULL ACCESS */}
+          <div style={highlightCard}>
+            <div style={bestValue}>🔥 Best Value</div>
+            <div style={cardTitle}>Full Access — €29.99</div>
             <div style={text}>
-              ✔ Everything in Starter
-              <br />
-              ✔ Programs & Rotations
-              <br />
-              ✔ Couple Zone
-              <br />
-              ✔ Progress Tracking
-              <br />
-              ✔ Saved Plans
-              <br />
-              <br />
-              Built for serious transformation.
+              ✔ Workouts<br/>
+              ✔ Nutrition<br/>
+              ✔ Programs<br/>
+              ✔ Progress tracking<br/>
+              ✔ Everything included<br/><br/>
+              Complete system for total transformation.
             </div>
 
             <CheckoutButton
-              plan="premium"
-              label="Upgrade to Premium"
+              plan="full_access"
+              label="Unlock Everything"
               email={userEmail}
-              variant="green"
+              variant="yellow"
             />
           </div>
 
+          {/* 💎 VIP */}
           <div style={vipCard}>
             <div style={cardTitle}>VIP — €99</div>
             <div style={text}>
-              ✔ Everything in Premium
-              <br />
-              ✔ 1 Monthly Video Call
-              <br />
-              ✔ Priority Support
-              <br />
-              ✔ Custom Adjustments
-              <br />
-              <br />
+              ✔ Everything in Full Access<br/>
+              ✔ Monthly coaching call<br/>
+              ✔ Priority support<br/><br/>
               Coaching with guidance.
             </div>
 
@@ -111,12 +100,7 @@ export default async function BillingPage() {
               </div>
 
               <div style={progressBar}>
-                <div
-                  style={{
-                    ...progressFillBlue,
-                    width: `${vipPercentage}%`,
-                  }}
-                />
+                <div style={{ ...progressFillBlue, width: `${vipPercentage}%` }} />
               </div>
             </div>
 
@@ -128,22 +112,15 @@ export default async function BillingPage() {
             />
           </div>
 
+          {/* 🧠 COACHING */}
           <div style={coachingCard}>
             <div style={cardTitle}>Coaching — €349</div>
-
             <div style={text}>
-              ✔ Everything in VIP
-              <br />
-              ✔ Weekly 1-on-1 Calls
-              <br />
-              ✔ Fully Custom Plan
-              <br />
-              ✔ Direct Support Access
-              <br />
-              ✔ Coaching by Niels & Rosanna
-              <br />
-              <br />
-              Highest level transformation with direct guidance.
+              ✔ Weekly 1-on-1 calls<br/>
+              ✔ Fully customized plan<br/>
+              ✔ Direct support<br/>
+              ✔ Coaching by Niels & Rosanna<br/><br/>
+              Maximum results with personal guidance.
             </div>
 
             <div style={scarcityBox}>
@@ -152,12 +129,7 @@ export default async function BillingPage() {
               </div>
 
               <div style={progressBar}>
-                <div
-                  style={{
-                    ...progressFillYellow,
-                    width: `${coachingPercentage}%`,
-                  }}
-                />
+                <div style={{ ...progressFillYellow, width: `${coachingPercentage}%` }} />
               </div>
             </div>
 
@@ -168,101 +140,9 @@ export default async function BillingPage() {
               variant="yellow"
             />
           </div>
+
         </section>
       </div>
     </DashboardLayout>
   );
 }
-
-const statusCard = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "22px",
-  padding: "24px",
-};
-
-const eyebrow = {
-  fontSize: "12px",
-  textTransform: "uppercase",
-  letterSpacing: "0.16em",
-  color: "rgba(255,255,255,0.45)",
-  marginBottom: "8px",
-};
-
-const title = {
-  margin: 0,
-  fontSize: "30px",
-  fontWeight: "800",
-};
-
-const text = {
-  color: "rgba(255,255,255,0.68)",
-  lineHeight: 1.8,
-};
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
-  gap: "18px",
-};
-
-const card = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "20px",
-  padding: "20px",
-};
-
-const vipCard = {
-  background: "rgba(96,165,250,0.08)",
-  border: "1px solid rgba(96,165,250,0.25)",
-  borderRadius: "20px",
-  padding: "20px",
-};
-
-const coachingCard = {
-  background:
-    "linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(255,255,255,0.2)",
-  borderRadius: "20px",
-  padding: "20px",
-};
-
-const cardTitle = {
-  fontSize: "24px",
-  fontWeight: "800",
-  marginBottom: "10px",
-};
-
-const scarcityBox = {
-  marginTop: "16px",
-};
-
-const scarcityText = {
-  fontSize: "13px",
-  marginBottom: "6px",
-  color: "#facc15",
-};
-
-const vipScarcityText = {
-  fontSize: "13px",
-  marginBottom: "6px",
-  color: "#60a5fa",
-};
-
-const progressBar = {
-  height: "6px",
-  background: "rgba(255,255,255,0.1)",
-  borderRadius: "10px",
-  overflow: "hidden",
-};
-
-const progressFillYellow = {
-  height: "100%",
-  background: "#facc15",
-};
-
-const progressFillBlue = {
-  height: "100%",
-  background: "#60a5fa",
-};
