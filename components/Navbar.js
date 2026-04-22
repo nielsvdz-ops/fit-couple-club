@@ -27,30 +27,17 @@ export default function Navbar() {
         Fit Couple Club
       </a>
 
-      <nav style={{ display: "flex", gap: "18px", alignItems: "center", flexWrap: "wrap" }}>
-        <a href="/about" style={navLink}>About</a>
-        <a href="/plan-builder" style={navLink}>Plan Builder</a>
+      <nav style={navWrap}>
         <a href="/#features" style={navLink}>Features</a>
         <a href="/#pricing" style={navLink}>Pricing</a>
+        <a href="/about" style={navLink}>About</a>
+
         <a href="/login" style={navLink}>Login</a>
-        <a href="/signup" style={ctaLink}>Join Now</a>
+
+        <a href="/signup" style={ctaPrimary}>
+          Start Now
+        </a>
       </nav>
     </header>
   );
 }
-
-const navLink = {
-  color: "white",
-  textDecoration: "none",
-  fontSize: "15px",
-  opacity: 0.9,
-};
-
-const ctaLink = {
-  background: "white",
-  color: "black",
-  padding: "10px 16px",
-  borderRadius: "12px",
-  textDecoration: "none",
-  fontWeight: "700",
-};
