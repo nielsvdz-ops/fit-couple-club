@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import DashboardLayout from "../../../components/DashboardLayout";
 import { getCurrentUserAndProfile } from "../../../lib/getProfile";
-import { canAccessPremiumPages } from "../../../lib/access";
+import { canAccessFitnessPages } from "../../../lib/access";
 import { getProgramBySlug, programs } from "../../../lib/programsData";
 import { getExerciseMedia } from "../../../lib/exerciseMedia";
 
@@ -50,7 +50,7 @@ export default async function ProgramDetailPage({ params }) {
   const { user, profile } = await getCurrentUserAndProfile();
 
   if (!user) redirect("/login");
-  if (!canAccessPremiumPages(profile)) redirect("/pricing");
+if (!canAccessFitnessPages(profile)) redirect("/billing");
 
   const program = getProgramBySlug(params.slug);
 
