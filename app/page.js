@@ -19,23 +19,23 @@ export default function Home() {
         <div>
           <div style={badgeStyle}>Built for individuals and couples</div>
           <h1 style={heroTitleStyle}>
-            Build your dream body. Solo or as a team.
+            Build your body, your health, and your routine. Solo or together.
           </h1>
           <p style={heroTextStyle}>
-            Fit Couple Club helps people choose their goal, choose how many days per week they want to train, and follow a workout and nutrition structure that matches their body and lifestyle.
+            Fit Couple Club helps individuals and couples follow a structure that fits real life — with workouts, nutrition, recipes, and transformation systems designed around your goal.
           </p>
 
           <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", marginBottom: "24px" }}>
             <a href="/signup" style={primaryButton}>Start Your Journey</a>
-            <a href="/plan-builder" style={secondaryButton}>Build Your Plan</a>
+            <a href="#pricing" style={secondaryButton}>View Plans</a>
           </div>
 
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
             {[
+              "Nutrition Only Option",
+              "Full Access Training + Food",
               "Solo & Couple Mode",
-              "Goal-Based Plans",
-              "Choose Training Days",
-              "Meal Structures & Recipes",
+              "Recipes & Meal Plans",
             ].map((item) => (
               <div key={item} style={pillStyle}>{item}</div>
             ))}
@@ -50,26 +50,26 @@ export default function Home() {
       <section id="features" style={sectionWrap}>
         <div style={{ marginBottom: "28px" }}>
           <div style={eyebrowStyle}>How It Works</div>
-          <h2 style={sectionTitleStyle}>A fitness system built around real life.</h2>
+          <h2 style={sectionTitleStyle}>A transformation system built around real life.</h2>
         </div>
 
         <div style={gridStyle}>
           {[
             {
               title: "Choose your goal",
-              text: "Lose fat, build muscle, tone and shape your body, maintain a healthy athletic lifestyle, or start with a beginner reset.",
+              text: "Lose fat, build muscle, tone and shape your body, improve your health, or reset your routine with structure that matches your level.",
             },
             {
-              title: "Choose solo or couple mode",
-              text: "Use the platform alone or with your partner to stay accountable and motivated together.",
+              title: "Choose your path",
+              text: "Start with nutrition only, unlock full access, or choose a higher-support coaching level when you want more accountability.",
             },
             {
-              title: "Choose your training days",
-              text: "Select how many days per week you want to train and your workout structure adapts to that schedule.",
+              title: "Train solo or together",
+              text: "Use the platform alone or with your partner to stay motivated, consistent, and aligned on your goals.",
             },
             {
-              title: "Follow your plan",
-              text: "Get your matching workout direction, meal structure, recipes, and transformation systems.",
+              title: "Follow your system",
+              text: "Get the matching workout structure, meal guidance, recipes, and progress tools that fit your plan.",
             },
           ].map((item) => (
             <div key={item.title} style={cardStyle}>
@@ -98,7 +98,7 @@ export default function Home() {
             Niels has been in the gym since he was 15 years old and never stopped. Over the years, we built strong athletic physiques and a healthy lifestyle with more energy, power, confidence, and discipline.
           </p>
           <p style={sectionTextStyle}>
-            Now we want to help individuals and couples start their own journey and achieve the body and lifestyle they want — alone or as a team.
+            Now we help individuals and couples improve their body, health, and lifestyle — alone or as a team.
           </p>
         </div>
       </section>
@@ -114,7 +114,7 @@ export default function Home() {
             "Lose Fat",
             "Build Muscle",
             "Tone & Shape Body",
-            "Maintain Athletic Lifestyle",
+            "Maintain Healthy Lifestyle",
             "Beginner Body Reset",
             "Couple Transformation",
           ].map((goal) => (
@@ -145,31 +145,65 @@ export default function Home() {
         <div style={pricingGridStyle}>
           {[
             {
-              name: "Starter",
-              price: "€19/mo",
-              points: ["Basic workout access", "Nutrition guides", "Starter recipe access"],
+              name: "Nutrition",
+              price: "€19.99/mo",
+              points: [
+                "Meal plans",
+                "Recipes",
+                "Nutrition guidance",
+                "Perfect without gym focus",
+              ],
+              featured: false,
             },
             {
-              name: "Premium",
-              price: "€39/mo",
-              points: ["Everything in Starter", "Goal-based plans", "Couple mode", "Programs & challenges"],
+              name: "Full Access",
+              price: "€29.99/mo",
+              points: [
+                "Everything in Nutrition",
+                "Workouts & programs",
+                "Plan builder",
+                "Progress tracking",
+                "Best value",
+              ],
+              featured: true,
             },
             {
               name: "VIP",
               price: "€99/mo",
-              points: ["Everything in Premium", "Priority support", "Higher-level accountability"],
+              points: [
+                "Everything in Full Access",
+                "Monthly coaching call",
+                "Priority support",
+              ],
+              featured: false,
+            },
+            {
+              name: "Coaching",
+              price: "€349/mo",
+              points: [
+                "Everything in VIP",
+                "Weekly 1-on-1 calls",
+                "Direct support",
+                "Coaching by Niels & Rosanna",
+              ],
+              featured: false,
             },
           ].map((plan) => (
             <div
               key={plan.name}
               style={{
-                background: plan.name === "Premium" ? "white" : "rgba(255,255,255,0.04)",
-                color: plan.name === "Premium" ? "black" : "white",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: plan.featured ? "rgba(250,204,21,0.08)" : "rgba(255,255,255,0.04)",
+                color: "white",
+                border: plan.featured
+                  ? "1px solid rgba(250,204,21,0.4)"
+                  : "1px solid rgba(255,255,255,0.08)",
                 borderRadius: "24px",
                 padding: "30px",
+                position: "relative",
               }}
             >
+              {plan.featured && <div style={bestValueStyle}>🔥 Best Value</div>}
+
               <h3 style={{ fontSize: "28px", marginBottom: "10px" }}>{plan.name}</h3>
               <div style={{ fontSize: "42px", fontWeight: "800", marginBottom: "20px" }}>{plan.price}</div>
               <ul style={{ paddingLeft: "18px", lineHeight: 1.9, marginBottom: "24px" }}>
@@ -177,17 +211,20 @@ export default function Home() {
                   <li key={p}>{p}</li>
                 ))}
               </ul>
-              <a href="/signup" style={{
-                display: "block",
-                width: "100%",
-                textAlign: "center",
-                textDecoration: "none",
-                padding: "14px 18px",
-                borderRadius: "14px",
-                fontWeight: "700",
-                background: plan.name === "Premium" ? "black" : "white",
-                color: plan.name === "Premium" ? "white" : "black",
-              }}>
+              <a
+                href="/signup"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "center",
+                  textDecoration: "none",
+                  padding: "14px 18px",
+                  borderRadius: "14px",
+                  fontWeight: "700",
+                  background: plan.featured ? "#facc15" : "white",
+                  color: "black",
+                }}
+              >
                 Choose Plan
               </a>
             </div>
@@ -203,7 +240,7 @@ export default function Home() {
             For couples who want to train together, eat better together, and keep each other accountable, Couple Mode makes the process more enjoyable and more consistent.
           </p>
           <p style={sectionTextStyle}>
-            This is what makes Fit Couple Club different from normal fitness websites. It becomes a lifestyle system instead of just random workouts.
+            This is what makes Fit Couple Club different. It becomes a lifestyle system instead of just random workouts or generic meal plans.
           </p>
         </div>
 
@@ -213,7 +250,7 @@ export default function Home() {
       </section>
 
       <footer style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "30px 24px", color: "rgba(255,255,255,0.58)", textAlign: "center" }}>
-        © Fit Couple Club — Build your dream body solo or as a team.
+        © Fit Couple Club — Build your body, health, and lifestyle solo or as a team.
       </footer>
     </main>
   );
@@ -342,4 +379,16 @@ const sectionWrapTwoCol = {
   gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
   gap: "30px",
   alignItems: "center",
+};
+
+const bestValueStyle = {
+  position: "absolute",
+  top: "-10px",
+  right: "10px",
+  background: "#facc15",
+  color: "black",
+  fontSize: "12px",
+  fontWeight: "800",
+  padding: "4px 8px",
+  borderRadius: "6px",
 };
