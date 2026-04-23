@@ -31,7 +31,6 @@ export default function Navbar() {
         <a href="/#features" style={navLink}>Features</a>
         <a href="/#pricing" style={navLink}>Pricing</a>
         <a href="/about" style={navLink}>About</a>
-
         <a href="/login" style={navLink}>Login</a>
 
         <a href="/signup" style={ctaPrimary}>
@@ -41,3 +40,26 @@ export default function Navbar() {
     </header>
   );
 }
+
+const navWrap = {
+  display: "flex",
+  gap: "18px",
+  alignItems: "center",
+  flexWrap: "wrap",
+};
+
+const navLink = {
+  color: "white",
+  textDecoration: "none",
+  fontSize: "15px",
+  opacity: 0.9,
+};
+
+const ctaPrimary = {
+  background: "white",
+  color: "black",
+  padding: "10px 16px",
+  borderRadius: "12px",
+  textDecoration: "none",
+  fontWeight: "700",
+};
