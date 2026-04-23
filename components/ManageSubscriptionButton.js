@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export default function ManageSubscriptionButton({
   label = "Manage Subscription",
+  variant = "default",
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -13,13 +14,13 @@ export default function ManageSubscriptionButton({
     try {
       setLoading(true);
 
-      const response = await fetch("/api/stripe-portal", {
+      const res = await fetch("/api/stripe-portal", {
         method: "POST",
       });
 
-      const data = await response.json().catch(() => ({}));
+      const data = await res.json().catch(() => ({}));
 
-      if (!response.ok) {
+      if (!res.ok) {
         alert(data?.error || "Failed to open subscription manager.");
         return;
       }
@@ -32,7 +33,7 @@ export default function ManageSubscriptionButton({
       alert("No portal URL returned.");
     } catch (error) {
       console.error("PORTAL ERROR:", error);
-      alert("Something went wrong while opening subscription manager.");
+      alert("Something went wrong while opening billing.");
     } finally {
       setLoading(false);
     }
@@ -43,24 +44,38 @@ export default function ManageSubscriptionButton({
       type="button"
       onClick={handleOpenPortal}
       disabled={loading}
-      style={buttonStyle(loading)}
+      style={buttonStyle(variant, loading)}
     >
-      {loading ? "Opening..." : label}
+      {loading ? "Opening Billing..." : label}
     </button>
   );
 }
 
-function buttonStyle(loading) {
+function buttonStyle(variant, loading) {
+  let background = "rgba(255,255,255,0.08)";
+  let color = "white";
+
+  if (variant === "primary") {
+    background = "white";
+    color = "black";
+  }
+
+  if (variant === "danger") {
+    background = "#ef4444";
+    color = "white";
+  }
+
   return {
     marginTop: "12px",
     width: "100%",
     padding: "14px 16px",
     borderRadius: "12px",
-    background: "rgba(255,255,255,0.08)",
-    color: "white",
+    background,
+    color,
     fontWeight: "800",
     border: "1px solid rgba(255,255,255,0.12)",
     cursor: loading ? "not-allowed" : "pointer",
     opacity: loading ? 0.8 : 1,
+    transition: "all 0.2s ease",
   };
 }
