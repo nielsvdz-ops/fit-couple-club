@@ -38,8 +38,8 @@ export default async function BillingPage() {
             <h2 style={title}>{profile?.membership_type || "Free"}</h2>
             <p style={text}>Status: Active</p>
           </div>
-      <ManageSubscriptionButton label="Manage Subscription" />
         </section>
+      <ManageSubscriptionButton label="Manage Subscription" />
 
         <section style={grid}>
           <div style={card}>
