@@ -2,8 +2,9 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import DashboardLayout from "../../components/DashboardLayout";
+import UpgradeLockScreen from "../../components/UpgradeLockScreen";
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
-import { canAccessPremiumPages } from "../../lib/access";
+import { canAccessFitnessPages } from "../../lib/access";
 
 const weeklyTargets = [
   { label: "Workouts together", value: "4", detail: "Complete 4 shared sessions this week" },
@@ -107,7 +108,23 @@ export default async function CoupleZonePage() {
   const { user, profile } = await getCurrentUserAndProfile();
 
   if (!user) redirect("/login");
-  if (!canAccessPremiumPages(profile)) redirect("/pricing");
+
+  if (!canAccessFitnessPages(profile)) {
+    return (
+      <DashboardLayout
+        title="Couple Zone"
+        subtitle="Shared couple tools, structure, and accountability systems."
+        membershipType={profile?.membership_type}
+      >
+        <UpgradeLockScreen
+          title="Unlock Couple Zone"
+          text="Couple tools, shared routines, and accountability systems are included with Full Access and above."
+          requiredPlan="Full Access"
+          buttonLabel="Upgrade to Full Access"
+        />
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout
