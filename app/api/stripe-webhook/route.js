@@ -15,6 +15,63 @@ const PLAN_MEMBERSHIP_MAP = {
   coaching: "coaching",
 };
 
+async function updateProfileAccess({
+  userId,
+  customerId,
+  email,
+  membershipType,
+  isActive,
+}) {
+  const normalizedEmail = String(email || "").toLowerCase().trim();
+
+  if (userId) {
+    const { error, count } = await supabase
+      .from("profiles")
+      .update({
+        membership_type: membershipType,
+        is_active: isActive,
+        ...(customerId ? { stripe_customer_id: customerId } : {}),
+      })
+      .eq("id", userId)
+      .select("*", { count: "exact", head: true });
+
+    if (!error && count > 0) return null;
+    if (error) console.error("UPDATE BY USER ID ERROR:", error);
+  }
+
+  if (customerId) {
+    const { error, count } = await supabase
+      .from("profiles")
+      .update({
+        membership_type: membershipType,
+        is_active: isActive,
+        stripe_customer_id: customerId,
+      })
+      .eq("stripe_customer_id", customerId)
+      .select("*", { count: "exact", head: true });
+
+    if (!error && count > 0) return null;
+    if (error) console.error("UPDATE BY CUSTOMER ID ERROR:", error);
+  }
+
+  if (normalizedEmail) {
+    const { error, count } = await supabase
+      .from("profiles")
+      .update({
+        membership_type: membershipType,
+        is_active: isActive,
+        ...(customerId ? { stripe_customer_id: customerId } : {}),
+      })
+      .eq("email", normalizedEmail)
+      .select("*", { count: "exact", head: true });
+
+    if (!error && count > 0) return null;
+    if (error) console.error("UPDATE BY EMAIL ERROR:", error);
+  }
+
+  return new Error("No matching profile found to update.");
+}
+
 export async function POST(req) {
   if (!process.env.STRIPE_SECRET_KEY) {
     return new Response("Missing STRIPE_SECRET_KEY", { status: 500 });
@@ -64,12 +121,12 @@ export async function POST(req) {
         .toLowerCase()
         .trim();
 
-      if (!customerEmail || !plan) {
-        console.error("MISSING CUSTOMER EMAIL OR PLAN:", {
-          customerEmail,
-          plan,
-        });
-        return new Response("Missing customer email or plan", { status: 200 });
+      const userId = String(session.metadata?.user_id || "").trim();
+      const customerId = String(session.customer || "").trim();
+
+      if (!plan) {
+        console.error("MISSING PLAN IN STRIPE SESSION:", session.id);
+        return new Response("Missing plan", { status: 200 });
       }
 
       const membershipType = PLAN_MEMBERSHIP_MAP[plan];
@@ -79,20 +136,22 @@ export async function POST(req) {
         return new Response("Invalid membership type", { status: 200 });
       }
 
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          membership_type: membershipType,
-          is_active: true,
-        })
-        .eq("email", customerEmail);
+      const updateError = await updateProfileAccess({
+        userId,
+        customerId,
+        email: customerEmail,
+        membershipType,
+        isActive: true,
+      });
 
-      if (error) {
-        console.error("SUPABASE UPDATE ERROR:", error);
+      if (updateError) {
+        console.error("SUPABASE UPDATE ERROR:", updateError);
         return new Response("Database update failed", { status: 500 });
       }
 
-      console.log(`Updated ${customerEmail} to ${membershipType}`);
+      console.log(
+        `Updated profile to ${membershipType} | userId=${userId || "none"} | email=${customerEmail || "none"}`
+      );
     }
 
     return new Response("ok", { status: 200 });
