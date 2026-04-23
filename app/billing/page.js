@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import ManageSubscriptionButton from "../../components/ManageSubscriptionButton";
 import { redirect } from "next/navigation";
 import DashboardLayout from "../../components/DashboardLayout";
 import CheckoutButton from "../../components/CheckoutButton";
