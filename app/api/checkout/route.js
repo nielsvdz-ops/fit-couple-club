@@ -47,6 +47,7 @@ export async function POST(req) {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer_email: email || undefined,
+      customer_creation: "always",
       line_items: [
         {
           price: priceId,
@@ -57,6 +58,7 @@ export async function POST(req) {
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/billing?canceled=1`,
       metadata: {
         plan,
+        email: email || "",
       },
     });
 
