@@ -9,12 +9,23 @@ import {
 } from "../lib/mealPlans";
 
 export default function RecipesClient({ membershipType }) {
-  const membership = String(membershipType || "").toLowerCase();
+  const membership = String(membershipType || "").toLowerCase().trim();
+
+  const hasNutritionAccess =
+    membership === "nutrition" ||
+    membership === "full_access" ||
+    membership === "vip" ||
+    membership === "coaching";
+
   const [selectedGoal, setSelectedGoal] = useState(MEAL_GOALS[0].value);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const [selectedDay, setSelectedDay] = useState("Monday");
 
-  const allPlans = useMemo(() => buildMealPlansForGoal(selectedGoal), [selectedGoal]);
+  const allPlans = useMemo(
+    () => buildMealPlansForGoal(selectedGoal),
+    [selectedGoal]
+  );
+
   const visibleCount = getMealPlanAccessLimit(membership);
   const visiblePlans = allPlans.slice(0, visibleCount);
 
@@ -22,13 +33,16 @@ export default function RecipesClient({ membershipType }) {
     visiblePlans[selectedPlanIndex] || visiblePlans[0] || allPlans[0];
 
   const selectedDayPlan =
-    selectedPlan?.days.find((d) => d.day === selectedDay) || selectedPlan?.days?.[0];
+    selectedPlan?.days.find((d) => d.day === selectedDay) ||
+    selectedPlan?.days?.[0];
 
   return (
     <div style={wrap}>
       <section style={heroCard}>
         <div style={eyebrow}>Nutrition System</div>
-        <h2 style={heroTitle}>Choose your goal and get a full daily food routine</h2>
+        <h2 style={heroTitle}>
+          Choose your goal and get a full daily food routine
+        </h2>
         <p style={heroText}>
           Pick your goal and browse complete meal schedules from Monday to Sunday.
           Every day includes meals, calories, macros, ingredients, and instructions.
@@ -158,15 +172,15 @@ export default function RecipesClient({ membershipType }) {
           </div>
         )}
 
-        {membership === "starter" && (
+        {!hasNutritionAccess && (
           <div style={lockedBox}>
-            <div style={lockedTitle}>Starter recipe access</div>
+            <div style={lockedTitle}>Recipe access locked</div>
             <p style={lockedText}>
-              Starter includes a strong recipe base. Premium and VIP unlock the full
-              50 daily routines, deeper goal variation, and bigger nutrition coverage.
+              Upgrade your membership to unlock the full recipe library,
+              complete meal plans, and advanced nutrition guidance.
             </p>
-            <a href="/pricing" style={unlockButton}>
-              Unlock Full Recipe Library
+            <a href="/billing" style={unlockButton}>
+              Upgrade Now
             </a>
           </div>
         )}
@@ -174,272 +188,3 @@ export default function RecipesClient({ membershipType }) {
     </div>
   );
 }
-
-function InfoCard({ label, value }) {
-  return (
-    <div style={infoCard}>
-      <div style={miniLabel}>{label}</div>
-      <div style={infoValue}>{value}</div>
-    </div>
-  );
-}
-
-function SummaryCard({ label, value }) {
-  return (
-    <div style={summaryCard}>
-      <div style={miniLabel}>{label}</div>
-      <div style={summaryValue}>{value}</div>
-    </div>
-  );
-}
-
-const wrap = {
-  display: "grid",
-  gap: "22px",
-};
-
-const heroCard = {
-  background:
-    "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: "24px",
-  padding: "28px",
-};
-
-const panel = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "22px",
-  padding: "22px",
-};
-
-const eyebrow = {
-  fontSize: "12px",
-  textTransform: "uppercase",
-  letterSpacing: "0.16em",
-  color: "rgba(255,255,255,0.45)",
-  marginBottom: "8px",
-};
-
-const heroTitle = {
-  margin: 0,
-  fontSize: "34px",
-  fontWeight: "900",
-};
-
-const heroText = {
-  marginTop: "12px",
-  color: "rgba(255,255,255,0.72)",
-  lineHeight: 1.8,
-  maxWidth: "920px",
-};
-
-const filterRow = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-  gap: "16px",
-  marginTop: "20px",
-};
-
-const fieldWrap = {
-  display: "grid",
-  gap: "8px",
-};
-
-const input = {
-  width: "100%",
-  background: "#111111",
-  color: "white",
-  border: "1px solid rgba(255,255,255,0.12)",
-  borderRadius: "12px",
-  padding: "12px 14px",
-  fontWeight: "700",
-};
-
-const goalInfoGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
-  gap: "12px",
-  marginTop: "18px",
-};
-
-const infoCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.05)",
-  borderRadius: "14px",
-  padding: "14px",
-};
-
-const infoValue = {
-  color: "rgba(255,255,255,0.82)",
-  lineHeight: 1.7,
-};
-
-const sectionHead = {
-  display: "flex",
-  justifyContent: "space-between",
-  gap: "16px",
-  alignItems: "start",
-  flexWrap: "wrap",
-};
-
-const sectionTitle = {
-  margin: 0,
-  fontSize: "28px",
-  fontWeight: "800",
-};
-
-const sectionText = {
-  marginTop: "10px",
-  color: "rgba(255,255,255,0.7)",
-  lineHeight: 1.8,
-  maxWidth: "900px",
-};
-
-const dayTabs = {
-  display: "flex",
-  gap: "10px",
-  flexWrap: "wrap",
-  marginTop: "18px",
-};
-
-const dayTab = {
-  padding: "12px 16px",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.14)",
-  fontWeight: "800",
-  cursor: "pointer",
-};
-
-const summaryGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
-  gap: "12px",
-};
-
-const summaryCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.05)",
-  borderRadius: "14px",
-  padding: "14px",
-};
-
-const summaryValue = {
-  color: "white",
-  fontSize: "22px",
-  fontWeight: "800",
-};
-
-const mealGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))",
-  gap: "16px",
-};
-
-const mealCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "18px",
-  padding: "18px",
-};
-
-const mealTop = {
-  display: "flex",
-  justifyContent: "space-between",
-  gap: "14px",
-  alignItems: "start",
-  marginBottom: "12px",
-};
-
-const mealTime = {
-  color: "rgba(255,255,255,0.5)",
-  fontSize: "12px",
-  textTransform: "uppercase",
-  letterSpacing: "0.12em",
-  marginBottom: "8px",
-};
-
-const mealTitle = {
-  fontSize: "22px",
-  fontWeight: "800",
-  margin: 0,
-};
-
-const calorieBadge = {
-  padding: "10px 12px",
-  borderRadius: "999px",
-  background: "rgba(255,255,255,0.08)",
-  border: "1px solid rgba(255,255,255,0.12)",
-  fontWeight: "800",
-};
-
-const macroRow = {
-  display: "flex",
-  gap: "12px",
-  flexWrap: "wrap",
-  color: "rgba(255,255,255,0.72)",
-  fontSize: "14px",
-  marginBottom: "14px",
-};
-
-const detailBlock = {
-  background: "rgba(255,255,255,0.025)",
-  border: "1px solid rgba(255,255,255,0.04)",
-  borderRadius: "12px",
-  padding: "12px",
-  marginTop: "12px",
-};
-
-const miniLabel = {
-  fontSize: "12px",
-  textTransform: "uppercase",
-  letterSpacing: "0.12em",
-  color: "rgba(255,255,255,0.5)",
-  marginBottom: "8px",
-};
-
-const bulletList = {
-  margin: 0,
-  paddingLeft: "18px",
-  color: "rgba(255,255,255,0.78)",
-  lineHeight: 1.8,
-};
-
-const orderedList = {
-  margin: 0,
-  paddingLeft: "18px",
-  color: "rgba(255,255,255,0.78)",
-  lineHeight: 1.8,
-};
-
-const lockedBox = {
-  marginTop: "22px",
-  background: "rgba(255,255,255,0.03)",
-  border: "1px dashed rgba(255,255,255,0.2)",
-  borderRadius: "18px",
-  padding: "22px",
-  textAlign: "center",
-};
-
-const lockedTitle = {
-  fontSize: "24px",
-  fontWeight: "800",
-  marginBottom: "8px",
-};
-
-const lockedText = {
-  color: "rgba(255,255,255,0.68)",
-  lineHeight: 1.8,
-  maxWidth: "700px",
-  margin: "0 auto 14px auto",
-};
-
-const unlockButton = {
-  display: "inline-block",
-  padding: "14px 18px",
-  background: "white",
-  color: "black",
-  borderRadius: "12px",
-  fontWeight: "800",
-  textDecoration: "none",
-};
