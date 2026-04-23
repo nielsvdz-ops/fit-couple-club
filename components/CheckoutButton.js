@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 
-export default function CheckoutButton({ plan, label, email, variant = "green" }) {
+export default function CheckoutButton({
+  plan,
+  label,
+  email,
+  variant = "green",
+}) {
   const [loading, setLoading] = useState(false);
 
   async function handleCheckout() {
+    if (loading) return;
+
     try {
       setLoading(true);
 
@@ -20,30 +27,35 @@ export default function CheckoutButton({ plan, label, email, variant = "green" }
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        alert(data.error || "Failed to start checkout");
+        alert(data?.error || "Failed to start checkout.");
         return;
       }
 
-      if (data.url) {
+      if (data?.url) {
         window.location.href = data.url;
         return;
       }
 
-      alert("No checkout URL returned");
+      alert("No checkout URL returned.");
     } catch (error) {
       console.error("CHECKOUT ERROR:", error);
-      alert("Something went wrong");
+      alert("Something went wrong while starting checkout.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <button onClick={handleCheckout} disabled={loading} style={buttonStyle(variant, loading)}>
-      {loading ? "Loading..." : label}
+    <button
+      type="button"
+      onClick={handleCheckout}
+      disabled={loading}
+      style={buttonStyle(variant, loading)}
+    >
+      {loading ? "Redirecting..." : label}
     </button>
   );
 }
@@ -65,13 +77,14 @@ function buttonStyle(variant, loading) {
   return {
     marginTop: "16px",
     width: "100%",
-    padding: "12px",
-    borderRadius: "10px",
+    padding: "14px 16px",
+    borderRadius: "12px",
     background,
     color,
     fontWeight: "800",
     border: "none",
     cursor: loading ? "not-allowed" : "pointer",
     opacity: loading ? 0.8 : 1,
+    transition: "opacity 0.2s ease",
   };
 }
