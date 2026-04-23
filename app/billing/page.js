@@ -37,8 +37,8 @@ export default async function BillingPage() {
             <div style={eyebrow}>Current Membership</div>
             <h2 style={title}>{profile?.membership_type || "Free"}</h2>
             <p style={text}>Status: Active</p>
-        <ManageSubscriptionButton label="Manage Subscription" />
           </div>
+      <ManageSubscriptionButton label="Manage Subscription" />
         </section>
 
         <section style={grid}>
