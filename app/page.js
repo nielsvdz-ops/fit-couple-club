@@ -244,28 +244,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section style={sectionWrap}>
-        <div style={sectionHeader}>
-          <div style={eyebrowStyle}>Body Focus</div>
-          <h2 style={sectionTitleStyle}>
-            Extra focus where people want it most.
-          </h2>
-          <p style={sectionIntroText}>
-            Add more emphasis where people usually want better shape, better
-            detail, or faster visual progress.
-          </p>
-        </div>
-
-        <div style={showcaseGrid}>
-          {focusCards.map((focus) => (
-            <div key={focus.title} style={showcaseCard}>
-              <div style={showcaseTitle}>{focus.title}</div>
-              <p style={showcaseText}>{focus.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
+     
       <section id="pricing" style={sectionWrap}>
         <div style={sectionHeader}>
           <div style={eyebrowStyle}>Membership Plans</div>
