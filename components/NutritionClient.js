@@ -1,3 +1,7 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { nutritionPlans } from "../lib/mealPlans";
 export default function NutritionClient({ membershipType }) {
   const membership = String(membershipType || "").toLowerCase().trim();
 
@@ -219,7 +223,46 @@ export default function NutritionClient({ membershipType }) {
     </div>
   );
 }
+function MacroCard({ label, value }) {
+  return (
+    <div style={macroCard}>
+      <div style={macroLabel}>{label}</div>
+      <div style={macroValue}>{value}</div>
+    </div>
+  );
+}
 
+function MealCard({ meal }) {
+  return (
+    <div style={mealCard}>
+      <div style={mealTopRow}>
+        <div>
+          <div style={mealLabel}>{meal.label}</div>
+          <div style={mealTitle}>{meal.title}</div>
+        </div>
+
+        <div style={mealStats}>
+          <span style={mealStatPill}>{meal.calories}</span>
+          <span style={mealStatPill}>{meal.protein}</span>
+        </div>
+      </div>
+
+      <div style={mealSection}>
+        <div style={miniHeading}>Ingredients</div>
+        <ul style={ingredientsList}>
+          {meal.ingredients.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div style={mealSection}>
+        <div style={miniHeading}>Method</div>
+        <p style={mealMethod}>{meal.method}</p>
+      </div>
+    </div>
+  );
+}
 const pageWrap = {
   display: "grid",
   gap: "22px",
