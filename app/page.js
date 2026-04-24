@@ -82,7 +82,7 @@ export default function Home() {
 
         <div style={heroImageWrap}>
           <img
-            src="/public/couple-pictures/dji-0579.jpg"
+            src="/couple-pictures/dji-0579.jpg"
             alt="Fit Couple Club"
             style={heroImage}
           />
@@ -118,7 +118,7 @@ export default function Home() {
       <section style={splitSection}>
         <div style={luxuryImageCard}>
           <img
-            src="/public/couple-pictures/dji-0697.jpg"
+            src="/couple-pictures/dji-0697.jpg"
             alt="Niels and Rosanna"
             style={sectionImage}
           />
@@ -175,7 +175,7 @@ export default function Home() {
 
         <div style={luxuryImageCard}>
           <img
-            src="/public/couple-pictures/dji-0773.jpg"
+            src="/couple-pictures/dji-0773.jpg"
             alt="Couple transformation"
             style={sectionImage}
           />
