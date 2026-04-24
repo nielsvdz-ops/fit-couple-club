@@ -5,13 +5,11 @@ import { redirect } from "next/navigation";
 import DashboardLayout from "../../components/DashboardLayout";
 import CheckoutButton from "../../components/CheckoutButton";
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
-import { canAccessStarterPages } from "../../lib/access";
 
 export default async function BillingPage() {
   const { user, profile } = await getCurrentUserAndProfile();
 
   if (!user) redirect("/login");
-  if (!canAccessStarterPages(profile)) redirect("/pricing");
 
   const userEmail = user?.email || "";
 
@@ -35,11 +33,16 @@ export default async function BillingPage() {
         <section style={statusCard}>
           <div>
             <div style={eyebrow}>Current Membership</div>
-            <h2 style={title}>{profile?.membership_type || "Free"}</h2>
-            <p style={text}>Status: Active</p>
+            <h2 style={title}>{formatMembership(profile?.membership_type)}</h2>
+            <p style={text}>
+              Status: {profile?.is_active ? "Active" : "No active plan yet"}
+            </p>
           </div>
+
+          {profile?.stripe_customer_id && (
+            <ManageSubscriptionButton label="Manage Subscription" />
+          )}
         </section>
-      <ManageSubscriptionButton label="Manage Subscription" />
 
         <section style={grid}>
           <div style={card}>
@@ -144,7 +147,10 @@ export default async function BillingPage() {
 
               <div style={progressBar}>
                 <div
-                  style={{ ...progressFillYellow, width: `${coachingPercentage}%` }}
+                  style={{
+                    ...progressFillYellow,
+                    width: `${coachingPercentage}%`,
+                  }}
                 />
               </div>
             </div>
@@ -162,11 +168,24 @@ export default async function BillingPage() {
   );
 }
 
+function formatMembership(type) {
+  const m = String(type || "").toLowerCase().trim();
+
+  if (m === "nutrition") return "Nutrition";
+  if (m === "full_access") return "Full Access";
+  if (m === "vip") return "VIP";
+  if (m === "coaching") return "Coaching";
+
+  return "Free";
+}
+
 const statusCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "22px",
   padding: "24px",
+  display: "grid",
+  gap: "14px",
 };
 
 const eyebrow = {
@@ -192,6 +211,7 @@ const grid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
   gap: "18px",
+  alignItems: "stretch",
 };
 
 const card = {
@@ -199,13 +219,15 @@ const card = {
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "20px",
   padding: "20px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
 };
 
 const highlightCard = {
+  ...card,
   background: "rgba(250,204,21,0.08)",
   border: "1px solid rgba(250,204,21,0.4)",
-  borderRadius: "20px",
-  padding: "20px",
   position: "relative",
 };
 
@@ -222,18 +244,16 @@ const bestValue = {
 };
 
 const vipCard = {
+  ...card,
   background: "rgba(96,165,250,0.08)",
   border: "1px solid rgba(96,165,250,0.25)",
-  borderRadius: "20px",
-  padding: "20px",
 };
 
 const coachingCard = {
+  ...card,
   background:
     "linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))",
   border: "1px solid rgba(255,255,255,0.2)",
-  borderRadius: "20px",
-  padding: "20px",
 };
 
 const cardTitle = {
