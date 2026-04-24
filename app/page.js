@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 
 const goalCards = [
@@ -51,11 +54,39 @@ const pricingPlans = [
 ];
 
 export default function Home() {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <main style={main}>
+      <style jsx global>{`
+        @keyframes floatImage {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0px); }
+        }
+
+        @keyframes softGlow {
+          0% { opacity: 0.55; }
+          50% { opacity: 0.9; }
+          100% { opacity: 0.55; }
+        }
+      `}</style>
+
       <Navbar />
 
-      <section style={heroWrap}>
+      <section
+        style={{
+          ...heroWrap,
+          opacity: loaded ? 1 : 0,
+          transform: loaded ? "translateY(0px)" : "translateY(40px)",
+          transition: "all 1s ease",
+        }}
+      >
         <div>
           <div style={badgeStyle}>Premium fitness system for individuals and couples</div>
 
@@ -81,14 +112,25 @@ export default function Home() {
         </div>
 
         <div style={heroImageWrap}>
+          <div style={heroGlow} />
+
+          <img
+            src="/couple-pictures/DJI-0579.jpg"
+            alt=""
+            style={heroBgImage}
+          />
+
           <img
             src="/couple-pictures/DJI-0579.jpg"
             alt="Fit Couple Club"
-            style={heroImage}
+            style={heroMainImage}
           />
+
           <div style={imageOverlay}>
             <div style={overlayTitle}>Solo or together</div>
-            <div style={overlayText}>Built around real life, real discipline, and real routines.</div>
+            <div style={overlayText}>
+              Built around real life, real discipline, and real routines.
+            </div>
           </div>
         </div>
       </section>
@@ -312,29 +354,57 @@ const trustRow = {
 };
 
 const heroImageWrap = {
-  minHeight: "560px",
+  height: "560px",
   borderRadius: "34px",
   overflow: "hidden",
   position: "relative",
   border: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 30px 100px rgba(0,0,0,0.45)",
+  boxShadow: "0 30px 100px rgba(0,0,0,0.55)",
+  background: "radial-gradient(circle at center, rgba(250,204,21,0.1), transparent 70%)",
 };
 
-const heroImage = {
+const heroGlow = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "radial-gradient(circle at 50% 45%, rgba(250,204,21,0.18), transparent 48%)",
+  animation: "softGlow 5s ease-in-out infinite",
+  zIndex: 1,
+};
+
+const heroBgImage = {
+  position: "absolute",
+  inset: 0,
   width: "100%",
   height: "100%",
   objectFit: "cover",
+  filter: "blur(32px) brightness(0.55)",
+  transform: "scale(1.22)",
+  zIndex: 0,
+};
+
+const heroMainImage = {
+  position: "relative",
+  zIndex: 2,
+  width: "78%",
+  height: "88%",
+  objectFit: "cover",
+  borderRadius: "26px",
+  margin: "34px auto 0",
   display: "block",
+  boxShadow: "0 24px 70px rgba(0,0,0,0.65)",
+  animation: "floatImage 6s ease-in-out infinite",
 };
 
 const imageOverlay = {
   position: "absolute",
+  zIndex: 3,
   left: "22px",
   right: "22px",
   bottom: "22px",
   padding: "18px",
   borderRadius: "20px",
-  background: "rgba(0,0,0,0.55)",
+  background: "rgba(0,0,0,0.58)",
   border: "1px solid rgba(255,255,255,0.14)",
   backdropFilter: "blur(10px)",
 };
@@ -391,7 +461,8 @@ const featureGrid = {
 };
 
 const featureCard = {
-  background: "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))",
+  background:
+    "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "26px",
   padding: "28px",
@@ -428,7 +499,7 @@ const splitSection = {
 };
 
 const luxuryImageCard = {
-  minHeight: "500px",
+  height: "500px",
   borderRadius: "34px",
   overflow: "hidden",
   border: "1px solid rgba(255,255,255,0.12)",
