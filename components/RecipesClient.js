@@ -188,3 +188,249 @@ export default function RecipesClient({ membershipType }) {
     </div>
   );
 }
+function InfoCard({ label, value }) {
+  return (
+    <div style={infoCard}>
+      <div style={infoLabel}>{label}</div>
+      <div style={infoValue}>{value || "—"}</div>
+    </div>
+  );
+}
+
+function SummaryCard({ label, value }) {
+  return (
+    <div style={summaryCard}>
+      <div style={infoLabel}>{label}</div>
+      <div style={summaryValue}>{value || "—"}</div>
+    </div>
+  );
+}
+
+const wrap = { display: "grid", gap: "22px" };
+
+const heroCard = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "24px",
+  padding: "28px",
+};
+
+const eyebrow = {
+  fontSize: "12px",
+  textTransform: "uppercase",
+  letterSpacing: "0.16em",
+  color: "rgba(255,255,255,0.45)",
+  marginBottom: "8px",
+};
+
+const heroTitle = {
+  margin: 0,
+  fontSize: "clamp(28px, 4vw, 42px)",
+  fontWeight: "900",
+};
+
+const heroText = {
+  color: "rgba(255,255,255,0.7)",
+  lineHeight: 1.8,
+  maxWidth: "850px",
+};
+
+const filterRow = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+  gap: "14px",
+  marginTop: "22px",
+};
+
+const fieldWrap = { display: "grid", gap: "8px" };
+
+const miniLabel = {
+  fontSize: "12px",
+  textTransform: "uppercase",
+  letterSpacing: "0.12em",
+  color: "rgba(255,255,255,0.5)",
+};
+
+const input = {
+  width: "100%",
+  padding: "14px",
+  borderRadius: "12px",
+  background: "rgba(255,255,255,0.06)",
+  color: "white",
+  border: "1px solid rgba(255,255,255,0.12)",
+};
+
+const goalInfoGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
+  gap: "14px",
+  marginTop: "22px",
+};
+
+const infoCard = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "16px",
+  padding: "16px",
+};
+
+const infoLabel = {
+  color: "rgba(255,255,255,0.5)",
+  fontSize: "13px",
+  marginBottom: "8px",
+};
+
+const infoValue = {
+  color: "white",
+  fontWeight: "800",
+  lineHeight: 1.5,
+};
+
+const panel = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "24px",
+  padding: "24px",
+};
+
+const sectionHead = {
+  display: "flex",
+  justifyContent: "space-between",
+  gap: "16px",
+  flexWrap: "wrap",
+  marginBottom: "18px",
+};
+
+const sectionTitle = {
+  margin: 0,
+  fontSize: "30px",
+  fontWeight: "900",
+};
+
+const sectionText = {
+  color: "rgba(255,255,255,0.68)",
+  lineHeight: 1.8,
+};
+
+const dayTabs = {
+  display: "flex",
+  gap: "10px",
+  flexWrap: "wrap",
+};
+
+const dayTab = {
+  padding: "12px 14px",
+  borderRadius: "12px",
+  border: "1px solid rgba(255,255,255,0.1)",
+  fontWeight: "800",
+  cursor: "pointer",
+};
+
+const summaryGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))",
+  gap: "12px",
+};
+
+const summaryCard = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "16px",
+  padding: "16px",
+};
+
+const summaryValue = {
+  fontSize: "20px",
+  fontWeight: "900",
+};
+
+const mealGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))",
+  gap: "16px",
+};
+
+const mealCard = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "20px",
+  padding: "18px",
+};
+
+const mealTop = {
+  display: "flex",
+  justifyContent: "space-between",
+  gap: "12px",
+  alignItems: "start",
+};
+
+const mealTime = {
+  color: "rgba(255,255,255,0.5)",
+  fontSize: "13px",
+  marginBottom: "6px",
+};
+
+const mealTitle = {
+  margin: 0,
+  fontSize: "22px",
+  fontWeight: "900",
+};
+
+const calorieBadge = {
+  padding: "8px 10px",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,0.08)",
+  fontWeight: "800",
+};
+
+const macroRow = {
+  display: "flex",
+  gap: "8px",
+  flexWrap: "wrap",
+  color: "rgba(255,255,255,0.72)",
+  marginTop: "14px",
+};
+
+const detailBlock = {
+  marginTop: "16px",
+};
+
+const bulletList = {
+  paddingLeft: "18px",
+  lineHeight: 1.8,
+  color: "rgba(255,255,255,0.76)",
+};
+
+const orderedList = {
+  paddingLeft: "18px",
+  lineHeight: 1.8,
+  color: "rgba(255,255,255,0.76)",
+};
+
+const lockedBox = {
+  marginTop: "24px",
+  border: "1px dashed rgba(255,255,255,0.2)",
+  borderRadius: "18px",
+  padding: "20px",
+};
+
+const lockedTitle = {
+  fontSize: "24px",
+  fontWeight: "900",
+};
+
+const lockedText = {
+  color: "rgba(255,255,255,0.68)",
+  lineHeight: 1.8,
+};
+
+const unlockButton = {
+  display: "inline-block",
+  marginTop: "12px",
+  padding: "12px 16px",
+  borderRadius: "12px",
+  background: "white",
+  color: "black",
+  textDecoration: "none",
+  fontWeight: "900",
+};
