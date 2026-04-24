@@ -17,8 +17,10 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
+      const normalizedEmail = email.trim().toLowerCase();
+
       const { error } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         password,
       });
 
@@ -27,7 +29,17 @@ export default function LoginPage() {
         return;
       }
 
-      window.location.href = "/dashboard";
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("membership_type, is_active")
+        .eq("email", normalizedEmail)
+        .maybeSingle();
+
+      if (profile?.is_active && profile?.membership_type) {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/billing";
+      }
     } catch (error) {
       console.error("LOGIN ERROR:", error);
       alert("Something went wrong while logging in.");
@@ -42,7 +54,7 @@ export default function LoginPage() {
         <div style={eyebrow}>Member Access</div>
         <h1 style={title}>Login</h1>
         <p style={subtitle}>
-          Access your dashboard, nutrition plans, workouts, recipes, and billing.
+          Log in to access your dashboard or choose your membership.
         </p>
 
         <form onSubmit={handleLogin} style={form}>
@@ -147,7 +159,6 @@ const fieldWrap = {
 const label = {
   fontSize: "14px",
   fontWeight: "700",
-  color: "rgba(255,255,255,0.88)",
 };
 
 const input = {
@@ -171,7 +182,6 @@ const button = (loading) => ({
   fontWeight: "800",
   cursor: loading ? "not-allowed" : "pointer",
   opacity: loading ? 0.8 : 1,
-  marginTop: "4px",
 });
 
 const footerText = {
