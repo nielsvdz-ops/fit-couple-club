@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
+import { createClient } from "../../../lib/supabase/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -12,7 +13,20 @@ const PLAN_PRICE_MAP = {
 
 export async function POST(req) {
   try {
-    const { plan, email } = await req.json();
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    const { plan } = await req.json();
 
     if (!plan) {
       return NextResponse.json(
@@ -44,10 +58,18 @@ export async function POST(req) {
       );
     }
 
+    const userEmail = String(user.email || "").toLowerCase().trim();
+
+    if (!userEmail) {
+      return NextResponse.json(
+        { error: "Missing user email" },
+        { status: 400 }
+      );
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      customer_email: email || undefined,
-      customer_creation: "always",
+      customer_email: userEmail,
       line_items: [
         {
           price: priceId,
@@ -58,7 +80,8 @@ export async function POST(req) {
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/billing?canceled=1`,
       metadata: {
         plan,
-        email: email || "",
+        email: userEmail,
+        user_id: user.id,
       },
     });
 
