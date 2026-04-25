@@ -11,6 +11,36 @@ const PLAN_PRICE_MAP = {
   coaching: process.env.STRIPE_PRICE_COACHING,
 };
 
+async function getOrCreateCustomer(user, email) {
+  const supabase = await createClient();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("stripe_customer_id")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.stripe_customer_id) {
+    return profile.stripe_customer_id;
+  }
+
+  const customer = await stripe.customers.create({
+    email,
+    metadata: {
+      user_id: user.id,
+    },
+  });
+
+  await supabase
+    .from("profiles")
+    .update({
+      stripe_customer_id: customer.id,
+    })
+    .eq("id", user.id);
+
+  return customer.id;
+}
+
 export async function POST(req) {
   try {
     const supabase = await createClient();
@@ -35,20 +65,6 @@ export async function POST(req) {
       );
     }
 
-    if (!process.env.STRIPE_SECRET_KEY) {
-      return NextResponse.json(
-        { error: "Missing STRIPE_SECRET_KEY" },
-        { status: 500 }
-      );
-    }
-
-    if (!process.env.NEXT_PUBLIC_SITE_URL) {
-      return NextResponse.json(
-        { error: "Missing NEXT_PUBLIC_SITE_URL" },
-        { status: 500 }
-      );
-    }
-
     const priceId = PLAN_PRICE_MAP[plan];
 
     if (!priceId) {
@@ -60,16 +76,11 @@ export async function POST(req) {
 
     const userEmail = String(user.email || "").toLowerCase().trim();
 
-    if (!userEmail) {
-      return NextResponse.json(
-        { error: "Missing user email" },
-        { status: 400 }
-      );
-    }
+    const customerId = await getOrCreateCustomer(user, userEmail);
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      customer_email: userEmail,
+      customer: customerId, // ✅ FIXED
       line_items: [
         {
           price: priceId,
@@ -80,8 +91,8 @@ export async function POST(req) {
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/billing?canceled=1`,
       metadata: {
         plan,
-        email: userEmail,
         user_id: user.id,
+        email: userEmail,
       },
     });
 
