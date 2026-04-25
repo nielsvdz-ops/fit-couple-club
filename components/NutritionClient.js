@@ -32,6 +32,65 @@ const europeanSupermarkets = [
   "Auchan",
 ];
 
+const supermarketProfiles = {
+  "Albert Heijn": {
+    protein: ["AH chicken breast", "AH low-fat quark", "AH skyr", "Tuna in water", "Eggs"],
+    carbs: ["AH oats", "Brown rice", "Whole-wheat wraps", "Potatoes", "Bananas"],
+    fats: ["Avocado", "Olive oil", "100% peanut butter", "Mixed nuts"],
+    vegetables: ["Broccoli", "Spinach", "Cucumber", "Stir-fry vegetables", "Tomatoes"],
+    drinks: ["Sparkling water", "Water", "Coffee", "Tea", "Zero-sugar soft drinks"],
+  },
+  Jumbo: {
+    protein: ["Jumbo chicken breast", "Jumbo low-fat quark", "Natural skyr", "Tuna in water", "Eggs"],
+    carbs: ["Oats", "Rice", "Whole-wheat wraps", "Potatoes", "Bananas"],
+    fats: ["Avocado", "Olive oil", "100% peanut butter", "Cashews"],
+    vegetables: ["Broccoli", "Spinach", "Cucumber", "Stir-fry vegetables", "Bell peppers"],
+    drinks: ["Water", "Sparkling water", "Coffee", "Tea", "Zero-sugar drinks"],
+  },
+  Lidl: {
+    protein: ["Chicken breast", "Low-fat quark", "Skyr", "Tuna", "Eggs"],
+    carbs: ["Oats", "Rice", "Whole-grain bread", "Potatoes", "Bananas"],
+    fats: ["Avocado", "Olive oil", "Peanut butter", "Nuts"],
+    vegetables: ["Broccoli", "Spinach", "Cucumber", "Frozen vegetables", "Tomatoes"],
+    drinks: ["Water", "Sparkling water", "Coffee", "Tea", "Zero-sugar soft drinks"],
+  },
+  Aldi: {
+    protein: ["Chicken breast", "Low-fat quark", "Eggs", "Tuna", "Tofu"],
+    carbs: ["Oats", "Rice", "Whole-grain bread", "Potatoes", "Fruit"],
+    fats: ["Olive oil", "Avocado", "Peanut butter", "Nuts"],
+    vegetables: ["Broccoli", "Cucumber", "Spinach", "Stir-fry vegetables", "Tomatoes"],
+    drinks: ["Water", "Sparkling water", "Coffee", "Tea"],
+  },
+  Carrefour: {
+    protein: ["Chicken breast", "Low-fat quark", "Skyr", "Tuna in water", "Eggs"],
+    carbs: ["Oats", "Rice", "Whole-wheat wraps", "Potatoes", "Bananas"],
+    fats: ["Avocado", "Olive oil", "100% peanut butter", "Nuts"],
+    vegetables: ["Broccoli", "Spinach", "Cucumber", "Stir-fry vegetables", "Tomatoes"],
+    drinks: ["Water", "Sparkling water", "Coffee", "Tea", "Zero-sugar drinks"],
+  },
+  Delhaize: {
+    protein: ["Chicken breast", "Skyr", "Low-fat quark", "Tuna", "Eggs"],
+    carbs: ["Oats", "Rice", "Whole-grain bread", "Potatoes", "Bananas"],
+    fats: ["Avocado", "Olive oil", "Peanut butter", "Nuts"],
+    vegetables: ["Broccoli", "Spinach", "Cucumber", "Mixed vegetables", "Bell peppers"],
+    drinks: ["Water", "Sparkling water", "Coffee", "Tea", "Zero drinks"],
+  },
+  Colruyt: {
+    protein: ["Chicken breast", "Low-fat quark", "Eggs", "Tuna", "Lean minced beef"],
+    carbs: ["Oats", "Rice", "Potatoes", "Whole-grain bread", "Bananas"],
+    fats: ["Olive oil", "Avocado", "Peanut butter", "Nuts"],
+    vegetables: ["Broccoli", "Spinach", "Cucumber", "Frozen vegetables", "Tomatoes"],
+    drinks: ["Water", "Sparkling water", "Coffee", "Tea"],
+  },
+  Vomar: {
+    protein: ["Chicken breast", "Low-fat quark", "Skyr", "Tuna in water", "Eggs"],
+    carbs: ["Oats", "Rice", "Whole-wheat wraps", "Potatoes", "Bananas"],
+    fats: ["Avocado", "Olive oil", "100% peanut butter", "Nuts"],
+    vegetables: ["Broccoli", "Spinach", "Cucumber", "Stir-fry vegetables", "Tomatoes"],
+    drinks: ["Water", "Sparkling water", "Coffee", "Tea", "Zero-sugar drinks"],
+  },
+};
+
 const groceryGuide = {
   "Fat Loss": {
     focus:
@@ -393,41 +452,41 @@ function buildWeeklyGroceryAmounts({ peopleTargets, goalKey }) {
   };
 }
 
+function getMarketProfile(selectedSupermarket) {
+  return (
+    supermarketProfiles[selectedSupermarket] ||
+    supermarketProfiles["Albert Heijn"]
+  );
+}
+
 function generateWeeklyShoppingList({
   weeklyAmounts,
   peopleCount,
   goalKey,
+  selectedSupermarket,
 }) {
+  const market = getMarketProfile(selectedSupermarket);
+
   return [
     {
       category: "Protein",
       items: [
         `${weeklyAmounts.proteinFood}`,
-        "Chicken breast",
-        "Low-fat quark / Skyr",
-        goalKey === "Build Muscle" ? "Eggs" : "Egg whites",
-        "Tuna or white fish",
-        "Tofu or tempeh",
+        ...market.protein,
       ],
     },
     {
       category: "Carbs",
       items: [
         `${weeklyAmounts.carbFood}`,
-        goalKey === "Fat Loss" ? "Potatoes" : "Rice",
-        "Oats",
-        "Whole-wheat wraps or bread",
-        "Bananas",
+        ...market.carbs,
       ],
     },
     {
       category: "Fats",
       items: [
         `${weeklyAmounts.fatFood}`,
-        "Olive oil",
-        "Avocado",
-        "Eggs",
-        "Nuts or 100% peanut butter",
+        ...market.fats,
       ],
     },
     {
@@ -435,20 +494,14 @@ function generateWeeklyShoppingList({
       items: [
         `${weeklyAmounts.vegetables}`,
         `${weeklyAmounts.fruit}`,
-        "Broccoli",
-        "Spinach",
-        "Cucumber",
-        "Stir-fry vegetables",
-        "Tomatoes or bell peppers",
+        ...market.vegetables,
       ],
     },
     {
       category: "Drinks",
       items: [
         `${weeklyAmounts.water}`,
-        "Sparkling water",
-        "Coffee",
-        "Tea",
+        ...market.drinks,
         peopleCount > 1
           ? "Electrolytes for training or hot days"
           : "Electrolytes if needed",
@@ -578,8 +631,9 @@ export default function NutritionClient({ membershipType }) {
         weeklyAmounts,
         peopleCount: peopleTargets.length,
         goalKey,
+        selectedSupermarket,
       }),
-    [weeklyAmounts, peopleTargets.length, goalKey]
+    [weeklyAmounts, peopleTargets.length, goalKey, selectedSupermarket]
   );
 
   return (
