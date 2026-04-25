@@ -75,22 +75,6 @@ async function updateProfileAccess({
 }
 
 export async function POST(req) {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    return new Response("Missing STRIPE_SECRET_KEY", { status: 500 });
-  }
-
-  if (!process.env.STRIPE_WEBHOOK_SECRET) {
-    return new Response("Missing STRIPE_WEBHOOK_SECRET", { status: 500 });
-  }
-
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return new Response("Missing NEXT_PUBLIC_SUPABASE_URL", { status: 500 });
-  }
-
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return new Response("Missing SUPABASE_SERVICE_ROLE_KEY", { status: 500 });
-  }
-
   const body = await req.text();
   const signature = req.headers.get("stripe-signature");
 
@@ -116,7 +100,10 @@ export async function POST(req) {
       const session = event.data.object;
 
       const customerEmail = String(
-        session.customer_email || session.customer_details?.email || ""
+        session.customer_email ||
+          session.customer_details?.email ||
+          session.metadata?.email ||
+          ""
       )
         .toLowerCase()
         .trim();
@@ -125,9 +112,10 @@ export async function POST(req) {
         .toLowerCase()
         .trim();
 
-     const userId = String(
-  session.metadata?.user_id || session.client_reference_id || ""
-).trim();
+      const userId = String(
+        session.metadata?.user_id || session.client_reference_id || ""
+      ).trim();
+
       const customerId = String(session.customer || "").trim();
 
       console.log("STRIPE SESSION COMPLETED:", {
@@ -135,6 +123,7 @@ export async function POST(req) {
         customer: customerId,
         customer_email: session.customer_email,
         customer_details_email: session.customer_details?.email,
+        client_reference_id: session.client_reference_id,
         metadata: session.metadata,
       });
 
@@ -170,6 +159,37 @@ export async function POST(req) {
           customerId || "none"
         }`
       );
+    }
+
+    if (event.type === "customer.subscription.updated") {
+      const subscription = event.data.object;
+      const customerId = String(subscription.customer || "").trim();
+
+      const plan = String(subscription.metadata?.plan || "")
+        .toLowerCase()
+        .trim();
+
+      const userId = String(subscription.metadata?.user_id || "").trim();
+      const email = String(subscription.metadata?.email || "")
+        .toLowerCase()
+        .trim();
+
+      const membershipType = PLAN_MEMBERSHIP_MAP[plan];
+
+      if (customerId && membershipType) {
+        const updateError = await updateProfileAccess({
+          userId,
+          customerId,
+          email,
+          membershipType,
+          isActive: subscription.status === "active",
+        });
+
+        if (updateError) {
+          console.error("SUBSCRIPTION UPDATE ERROR:", updateError.message);
+          return new Response("Subscription update failed", { status: 500 });
+        }
+      }
     }
 
     if (event.type === "customer.subscription.deleted") {
