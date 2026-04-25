@@ -15,7 +15,7 @@ export default async function NutritionPage() {
   return (
     <DashboardLayout
       title="Nutrition"
-      subtitle="Goal-based eating guidance with structure matched to your member level."
+      subtitle="Personalized calories, macros, meal timing, grocery guidance, and 14-day sample structures."
       membershipType={profile?.membership_type}
     >
       <NutritionClient membershipType={profile?.membership_type} />
