@@ -10,6 +10,14 @@ const activityOptions = [
   { value: "active", label: "Active", multiplier: 1.725 },
 ];
 
+const fallbackPlan = {
+  summary:
+    "Personalized nutrition guidance will appear here once meal plan data is available.",
+  timing: [],
+  grocery: [],
+  sampleDays: [],
+};
+
 function calculateBmr({ sex, weightKg, heightCm, age }) {
   if (sex === "male") return 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
   return 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
@@ -51,9 +59,12 @@ export default function NutritionClient({ membershipType }) {
     membership === "vip" ||
     membership === "coaching";
 
-  const goals = Object.keys(nutritionPlans);
+  const goals = Object.keys(nutritionPlans || {});
+  const defaultGoal = goals.includes("Build Muscle")
+    ? "Build Muscle"
+    : goals[0] || "Custom Nutrition";
 
-  const [selectedGoal, setSelectedGoal] = useState(goals[0] || "Build Muscle");
+  const [selectedGoal, setSelectedGoal] = useState(defaultGoal);
   const [selectedDay, setSelectedDay] = useState(0);
 
   const [sex, setSex] = useState("male");
@@ -62,7 +73,17 @@ export default function NutritionClient({ membershipType }) {
   const [heightCm, setHeightCm] = useState("180");
   const [activityLevel, setActivityLevel] = useState("moderate");
 
-  const plan = nutritionPlans[selectedGoal] || nutritionPlans[goals[0]];
+  const plan =
+    nutritionPlans?.[selectedGoal] ||
+    nutritionPlans?.[defaultGoal] ||
+    fallbackPlan;
+
+  const safeSampleDays = Array.isArray(plan?.sampleDays)
+    ? plan.sampleDays
+    : [];
+
+  const safeTiming = Array.isArray(plan?.timing) ? plan.timing : [];
+  const safeGrocery = Array.isArray(plan?.grocery) ? plan.grocery : [];
 
   const targets = useMemo(() => {
     const cleanAge = parseNumber(age, 35);
@@ -97,19 +118,32 @@ export default function NutritionClient({ membershipType }) {
       protein: `${Math.round(protein)}g`,
       carbs: `${Math.round(carbs)}g`,
       fats: `${Math.round(fats)}g`,
-      hydration: `${Math.max(2, Math.round(cleanWeight * 0.04 * 10) / 10)}L water/day`,
+      hydration: `${Math.max(
+        2,
+        Math.round(cleanWeight * 0.04 * 10) / 10
+      )}L water/day`,
     };
   }, [sex, age, weightKg, heightCm, activityLevel, selectedGoal]);
 
   const activeDay = useMemo(() => {
-    return plan?.sampleDays?.[selectedDay] || plan?.sampleDays?.[0];
-  }, [plan, selectedDay]);
+    return safeSampleDays[selectedDay] || safeSampleDays[0] || null;
+  }, [safeSampleDays, selectedDay]);
 
   const profileKey = sex === "male" ? "men" : "women";
+
   const currentVariant =
     activeDay?.variants?.[profileKey] ||
     activeDay?.variants?.men ||
-    activeDay?.variants?.women;
+    activeDay?.variants?.women ||
+    {
+      totalCalories: "—",
+      totalProtein: "—",
+      meals: [],
+    };
+
+  const safeMeals = Array.isArray(currentVariant?.meals)
+    ? currentVariant.meals
+    : [];
 
   function handleGoalChange(goal) {
     setSelectedGoal(goal);
@@ -129,22 +163,45 @@ export default function NutritionClient({ membershipType }) {
 
         <div style={calculatorGrid}>
           <Field label="Sex">
-            <select value={sex} onChange={(e) => setSex(e.target.value)} style={input}>
-              <option style={optionStyle} value="male">Male</option>
-              <option style={optionStyle} value="female">Female</option>
+            <select
+              value={sex}
+              onChange={(e) => setSex(e.target.value)}
+              style={input}
+            >
+              <option style={optionStyle} value="male">
+                Male
+              </option>
+              <option style={optionStyle} value="female">
+                Female
+              </option>
             </select>
           </Field>
 
           <Field label="Age">
-            <input value={age} onChange={(e) => setAge(e.target.value)} style={input} />
+            <input
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              style={input}
+              inputMode="numeric"
+            />
           </Field>
 
           <Field label="Weight kg">
-            <input value={weightKg} onChange={(e) => setWeightKg(e.target.value)} style={input} />
+            <input
+              value={weightKg}
+              onChange={(e) => setWeightKg(e.target.value)}
+              style={input}
+              inputMode="numeric"
+            />
           </Field>
 
           <Field label="Height cm">
-            <input value={heightCm} onChange={(e) => setHeightCm(e.target.value)} style={input} />
+            <input
+              value={heightCm}
+              onChange={(e) => setHeightCm(e.target.value)}
+              style={input}
+              inputMode="numeric"
+            />
           </Field>
 
           <Field label="Activity">
@@ -167,17 +224,26 @@ export default function NutritionClient({ membershipType }) {
               onChange={(e) => handleGoalChange(e.target.value)}
               style={input}
             >
-              {goals.map((goal) => (
-                <option key={goal} value={goal} style={optionStyle}>
-                  {goal}
+              {goals.length > 0 ? (
+                goals.map((goal) => (
+                  <option key={goal} value={goal} style={optionStyle}>
+                    {goal}
+                  </option>
+                ))
+              ) : (
+                <option value="Custom Nutrition" style={optionStyle}>
+                  Custom Nutrition
                 </option>
-              ))}
+              )}
             </select>
           </Field>
         </div>
 
         <div style={macroGrid}>
-          <MacroCard label="Target Calories" value={`${targets.targetCalories} kcal`} />
+          <MacroCard
+            label="Target Calories"
+            value={`${targets.targetCalories} kcal`}
+          />
           <MacroCard label="Maintenance" value={`${targets.maintenance} kcal`} />
           <MacroCard label="Protein" value={targets.protein} />
           <MacroCard label="Carbs" value={targets.carbs} />
@@ -190,26 +256,39 @@ export default function NutritionClient({ membershipType }) {
         <div style={sectionTop}>
           <div style={eyebrow}>Overview</div>
           <h3 style={sectionTitle}>{selectedGoal}</h3>
-          <p style={muted}>{plan?.summary}</p>
+          <p style={muted}>{plan?.summary || fallbackPlan.summary}</p>
         </div>
 
         <div style={sectionTop}>
           <h3 style={sectionTitleSmall}>Nutrition timing reminders</h3>
         </div>
 
-        <ul style={ingredientsList}>
-          {plan?.timing?.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-
-        <div style={{ marginTop: "20px" }}>
-          <h3 style={sectionTitleSmall}>Core grocery list</h3>
+        {safeTiming.length > 0 ? (
           <ul style={ingredientsList}>
-            {plan?.grocery?.map((item) => (
+            {safeTiming.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
+        ) : (
+          <p style={muted}>
+            Timing guidance will show here when this plan has timing data.
+          </p>
+        )}
+
+        <div style={{ marginTop: "20px" }}>
+          <h3 style={sectionTitleSmall}>Core grocery list</h3>
+
+          {safeGrocery.length > 0 ? (
+            <ul style={ingredientsList}>
+              {safeGrocery.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          ) : (
+            <p style={muted}>
+              Grocery guidance will show here when this plan has grocery data.
+            </p>
+          )}
         </div>
       </section>
 
@@ -223,55 +302,74 @@ export default function NutritionClient({ membershipType }) {
           </p>
         </div>
 
-        <div style={dayTabs}>
-          {plan?.sampleDays?.map((day, index) => {
-            const active = selectedDay === index;
+        {safeSampleDays.length > 0 ? (
+          <>
+            <div style={dayTabs}>
+              {safeSampleDays.map((day, index) => {
+                const active = selectedDay === index;
 
-            return (
-              <button
-                key={day.title}
-                onClick={() => setSelectedDay(index)}
-                style={{
-                  ...dayTab,
-                  background: active
-                    ? "rgba(255,255,255,0.14)"
-                    : "rgba(255,255,255,0.03)",
-                  border: active
-                    ? "1px solid rgba(255,255,255,0.22)"
-                    : "1px solid rgba(255,255,255,0.08)",
-                  color: "white",
-                }}
-              >
-                Day {index + 1}
-              </button>
-            );
-          })}
-        </div>
+                return (
+                  <button
+                    key={day?.title || `day-${index}`}
+                    onClick={() => setSelectedDay(index)}
+                    style={{
+                      ...dayTab,
+                      background: active
+                        ? "rgba(255,255,255,0.14)"
+                        : "rgba(255,255,255,0.03)",
+                      border: active
+                        ? "1px solid rgba(255,255,255,0.22)"
+                        : "1px solid rgba(255,255,255,0.08)",
+                      color: "white",
+                    }}
+                  >
+                    Day {index + 1}
+                  </button>
+                );
+              })}
+            </div>
 
-        {currentVariant && (
-          <div style={featuredDayCard}>
-            <div style={featuredDayTop}>
-              <div>
-                <div style={featuredDayTitle}>
-                  {activeDay.title} — {sex === "male" ? "Male" : "Female"} sample
-                </div>
-                <div style={featuredDayMeta}>
-                  <span style={featuredMetaPill}>
-                    Calculated target: {targets.targetCalories} kcal
-                  </span>
-                  <span style={featuredMetaPill}>Protein: {targets.protein}</span>
+            <div style={featuredDayCard}>
+              <div style={featuredDayTop}>
+                <div>
+                  <div style={featuredDayTitle}>
+                    {activeDay?.title || `Day ${selectedDay + 1}`} —{" "}
+                    {sex === "male" ? "Male" : "Female"} sample
+                  </div>
+                  <div style={featuredDayMeta}>
+                    <span style={featuredMetaPill}>
+                      Calculated target: {targets.targetCalories} kcal
+                    </span>
+                    <span style={featuredMetaPill}>
+                      Protein: {targets.protein}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div style={mealsGrid}>
-              {currentVariant.meals.map((meal) => (
-                <MealCard
-                  key={`${activeDay.title}-${sex}-${meal.label}-${meal.title}`}
-                  meal={meal}
-                />
-              ))}
+              {safeMeals.length > 0 ? (
+                <div style={mealsGrid}>
+                  {safeMeals.map((meal, index) => (
+                    <MealCard
+                      key={`${activeDay?.title || "day"}-${sex}-${
+                        meal?.label || index
+                      }-${meal?.title || index}`}
+                      meal={meal}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p style={muted}>
+                  No meals found for this day yet. Add meals under this plan in
+                  <code style={inlineCode}> lib/mealPlans.js</code>.
+                </p>
+              )}
             </div>
+          </>
+        ) : (
+          <div style={emptyBox}>
+            No sample days found yet. Add <code style={inlineCode}>sampleDays</code>{" "}
+            to this goal inside <code style={inlineCode}>lib/mealPlans.js</code>.
           </div>
         )}
       </section>
@@ -311,32 +409,42 @@ function MacroCard({ label, value }) {
 }
 
 function MealCard({ meal }) {
+  const ingredients = Array.isArray(meal?.ingredients) ? meal.ingredients : [];
+
   return (
     <div style={mealCard}>
       <div style={mealTopRow}>
         <div>
-          <div style={mealLabel}>{meal.label}</div>
-          <div style={mealTitle}>{meal.title}</div>
+          <div style={mealLabel}>{meal?.label || "Meal"}</div>
+          <div style={mealTitle}>{meal?.title || "Untitled meal"}</div>
         </div>
 
         <div style={mealStats}>
-          <span style={mealStatPill}>{meal.calories}</span>
-          <span style={mealStatPill}>{meal.protein}</span>
+          {meal?.calories ? (
+            <span style={mealStatPill}>{meal.calories}</span>
+          ) : null}
+          {meal?.protein ? (
+            <span style={mealStatPill}>{meal.protein}</span>
+          ) : null}
         </div>
       </div>
 
       <div style={mealSection}>
         <div style={miniHeading}>Ingredients</div>
-        <ul style={ingredientsList}>
-          {meal.ingredients.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
+        {ingredients.length > 0 ? (
+          <ul style={ingredientsList}>
+            {ingredients.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          <p style={mealMethod}>Ingredients not added yet.</p>
+        )}
       </div>
 
       <div style={mealSection}>
         <div style={miniHeading}>Method</div>
-        <p style={mealMethod}>{meal.method}</p>
+        <p style={mealMethod}>{meal?.method || "Method not added yet."}</p>
       </div>
     </div>
   );
@@ -364,6 +472,23 @@ const lockedCard = {
   border: "1px dashed rgba(255,255,255,0.2)",
   borderRadius: "22px",
   padding: "24px",
+};
+
+const emptyBox = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px dashed rgba(255,255,255,0.16)",
+  borderRadius: "18px",
+  padding: "18px",
+  color: "rgba(255,255,255,0.72)",
+  lineHeight: 1.7,
+};
+
+const inlineCode = {
+  background: "rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "8px",
+  padding: "2px 6px",
+  color: "white",
 };
 
 const eyebrow = {
