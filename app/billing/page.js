@@ -14,19 +14,19 @@ export default async function BillingPage() {
   const userEmail = user?.email || "";
 
   const vipTaken = 14;
-  const vipMax = 99;
+  const vipMax = 90;
   const vipLeft = vipMax - vipTaken;
   const vipPercentage = (vipTaken / vipMax) * 100;
 
   const coachingTaken = 2;
-  const coachingMax = 15;
+  const coachingMax = 12;
   const coachingLeft = coachingMax - coachingTaken;
   const coachingPercentage = (coachingTaken / coachingMax) * 100;
 
   return (
     <DashboardLayout
       title="Billing"
-      subtitle="Choose your system level — from simple nutrition to full transformation and coaching."
+      subtitle="Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching."
       membershipType={profile?.membership_type}
     >
       <div style={pageWrap}>
@@ -44,10 +44,23 @@ export default async function BillingPage() {
           )}
         </section>
 
+        <section style={heroUpsellCard}>
+          <div style={eyebrow}>Why upgrade?</div>
+          <h2 style={heroTitle}>Stop guessing what to eat, buy, and train.</h2>
+          <p style={text}>
+            The full system combines nutrition routines, smart grocery planning,
+            workouts, programs, progress tracking, and Couple Zone accountability
+            so members can follow a clear structure instead of restarting every
+            week.
+          </p>
+        </section>
+
         <section style={grid}>
           <div style={card}>
             <div>
               <div style={cardTitle}>Nutrition — €19.99</div>
+              <div style={planTag}>Best for food structure</div>
+
               <div style={text}>
                 ✔ 5 body goals
                 <br />
@@ -55,14 +68,14 @@ export default async function BillingPage() {
                 <br />
                 ✔ Weekly recipes & structure
                 <br />
-                ✔ Smart grocery generator
+                ✔ Smart supermarket grocery generator
                 <br />
                 ✔ Personalized calories & macros
                 <br />
                 ✔ Couple grocery mode
                 <br />
                 <br />
-                Know exactly what to eat and what to buy.
+                Know exactly what to eat and what to buy every week.
               </div>
             </div>
 
@@ -78,7 +91,9 @@ export default async function BillingPage() {
             <div style={bestValue}>🔥 Best Value</div>
 
             <div>
-              <div style={cardTitle}>Full Access — €29.99</div>
+              <div style={cardTitle}>Full Access — €34.99</div>
+              <div style={planTag}>Most complete self-guided system</div>
+
               <div style={text}>
                 ✔ Everything in Nutrition
                 <br />
@@ -92,14 +107,17 @@ export default async function BillingPage() {
                 <br />
                 ✔ Progress tracking
                 <br />
+                ✔ Couple Zone system
                 <br />
-                Complete transformation system.
+                <br />
+                Complete transformation structure: training, food, groceries,
+                progress, and couple accountability.
               </div>
             </div>
 
             <CheckoutButton
               plan="full_access"
-              label="Unlock Everything"
+              label="Unlock Full System"
               email={userEmail}
               variant="yellow"
             />
@@ -107,23 +125,32 @@ export default async function BillingPage() {
 
           <div style={vipCard}>
             <div>
-              <div style={cardTitle}>VIP — €99</div>
+              <div style={cardTitle}>VIP — €90</div>
+              <div style={planTag}>Guided accountability</div>
+
               <div style={text}>
                 ✔ Everything in Full Access
                 <br />
                 ✔ Monthly coaching call
+                <br />
+                ✔ Weekly couple check-in system
+                <br />
+                ✔ Weakest-area auto detection
+                <br />
+                ✔ Personalized advice based on scores
                 <br />
                 ✔ Priority support
                 <br />
                 ✔ Strategy adjustments
                 <br />
                 <br />
-                You don’t just follow — you get guided.
+                You do not just follow the system — you get guided, corrected,
+                and kept accountable.
               </div>
 
               <div style={scarcityBox}>
                 <div style={vipScarcityText}>
-                  {vipTaken}/{vipMax} members — {vipLeft} spots left
+                  {vipTaken}/{vipMax} VIP spots taken — {vipLeft} spots left
                 </div>
 
                 <div style={progressBar}>
@@ -144,25 +171,32 @@ export default async function BillingPage() {
 
           <div style={coachingCard}>
             <div>
-              <div style={cardTitle}>Coaching — €349</div>
+              <div style={cardTitle}>Coaching — €340</div>
+              <div style={planTag}>Maximum personal guidance</div>
+
               <div style={text}>
                 ✔ Everything in VIP
                 <br />
                 ✔ Weekly 1-on-1 calls
                 <br />
-                ✔ Fully custom plan
+                ✔ Fully custom training plan
+                <br />
+                ✔ Fully custom nutrition direction
                 <br />
                 ✔ Direct support
+                <br />
+                ✔ Couple coaching available
                 <br />
                 ✔ Coaching by Niels & Rosanna
                 <br />
                 <br />
-                Maximum results with full accountability.
+                Maximum results with full accountability, personal feedback, and
+                no guessing.
               </div>
 
               <div style={scarcityBox}>
                 <div style={scarcityText}>
-                  {coachingTaken}/{coachingMax} spots taken —{" "}
+                  {coachingTaken}/{coachingMax} coaching spots taken —{" "}
                   {coachingLeft} left
                 </div>
 
@@ -204,7 +238,7 @@ function formatMembership(type) {
 const pageWrap = {
   display: "grid",
   gap: "22px",
-  maxWidth: "1100px",
+  maxWidth: "1160px",
 };
 
 const statusCard = {
@@ -214,6 +248,14 @@ const statusCard = {
   padding: "24px",
   display: "grid",
   gap: "14px",
+};
+
+const heroUpsellCard = {
+  background:
+    "linear-gradient(135deg, rgba(250,204,21,0.10), rgba(255,255,255,0.04))",
+  border: "1px solid rgba(250,204,21,0.22)",
+  borderRadius: "22px",
+  padding: "26px",
 };
 
 const eyebrow = {
@@ -228,6 +270,13 @@ const title = {
   margin: 0,
   fontSize: "30px",
   fontWeight: "800",
+};
+
+const heroTitle = {
+  margin: "0 0 10px 0",
+  fontSize: "clamp(28px, 4vw, 40px)",
+  fontWeight: "900",
+  lineHeight: 1.08,
 };
 
 const text = {
@@ -247,7 +296,7 @@ const card = {
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "20px",
   padding: "22px",
-  minHeight: "430px",
+  minHeight: "520px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -257,7 +306,7 @@ const card = {
 const highlightCard = {
   ...card,
   background: "rgba(250,204,21,0.08)",
-  border: "1px solid rgba(250,204,21,0.4)",
+  border: "1px solid rgba(250,204,21,0.45)",
 };
 
 const bestValue = {
@@ -275,40 +324,54 @@ const bestValue = {
 const vipCard = {
   ...card,
   background: "rgba(96,165,250,0.08)",
-  border: "1px solid rgba(96,165,250,0.25)",
+  border: "1px solid rgba(96,165,250,0.28)",
 };
 
 const coachingCard = {
   ...card,
   background:
-    "linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(255,255,255,0.2)",
+    "linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.04))",
+  border: "1px solid rgba(255,255,255,0.22)",
 };
 
 const cardTitle = {
   fontSize: "24px",
+  fontWeight: "900",
+  marginBottom: "8px",
+};
+
+const planTag = {
+  display: "inline-block",
+  marginBottom: "14px",
+  padding: "6px 10px",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,0.07)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  color: "rgba(255,255,255,0.72)",
+  fontSize: "12px",
   fontWeight: "800",
-  marginBottom: "12px",
 };
 
 const scarcityBox = {
-  marginTop: "16px",
+  marginTop: "18px",
 };
 
 const scarcityText = {
   fontSize: "13px",
   marginBottom: "6px",
   color: "#facc15",
+  fontWeight: "800",
 };
 
 const vipScarcityText = {
   fontSize: "13px",
   marginBottom: "6px",
   color: "#60a5fa",
+  fontWeight: "800",
 };
 
 const progressBar = {
-  height: "6px",
+  height: "7px",
   background: "rgba(255,255,255,0.1)",
   borderRadius: "10px",
   overflow: "hidden",
