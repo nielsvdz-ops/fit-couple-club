@@ -7,101 +7,195 @@ import { getCurrentUserAndProfile } from "../../lib/getProfile";
 import { canAccessFitnessPages } from "../../lib/access";
 
 const weeklyTargets = [
-  { label: "Workouts together", value: "4", detail: "Complete 4 shared sessions this week" },
-  { label: "Daily step goal", value: "8k+", detail: "Aim to walk together whenever possible" },
-  { label: "Healthy dinners", value: "3", detail: "Cook at least 3 strong meals together" },
-  { label: "Check-in talk", value: "1", detail: "Do a Sunday reflection without distractions" },
+  {
+    label: "Shared workouts",
+    value: "4",
+    detail: "Train together or hold each other accountable.",
+  },
+  {
+    label: "Steps together",
+    value: "8k+",
+    detail: "Aim for walks after meals or in the evening.",
+  },
+  {
+    label: "High-protein dinners",
+    value: "3",
+    detail: "Cook structured dinners together this week.",
+  },
+  {
+    label: "Sunday check-in",
+    value: "1",
+    detail: "Review the week and plan the next one.",
+  },
+];
+
+const coupleChallenges = [
+  {
+    title: "Consistency Week",
+    goal: "Build rhythm together",
+    tasks: [
+      "Complete 4 planned workouts",
+      "Prepare 3 high-protein dinners",
+      "Walk together 3 times",
+      "Do one Sunday reflection",
+    ],
+  },
+  {
+    title: "Fat Loss Focus Week",
+    goal: "Control food choices as a team",
+    tasks: [
+      "Use the grocery generator before shopping",
+      "Keep 5 dinners high-protein",
+      "Avoid liquid calories on weekdays",
+      "Hit daily steps 5 days this week",
+    ],
+  },
+  {
+    title: "Muscle Builder Week",
+    goal: "Support training and food volume",
+    tasks: [
+      "Train with progressive overload",
+      "Add protein to every main meal",
+      "Plan carbs around workouts",
+      "Track body weight and energy twice",
+    ],
+  },
 ];
 
 const sharedTools = [
   {
-    title: "Partner Workout of the Week",
-    subtitle: "One simple session you can both complete",
+    title: "Partner Workout Builder",
+    subtitle: "Simple shared session structure",
     points: [
-      "Goblet squat — 3 x 12",
-      "Push-up or incline push-up — 3 x 10",
-      "Seated row or band row — 3 x 12",
-      "Walking lunges — 2 x 10 each leg",
-      "Plank — 3 x 30 sec",
+      "Lower body: squat or leg press — 3 x 10–12",
+      "Push: push-up or chest press — 3 x 8–12",
+      "Pull: row or pulldown — 3 x 10–12",
+      "Glutes/core: hip thrust + plank",
+      "Finish: 10-minute incline walk together",
     ],
-    footer: "Train side by side and focus on effort, not perfection.",
+    footer:
+      "Use this when you want one session that both people can complete at their own level.",
   },
   {
-    title: "Shared Grocery Focus",
-    subtitle: "Buy foods that make consistency easier",
+    title: "Shared Grocery System",
+    subtitle: "Make the house easier to stay consistent in",
     points: [
-      "Lean protein: chicken, eggs, Greek yogurt, tuna",
-      "Smart carbs: rice, potatoes, oats, wraps",
-      "Quick produce: berries, bananas, spinach, cucumber",
-      "Healthy fats: avocado, olive oil, nuts",
-      "Easy backups: frozen vegetables, protein snacks",
+      "Choose protein first: chicken, eggs, quark, skyr, fish",
+      "Pick simple carbs: rice, oats, potatoes, wraps",
+      "Add easy vegetables: spinach, broccoli, cucumber, stir-fry mix",
+      "Keep quick backups: tuna, protein powder, frozen vegetables",
+      "Use Couple Mode in Nutrition for 2-person shopping amounts",
     ],
-    footer: "The easier your kitchen setup is, the easier progress becomes.",
+    footer:
+      "Most couples fail because food decisions happen too late. Grocery structure fixes that.",
   },
   {
-    title: "Date-Night Healthy Meals",
-    subtitle: "Keep the vibe good without ruining structure",
+    title: "Date-Night Meal Ideas",
+    subtitle: "Keep it healthy without making it boring",
     points: [
       "Steak or chicken with potatoes and vegetables",
       "Homemade taco bowls with lean beef and rice",
       "High-protein pasta with salad",
       "Salmon with roasted potatoes and greens",
-      "Greek yogurt dessert bowl with dark chocolate",
+      "Greek yogurt dessert bowl with berries and dark chocolate",
     ],
-    footer: "A healthy date night should still feel fun, not restrictive.",
+    footer:
+      "A healthy date night should still feel like a date night.",
   },
   {
-    title: "Couple Recovery Reset",
-    subtitle: "Low-stress things to do together",
+    title: "Conflict-Free Accountability",
+    subtitle: "Support without pressure",
     points: [
-      "20–30 minute evening walk",
-      "10-minute mobility flow together",
-      "Screen-free dinner",
-      "Early sleep night",
-      "Sunday planning talk",
+      "Ask: “How can I help you stay on track today?”",
+      "Do not criticize food after it already happened",
+      "Suggest a walk instead of starting an argument",
+      "Plan tomorrow instead of blaming yesterday",
+      "Celebrate completed actions, not perfection",
     ],
-    footer: "Recovery habits usually decide whether couples stay consistent.",
+    footer:
+      "The goal is teamwork, not policing each other.",
   },
 ];
 
 const checkInQuestions = [
   "What went well for us this week?",
-  "Where did we lose structure or discipline?",
-  "Did we support each other or make things harder?",
-  "How was food quality during busy moments?",
-  "What one thing should we improve next week?",
+  "Where did we lose structure?",
+  "Did we support each other or create pressure?",
+  "What meal or moment caused the most friction?",
+  "What should we make easier next week?",
+  "What is one thing each person needs from the other?",
 ];
 
 const scorecards = [
   {
     title: "Training",
-    score: "4/5",
-    text: "Track how many sessions you completed together or separately with full effort.",
+    score: "0–5",
+    text: "Rate how many planned sessions were completed with proper effort.",
   },
   {
     title: "Nutrition",
-    score: "3/5",
-    text: "Rate how well you stayed aligned with meals, portions, and protein targets.",
+    score: "0–5",
+    text: "Rate meals, protein, grocery structure, and weekend control.",
   },
   {
     title: "Support",
-    score: "5/5",
-    text: "Rate how well you encouraged each other instead of creating friction.",
+    score: "0–5",
+    text: "Rate how well you encouraged each other without pressure.",
   },
   {
     title: "Recovery",
-    score: "2/5",
-    text: "Look at sleep, stress, steps, hydration, and how well you reset after hard days.",
+    score: "0–5",
+    text: "Rate sleep, stress, walking, hydration, and reset habits.",
   },
 ];
 
-const habits = [
-  "Train together at least twice per week",
-  "Keep one shared grocery list",
-  "Choose dinners before the week starts",
-  "Walk after dinner 3 times per week",
-  "Do a 10-minute Sunday reflection talk",
-  "Avoid blaming each other for off days",
+const habitSystem = [
+  {
+    title: "Daily",
+    habits: [
+      "Ask each other what the plan is today",
+      "Drink water before coffee or snacks",
+      "Get one walk or movement break",
+      "Eat protein in at least 2 meals",
+    ],
+  },
+  {
+    title: "Weekly",
+    habits: [
+      "Pick 3 shared dinners",
+      "Choose training days together",
+      "Use one grocery list",
+      "Do one honest check-in",
+    ],
+  },
+  {
+    title: "When life gets busy",
+    habits: [
+      "Use quick meals instead of skipping structure",
+      "Walk together instead of doing nothing",
+      "Choose the next best meal",
+      "Do not turn one bad day into a bad week",
+    ],
+  },
+];
+
+const dateNightOptions = [
+  {
+    title: "Lean date night",
+    meal: "Chicken or steak, roasted potatoes, salad, Greek yogurt dessert",
+  },
+  {
+    title: "High-protein comfort",
+    meal: "Lean beef taco bowls with rice, salsa, lettuce, avocado",
+  },
+  {
+    title: "Muscle gain dinner",
+    meal: "Salmon, pasta or rice, vegetables, fruit dessert",
+  },
+  {
+    title: "Low-effort night",
+    meal: "Rotisserie chicken, microwave rice, salad bag, skyr bowl",
+  },
 ];
 
 export default async function CoupleZonePage() {
@@ -129,17 +223,19 @@ export default async function CoupleZonePage() {
   return (
     <DashboardLayout
       title="Couple Zone"
-      subtitle="Premium and VIP members can use shared couple tools, structure, and accountability systems that actually help real progress."
+      subtitle="A premium accountability system for couples who want to train, eat, and stay consistent together."
       membershipType={profile?.membership_type}
     >
       <div style={pageWrap}>
         <section style={heroCard}>
-          <div style={eyebrow}>Shared Mission</div>
-          <h2 style={heroTitle}>Build a stronger routine together, not just better intentions</h2>
+          <div style={eyebrow}>Couple Transformation System</div>
+          <h2 style={heroTitle}>
+            Build discipline together without turning fitness into pressure
+          </h2>
           <p style={heroText}>
-            The Couple Zone is built to help two people stay aligned with training,
-            food, recovery, and communication. The goal is not just motivation.
-            The goal is structure that works in real life.
+            Couple Zone helps two people stay aligned with workouts, food,
+            groceries, recovery, habits, and weekly accountability. It is built
+            for real couples with real schedules.
           </p>
 
           <div style={targetGrid}>
@@ -154,26 +250,25 @@ export default async function CoupleZonePage() {
         </section>
 
         <section style={sectionCard}>
-          <div style={sectionEyebrow}>This week’s challenge</div>
-          <h3 style={sectionTitle}>Simple weekly structure for couples</h3>
-          <div style={challengeGrid}>
-            <div style={challengeMain}>
-              <div style={challengeHeadline}>Weekly mission</div>
-              <ul style={list}>
-                <li>Complete 4 workouts together or with shared accountability</li>
-                <li>Cook 3 high-protein dinners at home</li>
-                <li>Hit 8k+ steps on at least 5 days</li>
-                <li>Do 1 honest Sunday check-in conversation</li>
-              </ul>
-            </div>
+          <div style={sectionEyebrow}>Weekly mission board</div>
+          <h3 style={sectionTitle}>Choose your couple focus this week</h3>
+          <p style={text}>
+            Pick one challenge and keep it simple. The goal is shared execution,
+            not perfection.
+          </p>
 
-            <div style={challengeSide}>
-              <div style={challengeHeadline}>What matters most</div>
-              <p style={text}>
-                You do not need to be perfect together. You need to remove chaos,
-                stop guessing, and make it easier for both people to stay on track.
-              </p>
-            </div>
+          <div style={challengeCards}>
+            {coupleChallenges.map((challenge) => (
+              <article key={challenge.title} style={challengeCard}>
+                <div style={challengeTitle}>{challenge.title}</div>
+                <div style={challengeGoal}>{challenge.goal}</div>
+                <ul style={list}>
+                  {challenge.tasks.map((task) => (
+                    <li key={task}>{task}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
           </div>
         </section>
 
@@ -190,8 +285,8 @@ export default async function CoupleZonePage() {
         </section>
 
         <section style={sectionCard}>
-          <div style={sectionEyebrow}>Useful tools</div>
-          <h3 style={sectionTitle}>Shared tools that improve consistency</h3>
+          <div style={sectionEyebrow}>Couple tools</div>
+          <h3 style={sectionTitle}>Tools that make consistency easier</h3>
 
           <div style={toolsGrid}>
             {sharedTools.map((tool) => (
@@ -214,7 +309,11 @@ export default async function CoupleZonePage() {
         <section style={twoColGrid}>
           <div style={sectionCard}>
             <div style={sectionEyebrow}>Sunday reflection</div>
-            <h3 style={sectionTitle}>Couple check-in prompts</h3>
+            <h3 style={sectionTitle}>Weekly couple check-in</h3>
+            <p style={text}>
+              Use these questions once per week. Keep it calm, honest, and
+              focused on solutions.
+            </p>
             <ul style={list}>
               {checkInQuestions.map((question) => (
                 <li key={question}>{question}</li>
@@ -223,44 +322,75 @@ export default async function CoupleZonePage() {
           </div>
 
           <div style={sectionCard}>
-            <div style={sectionEyebrow}>High-value habits</div>
-            <h3 style={sectionTitle}>Small habits that actually help</h3>
-            <ul style={list}>
-              {habits.map((habit) => (
-                <li key={habit}>{habit}</li>
+            <div style={sectionEyebrow}>Date-night structure</div>
+            <h3 style={sectionTitle}>Healthy meals that still feel good</h3>
+            <div style={dateGrid}>
+              {dateNightOptions.map((option) => (
+                <div key={option.title} style={dateCard}>
+                  <div style={dateTitle}>{option.title}</div>
+                  <p style={text}>{option.meal}</p>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </section>
 
         <section style={sectionCard}>
-          <div style={sectionEyebrow}>How to use this page</div>
-          <h3 style={sectionTitle}>Best way to get results as a couple</h3>
+          <div style={sectionEyebrow}>Habit system</div>
+          <h3 style={sectionTitle}>Simple habits for better teamwork</h3>
+
+          <div style={habitGrid}>
+            {habitSystem.map((group) => (
+              <div key={group.title} style={habitCard}>
+                <div style={habitTitle}>{group.title}</div>
+                <ul style={list}>
+                  {group.habits.map((habit) => (
+                    <li key={habit}>{habit}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section style={sectionCard}>
+          <div style={sectionEyebrow}>How to use Couple Zone</div>
+          <h3 style={sectionTitle}>Your weekly couple workflow</h3>
+
           <div style={howGrid}>
             <div style={howCard}>
               <div style={howNumber}>1</div>
-              <div style={howTitle}>Choose the week’s mission</div>
+              <div style={howTitle}>Pick the mission</div>
               <p style={text}>
-                Keep it realistic. A simple target completed together beats an
-                over-ambitious plan you both abandon.
+                Choose one weekly challenge. Do not try to fix everything at
+                once.
               </p>
             </div>
 
             <div style={howCard}>
               <div style={howNumber}>2</div>
-              <div style={howTitle}>Set shared meals in advance</div>
+              <div style={howTitle}>Plan food together</div>
               <p style={text}>
-                Most couples lose consistency because they decide food too late
-                when energy is already low.
+                Use Nutrition Couple Mode to create a shared grocery list and
+                avoid last-minute food decisions.
               </p>
             </div>
 
             <div style={howCard}>
               <div style={howNumber}>3</div>
-              <div style={howTitle}>Use support, not pressure</div>
+              <div style={howTitle}>Train with support</div>
               <p style={text}>
-                Encourage effort, solve problems together, and stop turning one
-                bad day into a bad week.
+                Train together when possible. When not possible, keep each other
+                accountable without pressure.
+              </p>
+            </div>
+
+            <div style={howCard}>
+              <div style={howNumber}>4</div>
+              <div style={howTitle}>Review on Sunday</div>
+              <p style={text}>
+                Score training, nutrition, support, and recovery. Then choose
+                one improvement for next week.
               </p>
             </div>
           </div>
@@ -277,7 +407,7 @@ const pageWrap = {
 
 const heroCard = {
   background:
-    "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%)",
+    "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "24px",
   padding: "28px",
@@ -293,16 +423,16 @@ const eyebrow = {
 
 const heroTitle = {
   margin: 0,
-  fontSize: "clamp(30px, 4vw, 44px)",
-  fontWeight: "800",
-  lineHeight: 1.08,
+  fontSize: "clamp(30px, 4vw, 46px)",
+  fontWeight: "900",
+  lineHeight: 1.05,
 };
 
 const heroText = {
   color: "rgba(255,255,255,0.72)",
   lineHeight: 1.8,
   marginTop: "12px",
-  maxWidth: "880px",
+  maxWidth: "900px",
 };
 
 const targetGrid = {
@@ -320,14 +450,14 @@ const targetCard = {
 };
 
 const targetValue = {
-  fontSize: "32px",
-  fontWeight: "800",
+  fontSize: "34px",
+  fontWeight: "900",
   marginBottom: "6px",
 };
 
 const targetLabel = {
   fontSize: "15px",
-  fontWeight: "700",
+  fontWeight: "800",
   marginBottom: "6px",
 };
 
@@ -355,35 +485,34 @@ const sectionEyebrow = {
 const sectionTitle = {
   margin: 0,
   fontSize: "28px",
-  fontWeight: "800",
+  fontWeight: "900",
   lineHeight: 1.15,
 };
 
-const challengeGrid = {
+const challengeCards = {
   display: "grid",
-  gridTemplateColumns: "minmax(0,1.4fr) minmax(280px,0.9fr)",
-  gap: "18px",
+  gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
+  gap: "16px",
   marginTop: "18px",
 };
 
-const challengeMain = {
+const challengeCard = {
   background: "rgba(255,255,255,0.03)",
   border: "1px solid rgba(255,255,255,0.06)",
   borderRadius: "18px",
   padding: "18px",
 };
 
-const challengeSide = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "18px",
-  padding: "18px",
+const challengeTitle = {
+  fontSize: "20px",
+  fontWeight: "900",
+  marginBottom: "6px",
 };
 
-const challengeHeadline = {
-  fontSize: "18px",
-  fontWeight: "800",
-  marginBottom: "10px",
+const challengeGoal = {
+  color: "rgba(255,255,255,0.62)",
+  lineHeight: 1.6,
+  marginBottom: "12px",
 };
 
 const statsGrid = {
@@ -409,12 +538,12 @@ const scoreHeader = {
 
 const scoreTitle = {
   fontSize: "20px",
-  fontWeight: "800",
+  fontWeight: "900",
 };
 
 const scoreValue = {
   fontSize: "18px",
-  fontWeight: "800",
+  fontWeight: "900",
   padding: "6px 10px",
   borderRadius: "999px",
   background: "rgba(255,255,255,0.08)",
@@ -438,7 +567,7 @@ const toolCard = {
 
 const toolTitle = {
   fontSize: "22px",
-  fontWeight: "800",
+  fontWeight: "900",
   lineHeight: 1.2,
 };
 
@@ -458,6 +587,45 @@ const twoColGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))",
   gap: "22px",
+};
+
+const dateGrid = {
+  display: "grid",
+  gap: "12px",
+  marginTop: "14px",
+};
+
+const dateCard = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "16px",
+  padding: "14px",
+};
+
+const dateTitle = {
+  fontSize: "17px",
+  fontWeight: "900",
+  marginBottom: "6px",
+};
+
+const habitGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
+  gap: "16px",
+  marginTop: "18px",
+};
+
+const habitCard = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "18px",
+  padding: "18px",
+};
+
+const habitTitle = {
+  fontSize: "20px",
+  fontWeight: "900",
+  marginBottom: "10px",
 };
 
 const howGrid = {
@@ -482,13 +650,13 @@ const howNumber = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontWeight: "800",
+  fontWeight: "900",
   marginBottom: "12px",
 };
 
 const howTitle = {
   fontSize: "18px",
-  fontWeight: "800",
+  fontWeight: "900",
   marginBottom: "8px",
 };
 
