@@ -125,7 +125,9 @@ export async function POST(req) {
         .toLowerCase()
         .trim();
 
-      const userId = String(session.metadata?.user_id || "").trim();
+     const userId = String(
+  session.metadata?.user_id || session.client_reference_id || ""
+).trim();
       const customerId = String(session.customer || "").trim();
 
       console.log("STRIPE SESSION COMPLETED:", {
