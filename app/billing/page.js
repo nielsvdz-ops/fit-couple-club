@@ -26,16 +26,16 @@ export default async function BillingPage() {
   return (
     <DashboardLayout
       title="Billing"
-      subtitle="Choose your plan and upgrade your results."
+      subtitle="Choose your system level — from simple nutrition to full transformation and coaching."
       membershipType={profile?.membership_type}
     >
-      <div style={{ display: "grid", gap: "22px", maxWidth: "1000px" }}>
+      <div style={pageWrap}>
         <section style={statusCard}>
           <div>
             <div style={eyebrow}>Current Membership</div>
             <h2 style={title}>{formatMembership(profile?.membership_type)}</h2>
             <p style={text}>
-              Status: {profile?.is_active ? "Active" : "No active plan yet"}
+              Status: {profile?.is_active ? "Active" : "No active plan"}
             </p>
           </div>
 
@@ -46,16 +46,24 @@ export default async function BillingPage() {
 
         <section style={grid}>
           <div style={card}>
-            <div style={cardTitle}>Nutrition — €19.99</div>
-            <div style={text}>
-              ✔ Meal plans
-              <br />
-              ✔ Recipes
-              <br />
-              ✔ Nutrition guidance
-              <br />
-              <br />
-              Perfect if you want results without going to the gym.
+            <div>
+              <div style={cardTitle}>Nutrition — €19.99</div>
+              <div style={text}>
+                ✔ 5 body goals
+                <br />
+                ✔ 150 daily nutrition routines
+                <br />
+                ✔ Weekly recipes & structure
+                <br />
+                ✔ Smart grocery generator
+                <br />
+                ✔ Personalized calories & macros
+                <br />
+                ✔ Couple grocery mode
+                <br />
+                <br />
+                Know exactly what to eat and what to buy.
+              </div>
             </div>
 
             <CheckoutButton
@@ -68,20 +76,25 @@ export default async function BillingPage() {
 
           <div style={highlightCard}>
             <div style={bestValue}>🔥 Best Value</div>
-            <div style={cardTitle}>Full Access — €29.99</div>
-            <div style={text}>
-              ✔ Workouts
-              <br />
-              ✔ Nutrition
-              <br />
-              ✔ Programs
-              <br />
-              ✔ Progress tracking
-              <br />
-              ✔ Everything included
-              <br />
-              <br />
-              Complete system for total transformation.
+
+            <div>
+              <div style={cardTitle}>Full Access — €29.99</div>
+              <div style={text}>
+                ✔ Everything in Nutrition
+                <br />
+                ✔ Full workout system
+                <br />
+                ✔ Step-by-step programs
+                <br />
+                ✔ Exercise GIF guidance
+                <br />
+                ✔ Plan builder
+                <br />
+                ✔ Progress tracking
+                <br />
+                <br />
+                Complete transformation system.
+              </div>
             </div>
 
             <CheckoutButton
@@ -93,27 +106,31 @@ export default async function BillingPage() {
           </div>
 
           <div style={vipCard}>
-            <div style={cardTitle}>VIP — €99</div>
-            <div style={text}>
-              ✔ Everything in Full Access
-              <br />
-              ✔ Monthly coaching call
-              <br />
-              ✔ Priority support
-              <br />
-              <br />
-              Coaching with guidance.
-            </div>
-
-            <div style={scarcityBox}>
-              <div style={vipScarcityText}>
-                {vipTaken}/{vipMax} members — {vipLeft} spots left
+            <div>
+              <div style={cardTitle}>VIP — €99</div>
+              <div style={text}>
+                ✔ Everything in Full Access
+                <br />
+                ✔ Monthly coaching call
+                <br />
+                ✔ Priority support
+                <br />
+                ✔ Strategy adjustments
+                <br />
+                <br />
+                You don’t just follow — you get guided.
               </div>
 
-              <div style={progressBar}>
-                <div
-                  style={{ ...progressFillBlue, width: `${vipPercentage}%` }}
-                />
+              <div style={scarcityBox}>
+                <div style={vipScarcityText}>
+                  {vipTaken}/{vipMax} members — {vipLeft} spots left
+                </div>
+
+                <div style={progressBar}>
+                  <div
+                    style={{ ...progressFillBlue, width: `${vipPercentage}%` }}
+                  />
+                </div>
               </div>
             </div>
 
@@ -126,32 +143,37 @@ export default async function BillingPage() {
           </div>
 
           <div style={coachingCard}>
-            <div style={cardTitle}>Coaching — €349</div>
-            <div style={text}>
-              ✔ Weekly 1-on-1 calls
-              <br />
-              ✔ Fully customized plan
-              <br />
-              ✔ Direct support
-              <br />
-              ✔ Coaching by Niels & Rosanna
-              <br />
-              <br />
-              Maximum results with personal guidance.
-            </div>
-
-            <div style={scarcityBox}>
-              <div style={scarcityText}>
-                {coachingTaken}/{coachingMax} spots taken — {coachingLeft} left
+            <div>
+              <div style={cardTitle}>Coaching — €349</div>
+              <div style={text}>
+                ✔ Everything in VIP
+                <br />
+                ✔ Weekly 1-on-1 calls
+                <br />
+                ✔ Fully custom plan
+                <br />
+                ✔ Direct support
+                <br />
+                ✔ Coaching by Niels & Rosanna
+                <br />
+                <br />
+                Maximum results with full accountability.
               </div>
 
-              <div style={progressBar}>
-                <div
-                  style={{
-                    ...progressFillYellow,
-                    width: `${coachingPercentage}%`,
-                  }}
-                />
+              <div style={scarcityBox}>
+                <div style={scarcityText}>
+                  {coachingTaken}/{coachingMax} spots taken —{" "}
+                  {coachingLeft} left
+                </div>
+
+                <div style={progressBar}>
+                  <div
+                    style={{
+                      ...progressFillYellow,
+                      width: `${coachingPercentage}%`,
+                    }}
+                  />
+                </div>
               </div>
             </div>
 
@@ -179,6 +201,12 @@ function formatMembership(type) {
   return "Free";
 }
 
+const pageWrap = {
+  display: "grid",
+  gap: "22px",
+  maxWidth: "1100px",
+};
+
 const statusCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
@@ -203,7 +231,7 @@ const title = {
 };
 
 const text = {
-  color: "rgba(255,255,255,0.68)",
+  color: "rgba(255,255,255,0.72)",
   lineHeight: 1.8,
 };
 
@@ -218,17 +246,18 @@ const card = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "20px",
-  padding: "20px",
+  padding: "22px",
+  minHeight: "430px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
+  position: "relative",
 };
 
 const highlightCard = {
   ...card,
   background: "rgba(250,204,21,0.08)",
   border: "1px solid rgba(250,204,21,0.4)",
-  position: "relative",
 };
 
 const bestValue = {
@@ -239,8 +268,8 @@ const bestValue = {
   color: "black",
   fontSize: "12px",
   fontWeight: "800",
-  padding: "4px 8px",
-  borderRadius: "6px",
+  padding: "5px 10px",
+  borderRadius: "8px",
 };
 
 const vipCard = {
@@ -259,7 +288,7 @@ const coachingCard = {
 const cardTitle = {
   fontSize: "24px",
   fontWeight: "800",
-  marginBottom: "10px",
+  marginBottom: "12px",
 };
 
 const scarcityBox = {
