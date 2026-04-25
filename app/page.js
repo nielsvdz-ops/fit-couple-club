@@ -6,19 +6,19 @@ import Navbar from "../components/Navbar";
 const goalCards = [
   {
     title: "Lose Fat",
-    text: "Drop body fat with structure, high-protein meals, and training that fits real life.",
+    text: "Drop body fat with calorie structure, high-protein routines, smart groceries, and training that fits real life.",
   },
   {
     title: "Build Muscle",
-    text: "Progressive workouts and nutrition support for a stronger, more athletic physique.",
+    text: "Progressive workouts, higher-protein nutrition, and grocery structure that supports real growth.",
   },
   {
     title: "Tone & Shape",
-    text: "A balanced route for visible shape, better consistency, and a more confident body.",
+    text: "Build a leaner, more athletic look with consistent workouts, better food choices, and clear weekly structure.",
   },
   {
     title: "Couple Transformation",
-    text: "Train, eat, and stay accountable together with a system designed for couples.",
+    text: "Train, eat, shop, and stay accountable together with Couple Zone, shared routines, and weekly check-ins.",
   },
 ];
 
@@ -26,30 +26,59 @@ const pricingPlans = [
   {
     name: "Nutrition",
     price: "€19.99/mo",
-    points: ["Meal plans", "Recipes", "Nutrition guidance", "Perfect without gym focus"],
+    points: [
+      "5 body goals",
+      "150 daily nutrition routines",
+      "Weekly recipes & structure",
+      "Smart grocery generator",
+      "Couple grocery mode",
+    ],
     cta: "Start Nutrition",
     featured: false,
   },
   {
     name: "Full Access",
-    price: "€29.99/mo",
-    points: ["Everything in Nutrition", "Workouts & programs", "Plan builder", "Progress tracking"],
-    cta: "Unlock Everything",
+    price: "€34.99/mo",
+    points: [
+      "Everything in Nutrition",
+      "Full workout system",
+      "Step-by-step programs",
+      "Exercise GIF guidance",
+      "Progress tracking",
+      "Couple Zone system",
+    ],
+    cta: "Unlock Full System",
     featured: true,
   },
   {
     name: "VIP",
-    price: "€99/mo",
-    points: ["Everything in Full Access", "Monthly coaching call", "Priority support"],
+    price: "€90/mo",
+    points: [
+      "Everything in Full Access",
+      "Monthly coaching call",
+      "Weekly couple check-ins",
+      "Personalized advice",
+      "Priority support",
+      "Limited VIP spots",
+    ],
     cta: "Go VIP",
     featured: false,
+    scarcity: "14/90 VIP spots taken",
   },
   {
     name: "Coaching",
-    price: "€349/mo",
-    points: ["Everything in VIP", "Weekly 1-on-1 calls", "Direct support", "Coaching by Niels & Rosanna"],
+    price: "€340/mo",
+    points: [
+      "Everything in VIP",
+      "Weekly 1-on-1 calls",
+      "Fully custom plan",
+      "Direct support",
+      "Couple coaching available",
+      "Coaching by Niels & Rosanna",
+    ],
     cta: "Start Coaching",
     featured: false,
+    scarcity: "2/12 coaching spots taken",
   },
 ];
 
@@ -88,15 +117,16 @@ export default function Home() {
         }}
       >
         <div>
-          <div style={badgeStyle}>Premium fitness system for individuals and couples</div>
+          <div style={badgeStyle}>Fitness, nutrition, groceries & couple accountability</div>
 
           <h1 style={heroTitle}>
-            Build the body, confidence, and routine you actually want.
+            Stop guessing. Build a body and routine that actually lasts.
           </h1>
 
           <p style={heroText}>
-            Fit Couple Club combines training, nutrition, recipes, progress tools,
-            and couple accountability into one clear lifestyle system.
+            Fit Couple Club gives you daily nutrition routines, smart supermarket
+            grocery planning, workouts, progress tools, and Couple Zone
+            accountability — all in one clear system.
           </p>
 
           <div style={heroButtonRow}>
@@ -105,20 +135,16 @@ export default function Home() {
           </div>
 
           <div style={trustRow}>
-            <span>12+ years together</span>
-            <span>Gym lifestyle</span>
-            <span>Nutrition focused</span>
+            <span>150 nutrition routines</span>
+            <span>Couple Zone</span>
+            <span>Smart grocery engine</span>
           </div>
         </div>
 
         <div style={heroImageWrap}>
           <div style={heroGlow} />
 
-          <img
-            src="/couple-pictures/DJI-0579.jpg"
-            alt=""
-            style={heroBgImage}
-          />
+          <img src="/couple-pictures/DJI-0579.jpg" alt="" style={heroBgImage} />
 
           <img
             src="/couple-pictures/DJI-0579.jpg"
@@ -129,7 +155,7 @@ export default function Home() {
           <div style={imageOverlay}>
             <div style={overlayTitle}>Solo or together</div>
             <div style={overlayText}>
-              Built around real life, real discipline, and real routines.
+              Built for real discipline, real routines, and real couples who want structure.
             </div>
           </div>
         </div>
@@ -138,15 +164,15 @@ export default function Home() {
       <section id="features" style={sectionWrap}>
         <div style={sectionHeader}>
           <div style={eyebrow}>How It Works</div>
-          <h2 style={sectionTitle}>Simple structure. Stronger results.</h2>
+          <h2 style={sectionTitle}>One system. Less guessing. Better consistency.</h2>
         </div>
 
         <div style={featureGrid}>
           {[
-            ["01", "Choose your goal", "Lose fat, build muscle, tone, reset, or transform as a couple."],
-            ["02", "Follow the system", "Get workouts, food structure, recipes, and progress tools."],
-            ["03", "Stay consistent", "Use the platform to remove guessing and stay on track."],
-            ["04", "Upgrade support", "Choose higher accountability when you want more guidance."],
+            ["01", "Choose your goal", "Lose fat, build muscle, tone, improve performance, or transform as a couple."],
+            ["02", "Follow the structure", "Use daily routines, workouts, recipes, grocery planning, and progress tools."],
+            ["03", "Stay accountable", "Couple Zone helps you score the week, detect weak points, and improve together."],
+            ["04", "Upgrade support", "Choose VIP or Coaching when you want personal guidance and accountability."],
           ].map(([number, title, text]) => (
             <div key={title} style={featureCard}>
               <div style={featureNumber}>{number}</div>
@@ -187,7 +213,7 @@ export default function Home() {
       <section style={sectionWrap}>
         <div style={sectionHeader}>
           <div style={eyebrow}>Choose Your Goal</div>
-          <h2 style={sectionTitle}>Plans built around what people actually want.</h2>
+          <h2 style={sectionTitle}>Built around what people actually want.</h2>
         </div>
 
         <div style={goalGrid}>
@@ -202,17 +228,24 @@ export default function Home() {
 
       <section style={splitSection}>
         <div>
-          <div style={eyebrow}>Couple Mode</div>
-          <h2 style={sectionTitle}>The journey is easier together.</h2>
+          <div style={eyebrow}>Couple Zone</div>
+          <h2 style={sectionTitle}>Your biggest advantage is doing this together.</h2>
           <p style={sectionText}>
-            For couples who want to train together, eat better together, and keep
-            each other accountable, Couple Mode makes the process more enjoyable
-            and more consistent.
+            Couple Zone is a premium accountability system for couples who want
+            to train, eat, shop, and stay consistent together without pressure or
+            arguments.
           </p>
           <p style={sectionText}>
-            It turns fitness into a shared lifestyle instead of random workouts
-            and disconnected meal plans.
+            Score your week, track history, detect the weakest area, and get
+            personalized advice so you know exactly what to improve next.
           </p>
+
+          <div style={miniFeatureGrid}>
+            <div style={miniFeature}>Clickable weekly scoring</div>
+            <div style={miniFeature}>Weakest-area detection</div>
+            <div style={miniFeature}>Couple grocery planning</div>
+            <div style={miniFeature}>Personalized advice</div>
+          </div>
         </div>
 
         <div style={luxuryImageCard}>
@@ -227,9 +260,10 @@ export default function Home() {
       <section id="pricing" style={sectionWrap}>
         <div style={sectionHeader}>
           <div style={eyebrow}>Membership Plans</div>
-          <h2 style={sectionTitle}>Start where you are.</h2>
+          <h2 style={sectionTitle}>Choose the level of support you need.</h2>
           <p style={sectionIntro}>
-            Choose nutrition only, unlock the full platform, or get higher-touch support.
+            Start with nutrition, unlock the full transformation system, or get
+            guided with VIP and personal coaching.
           </p>
         </div>
 
@@ -250,9 +284,11 @@ export default function Home() {
 
                 <ul style={pricingList}>
                   {plan.points.map((point) => (
-                    <li key={point}>{point}</li>
+                    <li key={point}>✔ {point}</li>
                   ))}
                 </ul>
+
+                {plan.scarcity && <div style={scarcity}>{plan.scarcity}</div>}
               </div>
 
               <a
@@ -545,6 +581,22 @@ const goalText = {
   margin: 0,
 };
 
+const miniFeatureGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
+  gap: "12px",
+  marginTop: "22px",
+};
+
+const miniFeature = {
+  background: "rgba(250,204,21,0.08)",
+  border: "1px solid rgba(250,204,21,0.22)",
+  borderRadius: "14px",
+  padding: "12px 14px",
+  color: "rgba(255,255,255,0.86)",
+  fontWeight: "800",
+};
+
 const pricingGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
@@ -557,7 +609,7 @@ const pricingCard = {
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "26px",
   padding: "30px",
-  minHeight: "470px",
+  minHeight: "510px",
   position: "relative",
   display: "flex",
   flexDirection: "column",
@@ -599,6 +651,13 @@ const pricingList = {
   lineHeight: 1.9,
   margin: 0,
   color: "rgba(255,255,255,0.78)",
+};
+
+const scarcity = {
+  marginTop: "16px",
+  color: "#facc15",
+  fontSize: "13px",
+  fontWeight: "900",
 };
 
 const pricingButton = {
