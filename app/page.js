@@ -241,7 +241,6 @@ export default function Home() {
           </p>
 
           <div style={miniFeatureGrid}>
-            <div style={miniFeature}>Clickable weekly scoring</div>
             <div style={miniFeature}>Weakest-area detection</div>
             <div style={miniFeature}>Couple grocery planning</div>
             <div style={miniFeature}>Personalized advice</div>
