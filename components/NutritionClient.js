@@ -32,119 +32,84 @@ const europeanSupermarkets = [
   "Auchan",
 ];
 
-const supermarketProfiles = {
-  "Albert Heijn": {
-    protein: ["AH chicken breast", "AH low-fat quark", "AH skyr", "Tuna in water", "Eggs"],
-    carbs: ["AH oats", "Brown rice", "Whole-wheat wraps", "Potatoes", "Bananas"],
-    fats: ["Avocado", "Olive oil", "100% peanut butter", "Mixed nuts"],
-    vegetables: ["Broccoli", "Spinach", "Cucumber", "Stir-fry vegetables", "Tomatoes"],
-    drinks: ["Sparkling water", "Water", "Coffee", "Tea", "Zero-sugar soft drinks"],
-  },
-  Jumbo: {
-    protein: ["Jumbo chicken breast", "Jumbo low-fat quark", "Natural skyr", "Tuna in water", "Eggs"],
-    carbs: ["Oats", "Rice", "Whole-wheat wraps", "Potatoes", "Bananas"],
-    fats: ["Avocado", "Olive oil", "100% peanut butter", "Cashews"],
-    vegetables: ["Broccoli", "Spinach", "Cucumber", "Stir-fry vegetables", "Bell peppers"],
-    drinks: ["Water", "Sparkling water", "Coffee", "Tea", "Zero-sugar drinks"],
-  },
-  Lidl: {
-    protein: ["Chicken breast", "Low-fat quark", "Skyr", "Tuna", "Eggs"],
-    carbs: ["Oats", "Rice", "Whole-grain bread", "Potatoes", "Bananas"],
-    fats: ["Avocado", "Olive oil", "Peanut butter", "Nuts"],
-    vegetables: ["Broccoli", "Spinach", "Cucumber", "Frozen vegetables", "Tomatoes"],
-    drinks: ["Water", "Sparkling water", "Coffee", "Tea", "Zero-sugar soft drinks"],
-  },
-  Aldi: {
-    protein: ["Chicken breast", "Low-fat quark", "Eggs", "Tuna", "Tofu"],
-    carbs: ["Oats", "Rice", "Whole-grain bread", "Potatoes", "Fruit"],
-    fats: ["Olive oil", "Avocado", "Peanut butter", "Nuts"],
-    vegetables: ["Broccoli", "Cucumber", "Spinach", "Stir-fry vegetables", "Tomatoes"],
-    drinks: ["Water", "Sparkling water", "Coffee", "Tea"],
-  },
-  Carrefour: {
-    protein: ["Chicken breast", "Low-fat quark", "Skyr", "Tuna in water", "Eggs"],
-    carbs: ["Oats", "Rice", "Whole-wheat wraps", "Potatoes", "Bananas"],
-    fats: ["Avocado", "Olive oil", "100% peanut butter", "Nuts"],
-    vegetables: ["Broccoli", "Spinach", "Cucumber", "Stir-fry vegetables", "Tomatoes"],
-    drinks: ["Water", "Sparkling water", "Coffee", "Tea", "Zero-sugar drinks"],
-  },
-  Delhaize: {
-    protein: ["Chicken breast", "Skyr", "Low-fat quark", "Tuna", "Eggs"],
-    carbs: ["Oats", "Rice", "Whole-grain bread", "Potatoes", "Bananas"],
-    fats: ["Avocado", "Olive oil", "Peanut butter", "Nuts"],
-    vegetables: ["Broccoli", "Spinach", "Cucumber", "Mixed vegetables", "Bell peppers"],
-    drinks: ["Water", "Sparkling water", "Coffee", "Tea", "Zero drinks"],
-  },
-  Colruyt: {
-    protein: ["Chicken breast", "Low-fat quark", "Eggs", "Tuna", "Lean minced beef"],
-    carbs: ["Oats", "Rice", "Potatoes", "Whole-grain bread", "Bananas"],
-    fats: ["Olive oil", "Avocado", "Peanut butter", "Nuts"],
-    vegetables: ["Broccoli", "Spinach", "Cucumber", "Frozen vegetables", "Tomatoes"],
-    drinks: ["Water", "Sparkling water", "Coffee", "Tea"],
-  },
-  Vomar: {
-    protein: ["Chicken breast", "Low-fat quark", "Skyr", "Tuna in water", "Eggs"],
-    carbs: ["Oats", "Rice", "Whole-wheat wraps", "Potatoes", "Bananas"],
-    fats: ["Avocado", "Olive oil", "100% peanut butter", "Nuts"],
-    vegetables: ["Broccoli", "Spinach", "Cucumber", "Stir-fry vegetables", "Tomatoes"],
-    drinks: ["Water", "Sparkling water", "Coffee", "Tea", "Zero-sugar drinks"],
-  },
+const productDatabase = {
+  protein: [
+    { name: "Chicken breast", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Performance", "Maintenance"] },
+    { name: "Turkey breast", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Lean minced beef", stores: ["all"], goals: ["Build Muscle", "Performance", "Maintenance"] },
+    { name: "Tuna in water", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "White fish", stores: ["all"], goals: ["Fat Loss", "Performance"] },
+    { name: "Eggs", stores: ["all"], goals: ["Build Muscle", "Performance", "Maintenance"] },
+    { name: "Egg whites", stores: ["all"], goals: ["Fat Loss"] },
+    { name: "Low-fat quark", stores: ["Albert Heijn", "Jumbo", "Lidl", "Aldi", "Carrefour", "Delhaize", "Colruyt", "Vomar", "Plus", "Dirk"], goals: ["Fat Loss", "Build Muscle", "Maintenance"] },
+    { name: "Natural skyr", stores: ["Albert Heijn", "Jumbo", "Lidl", "Carrefour", "Delhaize", "Vomar", "Plus"], goals: ["Fat Loss", "Build Muscle", "Performance"] },
+    { name: "Cottage cheese", stores: ["Albert Heijn", "Jumbo", "Carrefour", "Delhaize", "Rewe", "Edeka", "Tesco", "Sainsbury's"], goals: ["Build Muscle", "Maintenance"] },
+    { name: "Protein powder", stores: ["all"], goals: ["Build Muscle", "Performance", "Fat Loss"] },
+    { name: "Tofu", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Tempeh", stores: ["Albert Heijn", "Jumbo", "Carrefour", "Delhaize", "Edeka", "Rewe"], goals: ["Build Muscle", "Maintenance"] },
+    { name: "Salmon", stores: ["all"], goals: ["Build Muscle", "Performance", "Maintenance"] },
+  ],
+
+  carbs: [
+    { name: "Oats", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Performance", "Maintenance"] },
+    { name: "Rice", stores: ["all"], goals: ["Build Muscle", "Performance", "Maintenance"] },
+    { name: "Brown rice", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Potatoes", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Maintenance"] },
+    { name: "Sweet potatoes", stores: ["all"], goals: ["Fat Loss", "Performance"] },
+    { name: "Whole-wheat wraps", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Maintenance"] },
+    { name: "Whole-grain bread", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Maintenance"] },
+    { name: "Pasta", stores: ["all"], goals: ["Build Muscle", "Performance"] },
+    { name: "Bananas", stores: ["all"], goals: ["Build Muscle", "Performance", "Maintenance"] },
+    { name: "Beans", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Lentils", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Low-sugar muesli", stores: ["Albert Heijn", "Jumbo", "Delhaize", "Carrefour", "Edeka", "Rewe"], goals: ["Build Muscle", "Maintenance"] },
+    { name: "Breakfast cereal around hard training", stores: ["all"], goals: ["Performance"] },
+  ],
+
+  fats: [
+    { name: "Olive oil", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Performance", "Maintenance"] },
+    { name: "Avocado", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Maintenance"] },
+    { name: "100% peanut butter", stores: ["all"], goals: ["Build Muscle", "Maintenance"] },
+    { name: "Mixed nuts", stores: ["all"], goals: ["Build Muscle", "Maintenance"] },
+    { name: "Almonds", stores: ["all"], goals: ["Build Muscle", "Performance"] },
+    { name: "Cashews", stores: ["all"], goals: ["Build Muscle"] },
+    { name: "Salmon", stores: ["all"], goals: ["Build Muscle", "Performance", "Maintenance"] },
+    { name: "Whole eggs", stores: ["all"], goals: ["Build Muscle", "Maintenance"] },
+  ],
+
+  vegetables: [
+    { name: "Broccoli", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Performance", "Maintenance"] },
+    { name: "Spinach", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Performance", "Maintenance"] },
+    { name: "Cucumber", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Tomatoes", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Bell peppers", stores: ["all"], goals: ["Build Muscle", "Performance", "Maintenance"] },
+    { name: "Carrots", stores: ["all"], goals: ["Performance", "Maintenance"] },
+    { name: "Zucchini", stores: ["all"], goals: ["Fat Loss"] },
+    { name: "Mushrooms", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Frozen vegetables", stores: ["Lidl", "Aldi", "Colruyt", "Kaufland", "Tesco"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Stir-fry vegetables", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Performance", "Maintenance"] },
+    { name: "Mixed salad", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Cauliflower rice", stores: ["Albert Heijn", "Jumbo", "Carrefour", "Delhaize", "Tesco", "Sainsbury's"], goals: ["Fat Loss"] },
+  ],
+
+  drinks: [
+    { name: "Water", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Performance", "Maintenance"] },
+    { name: "Sparkling water", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Coffee", stores: ["all"], goals: ["Fat Loss", "Build Muscle", "Performance", "Maintenance"] },
+    { name: "Tea", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Zero-sugar soft drinks", stores: ["all"], goals: ["Fat Loss", "Maintenance"] },
+    { name: "Sugar-free electrolytes", stores: ["all"], goals: ["Fat Loss", "Performance"] },
+    { name: "Electrolytes for training or hot days", stores: ["all"], goals: ["Build Muscle", "Performance"] },
+    { name: "Protein shake", stores: ["all"], goals: ["Build Muscle", "Performance", "Fat Loss"] },
+    { name: "Semi-skimmed milk", stores: ["all"], goals: ["Build Muscle"] },
+    { name: "Coconut water occasionally", stores: ["Carrefour", "Delhaize", "Albert Heijn", "Jumbo", "Tesco", "Sainsbury's"], goals: ["Performance"] },
+  ],
 };
 
 const groceryGuide = {
   "Fat Loss": {
     focus:
       "High-protein, high-volume foods, low-calorie drinks, simple supermarket choices, and easy meal structure.",
-    proteins: [
-      "Chicken breast",
-      "Turkey breast",
-      "Lean minced beef",
-      "Tuna in water",
-      "White fish",
-      "Natural skyr",
-      "Low-fat quark",
-      "Egg whites",
-      "Tofu",
-      "Tempeh",
-    ],
-    carbs: [
-      "Potatoes",
-      "Sweet potatoes",
-      "Oats",
-      "Brown rice",
-      "Whole-wheat wraps",
-      "Whole-grain bread",
-      "Beans",
-      "Lentils",
-      "Fruit",
-    ],
-    fats: [
-      "Avocado",
-      "Olive oil",
-      "Eggs",
-      "Salmon",
-      "Nuts in small portions",
-      "100% peanut butter",
-    ],
-    vegetables: [
-      "Cucumber",
-      "Lettuce",
-      "Broccoli",
-      "Zucchini",
-      "Spinach",
-      "Tomatoes",
-      "Mushrooms",
-      "Cauliflower rice",
-      "Stir-fry vegetables",
-    ],
-    drinks: [
-      "Water",
-      "Sparkling water",
-      "Black coffee",
-      "Unsweetened tea",
-      "Zero-sugar soft drinks if needed",
-      "Sugar-free electrolytes",
-    ],
     avoid: [
       "Liquid calories",
       "Large portions of nuts without measuring",
@@ -153,59 +118,9 @@ const groceryGuide = {
       "Sugary coffee drinks",
     ],
   },
-
   "Build Muscle": {
     focus:
       "Higher protein, enough carbs, convenient calories, and foods that support progressive training.",
-    proteins: [
-      "Chicken breast or chicken thighs",
-      "Lean minced beef",
-      "Eggs",
-      "Low-fat quark",
-      "Natural skyr",
-      "Cottage cheese",
-      "Tuna",
-      "Salmon",
-      "Protein powder",
-      "Tofu",
-      "Tempeh",
-    ],
-    carbs: [
-      "Rice",
-      "Oats",
-      "Potatoes",
-      "Sweet potatoes",
-      "Whole-grain bread",
-      "Pasta",
-      "Bananas",
-      "Wraps",
-      "Low-sugar muesli",
-    ],
-    fats: [
-      "Avocado",
-      "Olive oil",
-      "100% peanut butter",
-      "Almonds",
-      "Cashews",
-      "Whole eggs",
-      "Salmon",
-    ],
-    vegetables: [
-      "Broccoli",
-      "Spinach",
-      "Bell peppers",
-      "Carrots",
-      "Green beans",
-      "Mixed salad",
-      "Stir-fry vegetables",
-    ],
-    drinks: [
-      "Water",
-      "Electrolytes when sweating a lot",
-      "Black coffee before training if desired",
-      "Protein shake when protein intake is low",
-      "Semi-skimmed milk if extra calories are needed",
-    ],
     avoid: [
       "Bulking only with junk food",
       "Too little protein at breakfast",
@@ -213,46 +128,9 @@ const groceryGuide = {
       "Too many sugary drinks",
     ],
   },
-
   Performance: {
     focus:
       "Enough carbs, hydration, electrolytes, protein recovery, and smart food timing around training.",
-    proteins: [
-      "Chicken breast",
-      "Lean beef",
-      "Eggs",
-      "Low-fat quark",
-      "Skyr",
-      "Fish",
-      "Protein powder",
-      "Tempeh",
-    ],
-    carbs: [
-      "Rice",
-      "Pasta",
-      "Oats",
-      "Bananas",
-      "Potatoes",
-      "Bread",
-      "Breakfast cereal around hard training",
-      "Fruit",
-    ],
-    fats: ["Olive oil", "Avocado", "Nuts", "Eggs", "Salmon"],
-    vegetables: [
-      "Spinach",
-      "Bell peppers",
-      "Carrots",
-      "Broccoli",
-      "Mixed vegetables",
-      "Stir-fry vegetables",
-    ],
-    drinks: [
-      "Water",
-      "Electrolytes",
-      "Coffee pre-workout",
-      "Coconut water occasionally",
-      "Protein shake after training if needed",
-    ],
     avoid: [
       "Training hard while under-eating",
       "Too little salt when sweating a lot",
@@ -260,45 +138,9 @@ const groceryGuide = {
       "Alcohol close to performance days",
     ],
   },
-
   Maintenance: {
     focus:
       "Balanced foods, stable routine, flexible supermarket choices, and enough protein without overcomplicating.",
-    proteins: [
-      "Chicken breast",
-      "Eggs",
-      "Low-fat quark",
-      "Skyr",
-      "Fish",
-      "Lean beef",
-      "Tofu",
-      "Protein powder",
-    ],
-    carbs: [
-      "Rice",
-      "Potatoes",
-      "Oats",
-      "Fruit",
-      "Whole-grain bread",
-      "Pasta",
-      "Beans",
-    ],
-    fats: ["Avocado", "Olive oil", "Nuts", "Eggs", "Salmon"],
-    vegetables: [
-      "Mixed vegetables",
-      "Spinach",
-      "Broccoli",
-      "Carrots",
-      "Tomatoes",
-      "Cucumber",
-    ],
-    drinks: [
-      "Water",
-      "Coffee",
-      "Tea",
-      "Sparkling water",
-      "Occasional zero-sugar soft drink",
-    ],
     avoid: [
       "Random snacking without structure",
       "Skipping protein",
@@ -452,11 +294,37 @@ function buildWeeklyGroceryAmounts({ peopleTargets, goalKey }) {
   };
 }
 
-function getMarketProfile(selectedSupermarket) {
-  return (
-    supermarketProfiles[selectedSupermarket] ||
-    supermarketProfiles["Albert Heijn"]
+function productFitsStore(product, selectedSupermarket) {
+  return product.stores.includes("all") || product.stores.includes(selectedSupermarket);
+}
+
+function productFitsGoal(product, goalKey) {
+  return product.goals.includes(goalKey) || product.goals.includes("Maintenance");
+}
+
+function rotateArray(items, seed) {
+  if (!items.length) return [];
+  const offset = seed % items.length;
+  return items.slice(offset).concat(items.slice(0, offset));
+}
+
+function getSmartProducts({ category, selectedSupermarket, goalKey, refreshKey, count }) {
+  const products = productDatabase[category] || [];
+
+  const exact = products.filter(
+    (product) =>
+      productFitsStore(product, selectedSupermarket) && productFitsGoal(product, goalKey)
   );
+
+  const fallback = products.filter(
+    (product) => product.stores.includes("all") && productFitsGoal(product, goalKey)
+  );
+
+  const combined = Array.from(
+    new Map([...exact, ...fallback].map((product) => [product.name, product])).values()
+  );
+
+  return rotateArray(combined, refreshKey).slice(0, count).map((item) => item.name);
 }
 
 function generateWeeklyShoppingList({
@@ -464,29 +332,51 @@ function generateWeeklyShoppingList({
   peopleCount,
   goalKey,
   selectedSupermarket,
+  refreshKey,
+  quickMode,
 }) {
-  const market = getMarketProfile(selectedSupermarket);
+  const counts = quickMode
+    ? { protein: 3, carbs: 2, fats: 2, vegetables: 3, drinks: 2 }
+    : { protein: 6, carbs: 5, fats: 4, vegetables: 6, drinks: 4 };
 
   return [
     {
       category: "Protein",
       items: [
         `${weeklyAmounts.proteinFood}`,
-        ...market.protein,
+        ...getSmartProducts({
+          category: "protein",
+          selectedSupermarket,
+          goalKey,
+          refreshKey,
+          count: counts.protein,
+        }),
       ],
     },
     {
       category: "Carbs",
       items: [
         `${weeklyAmounts.carbFood}`,
-        ...market.carbs,
+        ...getSmartProducts({
+          category: "carbs",
+          selectedSupermarket,
+          goalKey,
+          refreshKey: refreshKey + 1,
+          count: counts.carbs,
+        }),
       ],
     },
     {
       category: "Fats",
       items: [
         `${weeklyAmounts.fatFood}`,
-        ...market.fats,
+        ...getSmartProducts({
+          category: "fats",
+          selectedSupermarket,
+          goalKey,
+          refreshKey: refreshKey + 2,
+          count: counts.fats,
+        }),
       ],
     },
     {
@@ -494,20 +384,39 @@ function generateWeeklyShoppingList({
       items: [
         `${weeklyAmounts.vegetables}`,
         `${weeklyAmounts.fruit}`,
-        ...market.vegetables,
+        ...getSmartProducts({
+          category: "vegetables",
+          selectedSupermarket,
+          goalKey,
+          refreshKey: refreshKey + 3,
+          count: counts.vegetables,
+        }),
       ],
     },
     {
       category: "Drinks",
       items: [
         `${weeklyAmounts.water}`,
-        ...market.drinks,
+        ...getSmartProducts({
+          category: "drinks",
+          selectedSupermarket,
+          goalKey,
+          refreshKey: refreshKey + 4,
+          count: counts.drinks,
+        }),
         peopleCount > 1
           ? "Electrolytes for training or hot days"
           : "Electrolytes if needed",
       ],
     },
   ];
+}
+
+function getGuideItems(category, goalKey) {
+  return productDatabase[category]
+    .filter((item) => productFitsGoal(item, goalKey))
+    .slice(0, 10)
+    .map((item) => item.name);
 }
 
 export default function NutritionClient({ membershipType }) {
@@ -530,6 +439,8 @@ export default function NutritionClient({ membershipType }) {
   const [selectedGoal, setSelectedGoal] = useState(defaultGoal);
   const [selectedSupermarket, setSelectedSupermarket] =
     useState("Albert Heijn");
+  const [quickMode, setQuickMode] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const [sex, setSex] = useState("male");
   const [age, setAge] = useState("35");
@@ -632,20 +543,28 @@ export default function NutritionClient({ membershipType }) {
         peopleCount: peopleTargets.length,
         goalKey,
         selectedSupermarket,
+        refreshKey,
+        quickMode,
       }),
-    [weeklyAmounts, peopleTargets.length, goalKey, selectedSupermarket]
+    [
+      weeklyAmounts,
+      peopleTargets.length,
+      goalKey,
+      selectedSupermarket,
+      refreshKey,
+      quickMode,
+    ]
   );
 
   return (
     <div style={pageWrap}>
       <section style={heroCard}>
         <div style={eyebrow}>Nutrition Command Center</div>
-        <h2 style={heroTitle}>European supermarket grocery generator</h2>
+        <h2 style={heroTitle}>Smart supermarket grocery generator</h2>
         <p style={heroText}>
-          Built for customers shopping at supermarkets like Albert Heijn, Jumbo,
-          Lidl, Aldi, Carrefour, Delhaize, Colruyt, Rewe, Edeka and other major
-          European supermarkets. Enter your stats, choose your goal, and generate
-          a weekly grocery guide for one person or a couple.
+          Choose your supermarket, goal, body stats and shopping mode. The
+          grocery engine creates a weekly product list for one person or a
+          couple, using goal-based product pools and automatic macro targets.
         </p>
 
         <div style={topControls}>
@@ -656,6 +575,15 @@ export default function NutritionClient({ membershipType }) {
               onChange={(e) => setCoupleMode(e.target.checked)}
             />
             <span>Generate groceries for 2 people / couple</span>
+          </label>
+
+          <label style={coupleToggle}>
+            <input
+              type="checkbox"
+              checked={quickMode}
+              onChange={(e) => setQuickMode(e.target.checked)}
+            />
+            <span>Quick shopping mode</span>
           </label>
 
           <Field label="Preferred supermarket">
@@ -684,12 +612,8 @@ export default function NutritionClient({ membershipType }) {
                   onChange={(e) => setSex(e.target.value)}
                   style={input}
                 >
-                  <option style={optionStyle} value="male">
-                    Male
-                  </option>
-                  <option style={optionStyle} value="female">
-                    Female
-                  </option>
+                  <option style={optionStyle} value="male">Male</option>
+                  <option style={optionStyle} value="female">Female</option>
                 </select>
               </Field>
 
@@ -727,11 +651,7 @@ export default function NutritionClient({ membershipType }) {
                   style={input}
                 >
                   {activityOptions.map((item) => (
-                    <option
-                      key={item.value}
-                      value={item.value}
-                      style={optionStyle}
-                    >
+                    <option key={item.value} value={item.value} style={optionStyle}>
                       {item.label}
                     </option>
                   ))}
@@ -765,12 +685,8 @@ export default function NutritionClient({ membershipType }) {
                     onChange={(e) => setPartnerSex(e.target.value)}
                     style={input}
                   >
-                    <option style={optionStyle} value="male">
-                      Male
-                    </option>
-                    <option style={optionStyle} value="female">
-                      Female
-                    </option>
+                    <option style={optionStyle} value="male">Male</option>
+                    <option style={optionStyle} value="female">Female</option>
                   </select>
                 </Field>
 
@@ -808,11 +724,7 @@ export default function NutritionClient({ membershipType }) {
                     style={input}
                   >
                     {activityOptions.map((item) => (
-                      <option
-                        key={item.value}
-                        value={item.value}
-                        style={optionStyle}
-                      >
+                      <option key={item.value} value={item.value} style={optionStyle}>
                         {item.label}
                       </option>
                     ))}
@@ -828,22 +740,10 @@ export default function NutritionClient({ membershipType }) {
             label="Total calories"
             value={`${roundToNearest(combinedTargets.targetCalories)} kcal/day`}
           />
-          <MacroCard
-            label="Total protein"
-            value={`${combinedTargets.protein}g/day`}
-          />
-          <MacroCard
-            label="Total carbs"
-            value={`${combinedTargets.carbs}g/day`}
-          />
-          <MacroCard
-            label="Total fats"
-            value={`${combinedTargets.fats}g/day`}
-          />
-          <MacroCard
-            label="Water"
-            value={`${roundDecimal(combinedTargets.water)}L/day`}
-          />
+          <MacroCard label="Total protein" value={`${combinedTargets.protein}g/day`} />
+          <MacroCard label="Total carbs" value={`${combinedTargets.carbs}g/day`} />
+          <MacroCard label="Total fats" value={`${combinedTargets.fats}g/day`} />
+          <MacroCard label="Water" value={`${roundDecimal(combinedTargets.water)}L/day`} />
           <MacroCard label="People" value={coupleMode ? "2 people" : "1 person"} />
         </div>
       </section>
@@ -851,7 +751,10 @@ export default function NutritionClient({ membershipType }) {
       <section style={sectionCard}>
         <div style={sectionTop}>
           <div style={eyebrow}>Weekly grocery generator</div>
-          <h3 style={sectionTitle}>Shopping guide for {selectedSupermarket}</h3>
+          <h3 style={sectionTitle}>
+            {quickMode ? "Quick shopping list" : "Full shopping guide"} for{" "}
+            {selectedSupermarket}
+          </h3>
           <p style={muted}>
             Based on {coupleMode ? "both profiles" : "your profile"} and the{" "}
             <strong>{goalKey}</strong> goal, aim for around{" "}
@@ -860,6 +763,14 @@ export default function NutritionClient({ membershipType }) {
             <strong>{weeklyAmounts.fruit}</strong>, and{" "}
             <strong>{weeklyAmounts.water}</strong>.
           </p>
+
+          <button
+            type="button"
+            onClick={() => setRefreshKey((value) => value + 1)}
+            style={refreshButton}
+          >
+            Generate different list
+          </button>
         </div>
 
         <div style={shoppingGrid}>
@@ -887,10 +798,10 @@ export default function NutritionClient({ membershipType }) {
         </div>
 
         <div style={categoryGrid}>
-          <FoodCategory title="Protein sources" items={guide.proteins} />
-          <FoodCategory title="Carb sources" items={guide.carbs} />
-          <FoodCategory title="Fat sources" items={guide.fats} />
-          <FoodCategory title="Vegetables & fruit" items={guide.vegetables} />
+          <FoodCategory title="Protein sources" items={getGuideItems("protein", goalKey)} />
+          <FoodCategory title="Carb sources" items={getGuideItems("carbs", goalKey)} />
+          <FoodCategory title="Fat sources" items={getGuideItems("fats", goalKey)} />
+          <FoodCategory title="Vegetables & fruit" items={getGuideItems("vegetables", goalKey)} />
         </div>
       </section>
 
@@ -904,7 +815,7 @@ export default function NutritionClient({ membershipType }) {
             sweating a lot, training hard, or during hot days.
           </p>
           <ul style={list}>
-            {guide.drinks.map((item) => (
+            {getGuideItems("drinks", goalKey).map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
@@ -931,8 +842,8 @@ export default function NutritionClient({ membershipType }) {
             text="Add a protein source first, then build carbs and fats around the goal."
           />
           <RuleCard
-            title="Supermarket habit"
-            text="Buy Greek yogurt/skyr, lean protein, potatoes/rice/oats, vegetables, fruit, and zero-calorie drinks first."
+            title="Quick shopping mode"
+            text="Use quick mode when you want a smaller list with fewer products and less decision fatigue."
           />
           <RuleCard
             title="For fat loss"
@@ -1150,6 +1061,17 @@ const sectionTitleSmall = {
 const muted = {
   color: "rgba(255,255,255,0.68)",
   lineHeight: 1.8,
+};
+
+const refreshButton = {
+  marginTop: "14px",
+  border: "none",
+  borderRadius: "12px",
+  padding: "12px 16px",
+  background: "white",
+  color: "black",
+  fontWeight: "900",
+  cursor: "pointer",
 };
 
 const shoppingGrid = {
