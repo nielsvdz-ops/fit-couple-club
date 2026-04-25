@@ -10,78 +10,88 @@ const activityOptions = [
   { value: "active", label: "Active", multiplier: 1.725 },
 ];
 
-const dutchSupermarkets = [
+const europeanSupermarkets = [
   "Albert Heijn",
   "Jumbo",
   "Lidl",
   "Aldi",
+  "Carrefour",
+  "Delhaize",
+  "Colruyt",
+  "Okay",
+  "Spar",
   "Plus",
   "Dirk",
   "Vomar",
-  "Coop",
   "Hoogvliet",
+  "Edeka",
+  "Rewe",
+  "Kaufland",
+  "Tesco",
+  "Sainsbury's",
+  "Auchan",
 ];
 
 const groceryGuide = {
   "Fat Loss": {
     focus:
-      "High-protein, high-volume foods, low-calorie drinks, easy Dutch supermarket choices, and simple meal structure.",
+      "High-protein, high-volume foods, low-calorie drinks, simple supermarket choices, and easy meal structure.",
     proteins: [
-      "Kipfilet",
-      "Kalkoenfilet",
-      "Mager rundergehakt",
-      "Tonijn in water",
-      "Witte vis",
-      "Skyr naturel",
-      "Magere kwark",
-      "Eiwitten",
+      "Chicken breast",
+      "Turkey breast",
+      "Lean minced beef",
+      "Tuna in water",
+      "White fish",
+      "Natural skyr",
+      "Low-fat quark",
+      "Egg whites",
       "Tofu",
       "Tempeh",
     ],
     carbs: [
-      "Aardappelen",
-      "Zoete aardappelen",
-      "Havermout",
-      "Zilvervliesrijst",
-      "Volkoren wraps",
-      "Volkoren brood",
-      "Bonen",
-      "Linzen",
+      "Potatoes",
+      "Sweet potatoes",
+      "Oats",
+      "Brown rice",
+      "Whole-wheat wraps",
+      "Whole-grain bread",
+      "Beans",
+      "Lentils",
       "Fruit",
     ],
     fats: [
       "Avocado",
-      "Olijfolie",
-      "Eieren",
-      "Zalm",
-      "Noten in kleine porties",
-      "Pindakaas 100%",
+      "Olive oil",
+      "Eggs",
+      "Salmon",
+      "Nuts in small portions",
+      "100% peanut butter",
     ],
     vegetables: [
-      "Komkommer",
-      "Sla",
+      "Cucumber",
+      "Lettuce",
       "Broccoli",
-      "Courgette",
-      "Spinazie",
-      "Tomaten",
-      "Champignons",
-      "Bloemkoolrijst",
-      "Wokgroenten",
+      "Zucchini",
+      "Spinach",
+      "Tomatoes",
+      "Mushrooms",
+      "Cauliflower rice",
+      "Stir-fry vegetables",
     ],
     drinks: [
       "Water",
-      "Spa rood",
-      "Zwarte koffie",
-      "Ongezoete thee",
-      "Zero frisdrank indien nodig",
-      "Suikervrije elektrolyten",
+      "Sparkling water",
+      "Black coffee",
+      "Unsweetened tea",
+      "Zero-sugar soft drinks if needed",
+      "Sugar-free electrolytes",
     ],
     avoid: [
-      "Vloeibare calorieën",
-      "Grote porties noten zonder meten",
-      "Roomsaus en calorierijke dressings",
-      "Gefrituurde snacks",
-      "Suikerrijke koffiedranken",
+      "Liquid calories",
+      "Large portions of nuts without measuring",
+      "Cream sauces and high-calorie dressings",
+      "Fried snacks",
+      "Sugary coffee drinks",
     ],
   },
 
@@ -89,59 +99,59 @@ const groceryGuide = {
     focus:
       "Higher protein, enough carbs, convenient calories, and foods that support progressive training.",
     proteins: [
-      "Kipfilet of kippendijen",
-      "Mager rundergehakt",
-      "Eieren",
-      "Magere kwark",
-      "Skyr naturel",
-      "Hüttenkäse",
-      "Tonijn",
-      "Zalm",
-      "Proteïnepoeder",
+      "Chicken breast or chicken thighs",
+      "Lean minced beef",
+      "Eggs",
+      "Low-fat quark",
+      "Natural skyr",
+      "Cottage cheese",
+      "Tuna",
+      "Salmon",
+      "Protein powder",
       "Tofu",
       "Tempeh",
     ],
     carbs: [
-      "Rijst",
-      "Havermout",
-      "Aardappelen",
-      "Zoete aardappelen",
-      "Volkoren brood",
+      "Rice",
+      "Oats",
+      "Potatoes",
+      "Sweet potatoes",
+      "Whole-grain bread",
       "Pasta",
-      "Bananen",
+      "Bananas",
       "Wraps",
-      "Muesli zonder veel suiker",
+      "Low-sugar muesli",
     ],
     fats: [
       "Avocado",
-      "Olijfolie",
-      "Pindakaas 100%",
-      "Amandelen",
-      "Cashewnoten",
-      "Hele eieren",
-      "Zalm",
+      "Olive oil",
+      "100% peanut butter",
+      "Almonds",
+      "Cashews",
+      "Whole eggs",
+      "Salmon",
     ],
     vegetables: [
       "Broccoli",
-      "Spinazie",
-      "Paprika",
-      "Wortels",
-      "Sperziebonen",
-      "Gemengde salade",
-      "Wokgroenten",
+      "Spinach",
+      "Bell peppers",
+      "Carrots",
+      "Green beans",
+      "Mixed salad",
+      "Stir-fry vegetables",
     ],
     drinks: [
       "Water",
-      "Elektrolyten bij veel zweten",
-      "Zwarte koffie voor training indien gewenst",
-      "Proteïneshake wanneer eiwit laag is",
-      "Halfvolle melk indien extra calorieën nodig zijn",
+      "Electrolytes when sweating a lot",
+      "Black coffee before training if desired",
+      "Protein shake when protein intake is low",
+      "Semi-skimmed milk if extra calories are needed",
     ],
     avoid: [
-      "Bulken met alleen junkfood",
-      "Te weinig eiwit bij ontbijt",
-      "Te weinig koolhydraten rond training",
-      "Te veel suikerdranken",
+      "Bulking only with junk food",
+      "Too little protein at breakfast",
+      "Too few carbs around training",
+      "Too many sugary drinks",
     ],
   },
 
@@ -149,52 +159,46 @@ const groceryGuide = {
     focus:
       "Enough carbs, hydration, electrolytes, protein recovery, and smart food timing around training.",
     proteins: [
-      "Kipfilet",
-      "Mager rundvlees",
-      "Eieren",
-      "Magere kwark",
+      "Chicken breast",
+      "Lean beef",
+      "Eggs",
+      "Low-fat quark",
       "Skyr",
-      "Vis",
-      "Proteïnepoeder",
+      "Fish",
+      "Protein powder",
       "Tempeh",
     ],
     carbs: [
-      "Rijst",
+      "Rice",
       "Pasta",
-      "Havermout",
-      "Bananen",
-      "Aardappelen",
-      "Brood",
-      "Ontbijtgranen rond zware training",
+      "Oats",
+      "Bananas",
+      "Potatoes",
+      "Bread",
+      "Breakfast cereal around hard training",
       "Fruit",
     ],
-    fats: [
-      "Olijfolie",
-      "Avocado",
-      "Noten",
-      "Eieren",
-      "Zalm",
-    ],
+    fats: ["Olive oil", "Avocado", "Nuts", "Eggs", "Salmon"],
     vegetables: [
-      "Spinazie",
-      "Paprika",
-      "Wortels",
+      "Spinach",
+      "Bell peppers",
+      "Carrots",
       "Broccoli",
-      "Gemengde groenten",
-      "Wokgroenten",
+      "Mixed vegetables",
+      "Stir-fry vegetables",
     ],
     drinks: [
       "Water",
-      "Elektrolyten",
-      "Koffie pre-workout",
-      "Kokoswater af en toe",
-      "Proteïneshake na training indien nodig",
+      "Electrolytes",
+      "Coffee pre-workout",
+      "Coconut water occasionally",
+      "Protein shake after training if needed",
     ],
     avoid: [
-      "Hard trainen met te weinig eten",
-      "Te weinig zout bij veel zweten",
-      "Zeer lage koolhydraatdagen voor zware sessies",
-      "Alcohol dicht bij prestatiedagen",
+      "Training hard while under-eating",
+      "Too little salt when sweating a lot",
+      "Very low-carb days before hard sessions",
+      "Alcohol close to performance days",
     ],
   },
 
@@ -202,51 +206,45 @@ const groceryGuide = {
     focus:
       "Balanced foods, stable routine, flexible supermarket choices, and enough protein without overcomplicating.",
     proteins: [
-      "Kipfilet",
-      "Eieren",
-      "Magere kwark",
+      "Chicken breast",
+      "Eggs",
+      "Low-fat quark",
       "Skyr",
-      "Vis",
-      "Mager rundvlees",
+      "Fish",
+      "Lean beef",
       "Tofu",
-      "Proteïnepoeder",
+      "Protein powder",
     ],
     carbs: [
-      "Rijst",
-      "Aardappelen",
-      "Havermout",
+      "Rice",
+      "Potatoes",
+      "Oats",
       "Fruit",
-      "Volkoren brood",
+      "Whole-grain bread",
       "Pasta",
-      "Bonen",
+      "Beans",
     ],
-    fats: [
-      "Avocado",
-      "Olijfolie",
-      "Noten",
-      "Eieren",
-      "Zalm",
-    ],
+    fats: ["Avocado", "Olive oil", "Nuts", "Eggs", "Salmon"],
     vegetables: [
-      "Gemengde groenten",
-      "Spinazie",
+      "Mixed vegetables",
+      "Spinach",
       "Broccoli",
-      "Wortels",
-      "Tomaten",
-      "Komkommer",
+      "Carrots",
+      "Tomatoes",
+      "Cucumber",
     ],
     drinks: [
       "Water",
-      "Koffie",
-      "Thee",
-      "Spa rood",
-      "Af en toe zero frisdrank",
+      "Coffee",
+      "Tea",
+      "Sparkling water",
+      "Occasional zero-sugar soft drink",
     ],
     avoid: [
-      "Random snacken zonder structuur",
-      "Eiwit overslaan",
-      "Te veel calorieën drinken",
-      "Weekend eten dat je hele week terugdraait",
+      "Random snacking without structure",
+      "Skipping protein",
+      "Drinking too many calories",
+      "Weekend eating that erases weekday consistency",
     ],
   },
 };
@@ -297,7 +295,14 @@ function getGoalAdjustment(goal) {
   return 0;
 }
 
-function getPersonTargets({ sex, age, weightKg, heightCm, activityLevel, selectedGoal }) {
+function getPersonTargets({
+  sex,
+  age,
+  weightKg,
+  heightCm,
+  activityLevel,
+  selectedGoal,
+}) {
   const cleanAge = parseNumber(age, 35);
   const cleanWeight = parseNumber(weightKg, 85);
   const cleanHeight = parseNumber(heightCm, 180);
@@ -388,37 +393,41 @@ function buildWeeklyGroceryAmounts({ peopleTargets, goalKey }) {
   };
 }
 
-function generateWeeklyShoppingList({ guide, weeklyAmounts, peopleCount, goalKey }) {
-  const base = [
+function generateWeeklyShoppingList({
+  weeklyAmounts,
+  peopleCount,
+  goalKey,
+}) {
+  return [
     {
       category: "Protein",
       items: [
         `${weeklyAmounts.proteinFood}`,
-        "Kipfilet",
-        "Magere kwark / Skyr",
-        goalKey === "Build Muscle" ? "Eieren" : "Eiwitten",
-        "Tonijn of witte vis",
-        "Tofu of tempeh",
+        "Chicken breast",
+        "Low-fat quark / Skyr",
+        goalKey === "Build Muscle" ? "Eggs" : "Egg whites",
+        "Tuna or white fish",
+        "Tofu or tempeh",
       ],
     },
     {
       category: "Carbs",
       items: [
         `${weeklyAmounts.carbFood}`,
-        goalKey === "Fat Loss" ? "Aardappelen" : "Rijst",
-        "Havermout",
-        "Volkoren wraps of brood",
-        "Bananen",
+        goalKey === "Fat Loss" ? "Potatoes" : "Rice",
+        "Oats",
+        "Whole-wheat wraps or bread",
+        "Bananas",
       ],
     },
     {
       category: "Fats",
       items: [
         `${weeklyAmounts.fatFood}`,
-        "Olijfolie",
+        "Olive oil",
         "Avocado",
-        "Eieren",
-        "Noten of pindakaas 100%",
+        "Eggs",
+        "Nuts or 100% peanut butter",
       ],
     },
     {
@@ -427,28 +436,25 @@ function generateWeeklyShoppingList({ guide, weeklyAmounts, peopleCount, goalKey
         `${weeklyAmounts.vegetables}`,
         `${weeklyAmounts.fruit}`,
         "Broccoli",
-        "Spinazie",
-        "Komkommer",
-        "Wokgroenten",
-        "Tomaten of paprika",
+        "Spinach",
+        "Cucumber",
+        "Stir-fry vegetables",
+        "Tomatoes or bell peppers",
       ],
     },
     {
       category: "Drinks",
       items: [
         `${weeklyAmounts.water}`,
-        "Spa rood / bruiswater",
-        "Koffie",
-        "Thee",
-        peopleCount > 1 ? "Elektrolyten voor training of warme dagen" : "Elektrolyten indien nodig",
+        "Sparkling water",
+        "Coffee",
+        "Tea",
+        peopleCount > 1
+          ? "Electrolytes for training or hot days"
+          : "Electrolytes if needed",
       ],
     },
   ];
-
-  return base.map((group) => ({
-    ...group,
-    items: Array.from(new Set(group.items.concat(guide[group.category?.toLowerCase()] || []))),
-  }));
 }
 
 export default function NutritionClient({ membershipType }) {
@@ -469,7 +475,8 @@ export default function NutritionClient({ membershipType }) {
     : goalOptions[0] || "Fat Loss";
 
   const [selectedGoal, setSelectedGoal] = useState(defaultGoal);
-  const [selectedSupermarket, setSelectedSupermarket] = useState("Albert Heijn");
+  const [selectedSupermarket, setSelectedSupermarket] =
+    useState("Albert Heijn");
 
   const [sex, setSex] = useState("male");
   const [age, setAge] = useState("35");
@@ -482,7 +489,8 @@ export default function NutritionClient({ membershipType }) {
   const [partnerAge, setPartnerAge] = useState("32");
   const [partnerWeightKg, setPartnerWeightKg] = useState("65");
   const [partnerHeightCm, setPartnerHeightCm] = useState("168");
-  const [partnerActivityLevel, setPartnerActivityLevel] = useState("moderate");
+  const [partnerActivityLevel, setPartnerActivityLevel] =
+    useState("moderate");
 
   const goalKey = detectGoalKey(selectedGoal);
   const guide = groceryGuide[goalKey] || groceryGuide.Maintenance;
@@ -567,23 +575,23 @@ export default function NutritionClient({ membershipType }) {
   const weeklyShoppingList = useMemo(
     () =>
       generateWeeklyShoppingList({
-        guide,
         weeklyAmounts,
         peopleCount: peopleTargets.length,
         goalKey,
       }),
-    [guide, weeklyAmounts, peopleTargets.length, goalKey]
+    [weeklyAmounts, peopleTargets.length, goalKey]
   );
 
   return (
     <div style={pageWrap}>
       <section style={heroCard}>
         <div style={eyebrow}>Nutrition Command Center</div>
-        <h2 style={heroTitle}>Dutch supermarket grocery generator</h2>
+        <h2 style={heroTitle}>European supermarket grocery generator</h2>
         <p style={heroText}>
-          Built for Dutch customers shopping at places like Albert Heijn, Jumbo,
-          Lidl, Aldi, Plus and Dirk. Enter your stats, choose your goal, and
-          generate a weekly grocery guide for one person or a couple.
+          Built for customers shopping at supermarkets like Albert Heijn, Jumbo,
+          Lidl, Aldi, Carrefour, Delhaize, Colruyt, Rewe, Edeka and other major
+          European supermarkets. Enter your stats, choose your goal, and generate
+          a weekly grocery guide for one person or a couple.
         </p>
 
         <div style={topControls}>
@@ -602,7 +610,7 @@ export default function NutritionClient({ membershipType }) {
               onChange={(e) => setSelectedSupermarket(e.target.value)}
               style={input}
             >
-              {dutchSupermarkets.map((market) => (
+              {europeanSupermarkets.map((market) => (
                 <option key={market} value={market} style={optionStyle}>
                   {market}
                 </option>
@@ -617,28 +625,59 @@ export default function NutritionClient({ membershipType }) {
 
             <div style={calculatorGrid}>
               <Field label="Sex">
-                <select value={sex} onChange={(e) => setSex(e.target.value)} style={input}>
-                  <option style={optionStyle} value="male">Male</option>
-                  <option style={optionStyle} value="female">Female</option>
+                <select
+                  value={sex}
+                  onChange={(e) => setSex(e.target.value)}
+                  style={input}
+                >
+                  <option style={optionStyle} value="male">
+                    Male
+                  </option>
+                  <option style={optionStyle} value="female">
+                    Female
+                  </option>
                 </select>
               </Field>
 
               <Field label="Age">
-                <input value={age} onChange={(e) => setAge(e.target.value)} style={input} inputMode="numeric" />
+                <input
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  style={input}
+                  inputMode="numeric"
+                />
               </Field>
 
               <Field label="Weight kg">
-                <input value={weightKg} onChange={(e) => setWeightKg(e.target.value)} style={input} inputMode="numeric" />
+                <input
+                  value={weightKg}
+                  onChange={(e) => setWeightKg(e.target.value)}
+                  style={input}
+                  inputMode="numeric"
+                />
               </Field>
 
               <Field label="Height cm">
-                <input value={heightCm} onChange={(e) => setHeightCm(e.target.value)} style={input} inputMode="numeric" />
+                <input
+                  value={heightCm}
+                  onChange={(e) => setHeightCm(e.target.value)}
+                  style={input}
+                  inputMode="numeric"
+                />
               </Field>
 
               <Field label="Activity">
-                <select value={activityLevel} onChange={(e) => setActivityLevel(e.target.value)} style={input}>
+                <select
+                  value={activityLevel}
+                  onChange={(e) => setActivityLevel(e.target.value)}
+                  style={input}
+                >
                   {activityOptions.map((item) => (
-                    <option key={item.value} value={item.value} style={optionStyle}>
+                    <option
+                      key={item.value}
+                      value={item.value}
+                      style={optionStyle}
+                    >
                       {item.label}
                     </option>
                   ))}
@@ -646,7 +685,11 @@ export default function NutritionClient({ membershipType }) {
               </Field>
 
               <Field label="Goal">
-                <select value={selectedGoal} onChange={(e) => setSelectedGoal(e.target.value)} style={input}>
+                <select
+                  value={selectedGoal}
+                  onChange={(e) => setSelectedGoal(e.target.value)}
+                  style={input}
+                >
                   {goalOptions.map((goal) => (
                     <option key={goal} value={goal} style={optionStyle}>
                       {goal}
@@ -663,28 +706,59 @@ export default function NutritionClient({ membershipType }) {
 
               <div style={calculatorGrid}>
                 <Field label="Sex">
-                  <select value={partnerSex} onChange={(e) => setPartnerSex(e.target.value)} style={input}>
-                    <option style={optionStyle} value="male">Male</option>
-                    <option style={optionStyle} value="female">Female</option>
+                  <select
+                    value={partnerSex}
+                    onChange={(e) => setPartnerSex(e.target.value)}
+                    style={input}
+                  >
+                    <option style={optionStyle} value="male">
+                      Male
+                    </option>
+                    <option style={optionStyle} value="female">
+                      Female
+                    </option>
                   </select>
                 </Field>
 
                 <Field label="Age">
-                  <input value={partnerAge} onChange={(e) => setPartnerAge(e.target.value)} style={input} inputMode="numeric" />
+                  <input
+                    value={partnerAge}
+                    onChange={(e) => setPartnerAge(e.target.value)}
+                    style={input}
+                    inputMode="numeric"
+                  />
                 </Field>
 
                 <Field label="Weight kg">
-                  <input value={partnerWeightKg} onChange={(e) => setPartnerWeightKg(e.target.value)} style={input} inputMode="numeric" />
+                  <input
+                    value={partnerWeightKg}
+                    onChange={(e) => setPartnerWeightKg(e.target.value)}
+                    style={input}
+                    inputMode="numeric"
+                  />
                 </Field>
 
                 <Field label="Height cm">
-                  <input value={partnerHeightCm} onChange={(e) => setPartnerHeightCm(e.target.value)} style={input} inputMode="numeric" />
+                  <input
+                    value={partnerHeightCm}
+                    onChange={(e) => setPartnerHeightCm(e.target.value)}
+                    style={input}
+                    inputMode="numeric"
+                  />
                 </Field>
 
                 <Field label="Activity">
-                  <select value={partnerActivityLevel} onChange={(e) => setPartnerActivityLevel(e.target.value)} style={input}>
+                  <select
+                    value={partnerActivityLevel}
+                    onChange={(e) => setPartnerActivityLevel(e.target.value)}
+                    style={input}
+                  >
                     {activityOptions.map((item) => (
-                      <option key={item.value} value={item.value} style={optionStyle}>
+                      <option
+                        key={item.value}
+                        value={item.value}
+                        style={optionStyle}
+                      >
                         {item.label}
                       </option>
                     ))}
@@ -696,11 +770,26 @@ export default function NutritionClient({ membershipType }) {
         </div>
 
         <div style={macroGrid}>
-          <MacroCard label="Total calories" value={`${roundToNearest(combinedTargets.targetCalories)} kcal/day`} />
-          <MacroCard label="Total protein" value={`${combinedTargets.protein}g/day`} />
-          <MacroCard label="Total carbs" value={`${combinedTargets.carbs}g/day`} />
-          <MacroCard label="Total fats" value={`${combinedTargets.fats}g/day`} />
-          <MacroCard label="Water" value={`${roundDecimal(combinedTargets.water)}L/day`} />
+          <MacroCard
+            label="Total calories"
+            value={`${roundToNearest(combinedTargets.targetCalories)} kcal/day`}
+          />
+          <MacroCard
+            label="Total protein"
+            value={`${combinedTargets.protein}g/day`}
+          />
+          <MacroCard
+            label="Total carbs"
+            value={`${combinedTargets.carbs}g/day`}
+          />
+          <MacroCard
+            label="Total fats"
+            value={`${combinedTargets.fats}g/day`}
+          />
+          <MacroCard
+            label="Water"
+            value={`${roundDecimal(combinedTargets.water)}L/day`}
+          />
           <MacroCard label="People" value={coupleMode ? "2 people" : "1 person"} />
         </div>
       </section>
@@ -708,14 +797,12 @@ export default function NutritionClient({ membershipType }) {
       <section style={sectionCard}>
         <div style={sectionTop}>
           <div style={eyebrow}>Weekly grocery generator</div>
-          <h3 style={sectionTitle}>
-            Shopping guide for {selectedSupermarket}
-          </h3>
+          <h3 style={sectionTitle}>Shopping guide for {selectedSupermarket}</h3>
           <p style={muted}>
             Based on {coupleMode ? "both profiles" : "your profile"} and the{" "}
             <strong>{goalKey}</strong> goal, aim for around{" "}
             <strong>{weeklyAmounts.proteinFood}</strong>,{" "}
-            <strong> {weeklyAmounts.vegetables}</strong>,{" "}
+            <strong>{weeklyAmounts.vegetables}</strong>,{" "}
             <strong>{weeklyAmounts.fruit}</strong>, and{" "}
             <strong>{weeklyAmounts.water}</strong>.
           </p>
@@ -759,8 +846,8 @@ export default function NutritionClient({ membershipType }) {
           <h3 style={sectionTitleSmall}>What to drink</h3>
           <p style={muted}>
             Start with {roundDecimal(combinedTargets.water)}L water per day for{" "}
-            {coupleMode ? "both people combined" : "you"}. Add electrolytes
-            when sweating a lot, training hard, or during hot days.
+            {coupleMode ? "both people combined" : "you"}. Add electrolytes when
+            sweating a lot, training hard, or during hot days.
           </p>
           <ul style={list}>
             {guide.drinks.map((item) => (
@@ -790,8 +877,8 @@ export default function NutritionClient({ membershipType }) {
             text="Add a protein source first, then build carbs and fats around the goal."
           />
           <RuleCard
-            title="Dutch supermarket habit"
-            text="Buy kwark/skyr, lean protein, potatoes/rice/oats, vegetables, fruit, and zero-calorie drinks first."
+            title="Supermarket habit"
+            text="Buy Greek yogurt/skyr, lean protein, potatoes/rice/oats, vegetables, fruit, and zero-calorie drinks first."
           />
           <RuleCard
             title="For fat loss"
@@ -808,7 +895,8 @@ export default function NutritionClient({ membershipType }) {
         <section style={lockedCard}>
           <div style={lockedTitle}>Nutrition access locked</div>
           <p style={muted}>
-            Upgrade your membership to unlock full nutrition guidance and grocery tools.
+            Upgrade your membership to unlock full nutrition guidance and grocery
+            tools.
           </p>
           <a href="/billing" style={unlockButton}>
             Upgrade Now
