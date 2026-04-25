@@ -8,6 +8,71 @@ import {
   getMealPlanAccessLimit,
 } from "../lib/mealPlans";
 
+const activityOptions = [
+  { value: "sedentary", label: "Sedentary", multiplier: 1.2 },
+  { value: "light", label: "Light activity", multiplier: 1.375 },
+  { value: "moderate", label: "Moderate activity", multiplier: 1.55 },
+  { value: "active", label: "Active", multiplier: 1.725 },
+];
+
+const goalAdjustments = {
+  fat_loss: -400,
+  lean_muscle: 250,
+  maintenance: 0,
+  performance: 150,
+};
+
+function calculateBmr({ sex, weightKg, heightCm, age }) {
+  if (sex === "male") {
+    return 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
+  }
+
+  return 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+}
+
+function getGoalAdjustment(goal) {
+  if (goal.includes("fat") || goal.includes("loss") || goal.includes("shred")) {
+    return goalAdjustments.fat_loss;
+  }
+
+  if (goal.includes("muscle") || goal.includes("gain") || goal.includes("build")) {
+    return goalAdjustments.lean_muscle;
+  }
+
+  if (goal.includes("performance")) {
+    return goalAdjustments.performance;
+  }
+
+  return goalAdjustments.maintenance;
+}
+
+function parseNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function roundToNearest(value, nearest = 10) {
+  return Math.round(value / nearest) * nearest;
+}
+
+function extractNumber(value) {
+  if (!value) return 0;
+  const match = String(value).match(/\d+/);
+  return match ? Number(match[0]) : 0;
+}
+
+function scaleMacro(value, scale) {
+  const number = extractNumber(value);
+  if (!number) return value || "—";
+  return `${Math.max(1, Math.round(number * scale))}g`;
+}
+
+function scaleCalories(value, scale) {
+  const number = extractNumber(value);
+  if (!number) return value || "—";
+  return `${Math.max(1, Math.round(number * scale))} kcal`;
+}
+
 export default function RecipesClient({ membershipType }) {
   const membership = String(membershipType || "").toLowerCase().trim();
 
@@ -20,6 +85,12 @@ export default function RecipesClient({ membershipType }) {
   const [selectedGoal, setSelectedGoal] = useState(MEAL_GOALS[0].value);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const [selectedDay, setSelectedDay] = useState("Monday");
+
+  const [sex, setSex] = useState("male");
+  const [age, setAge] = useState("35");
+  const [weightKg, setWeightKg] = useState("85");
+  const [heightCm, setHeightCm] = useState("180");
+  const [activityLevel, setActivityLevel] = useState("moderate");
 
   const allPlans = useMemo(
     () => buildMealPlansForGoal(selectedGoal),
@@ -36,21 +107,85 @@ export default function RecipesClient({ membershipType }) {
     selectedPlan?.days.find((d) => d.day === selectedDay) ||
     selectedPlan?.days?.[0];
 
+  const personalTargets = useMemo(() => {
+    const cleanAge = parseNumber(age);
+    const cleanWeight = parseNumber(weightKg);
+    const cleanHeight = parseNumber(heightCm);
+    const activity =
+      activityOptions.find((item) => item.value === activityLevel) ||
+      activityOptions[2];
+
+    const bmr = calculateBmr({
+      sex,
+      weightKg: cleanWeight,
+      heightCm: cleanHeight,
+      age: cleanAge,
+    });
+
+    const maintenanceCalories = bmr * activity.multiplier;
+    const targetCalories = maintenanceCalories + getGoalAdjustment(selectedGoal);
+
+    const protein = cleanWeight * 2;
+    const fats = cleanWeight * 0.8;
+    const proteinCalories = protein * 4;
+    const fatCalories = fats * 9;
+    const carbs = Math.max(60, (targetCalories - proteinCalories - fatCalories) / 4);
+
+    return {
+      bmr: roundToNearest(bmr),
+      maintenanceCalories: roundToNearest(maintenanceCalories),
+      targetCalories: roundToNearest(targetCalories),
+      protein: `${Math.round(protein)}g`,
+      carbs: `${Math.round(carbs)}g`,
+      fats: `${Math.round(fats)}g`,
+    };
+  }, [sex, age, weightKg, heightCm, activityLevel, selectedGoal]);
+
+  const basePlanCalories = extractNumber(selectedPlan?.targetCalories) || 2000;
+  const scale = personalTargets.targetCalories / basePlanCalories;
+
   return (
     <div style={wrap}>
       <section style={heroCard}>
-        <div style={eyebrow}>Nutrition System</div>
-        <h2 style={heroTitle}>
-          Choose your goal and get a full daily food routine
-        </h2>
+        <div style={eyebrow}>Personalized Nutrition System</div>
+        <h2 style={heroTitle}>Build your daily meal plan around your body</h2>
         <p style={heroText}>
-          Pick your goal and browse complete meal schedules from Monday to Sunday.
-          Every day includes meals, calories, macros, ingredients, and instructions.
+          Enter your sex, age, weight, height, activity level, and goal. The
+          system calculates your calorie target and adjusts the meal plan so it
+          fits men and women more realistically.
         </p>
 
         <div style={filterRow}>
-          <div style={fieldWrap}>
-            <div style={miniLabel}>Goal</div>
+          <Field label="Sex">
+            <select value={sex} onChange={(e) => setSex(e.target.value)} style={input}>
+              <option style={optionStyle} value="male">Male</option>
+              <option style={optionStyle} value="female">Female</option>
+            </select>
+          </Field>
+
+          <Field label="Age">
+            <input value={age} onChange={(e) => setAge(e.target.value)} style={input} />
+          </Field>
+
+          <Field label="Weight kg">
+            <input value={weightKg} onChange={(e) => setWeightKg(e.target.value)} style={input} />
+          </Field>
+
+          <Field label="Height cm">
+            <input value={heightCm} onChange={(e) => setHeightCm(e.target.value)} style={input} />
+          </Field>
+
+          <Field label="Activity">
+            <select value={activityLevel} onChange={(e) => setActivityLevel(e.target.value)} style={input}>
+              {activityOptions.map((item) => (
+                <option key={item.value} style={optionStyle} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label="Goal">
             <select
               value={selectedGoal}
               onChange={(e) => {
@@ -61,15 +196,14 @@ export default function RecipesClient({ membershipType }) {
               style={input}
             >
               {MEAL_GOALS.map((goal) => (
-                <option key={goal.value} value={goal.value}>
+                <option key={goal.value} style={optionStyle} value={goal.value}>
                   {goal.label}
                 </option>
               ))}
             </select>
-          </div>
+          </Field>
 
-          <div style={fieldWrap}>
-            <div style={miniLabel}>Daily Routine</div>
+          <Field label="Daily Routine">
             <select
               value={selectedPlanIndex}
               onChange={(e) => {
@@ -79,19 +213,20 @@ export default function RecipesClient({ membershipType }) {
               style={input}
             >
               {visiblePlans.map((plan, index) => (
-                <option key={plan.id} value={index}>
+                <option key={plan.id} style={optionStyle} value={index}>
                   {plan.title}
                 </option>
               ))}
             </select>
-          </div>
+          </Field>
         </div>
 
         <div style={goalInfoGrid}>
-          <InfoCard label="Goal" value={selectedPlan?.goalLabel} />
-          <InfoCard label="Target Calories" value={selectedPlan?.targetCalories} />
-          <InfoCard label="Protein Target" value={selectedPlan?.proteinTarget} />
-          <InfoCard label="Style" value={selectedPlan?.styleNote} />
+          <InfoCard label="Target Calories" value={`${personalTargets.targetCalories} kcal`} />
+          <InfoCard label="Maintenance" value={`${personalTargets.maintenanceCalories} kcal`} />
+          <InfoCard label="Protein" value={personalTargets.protein} />
+          <InfoCard label="Carbs" value={personalTargets.carbs} />
+          <InfoCard label="Fats" value={personalTargets.fats} />
         </div>
       </section>
 
@@ -100,13 +235,17 @@ export default function RecipesClient({ membershipType }) {
           <div>
             <div style={eyebrow}>Weekly Schedule</div>
             <h3 style={sectionTitle}>{selectedPlan?.title}</h3>
-            <p style={sectionText}>{selectedPlan?.description}</p>
+            <p style={sectionText}>
+              {selectedPlan?.description} The portions are scaled toward your
+              calculated target of {personalTargets.targetCalories} kcal.
+            </p>
           </div>
         </div>
 
         <div style={dayTabs}>
           {WEEK_DAYS.map((day) => {
             const active = selectedDay === day;
+
             return (
               <button
                 key={day}
@@ -126,10 +265,13 @@ export default function RecipesClient({ membershipType }) {
         {selectedDayPlan && (
           <div style={{ display: "grid", gap: "18px", marginTop: "18px" }}>
             <div style={summaryGrid}>
-              <SummaryCard label="Daily Calories" value={selectedDayPlan.totalCalories} />
-              <SummaryCard label="Protein" value={selectedDayPlan.totalProtein} />
-              <SummaryCard label="Carbs" value={selectedDayPlan.totalCarbs} />
-              <SummaryCard label="Fats" value={selectedDayPlan.totalFats} />
+              <SummaryCard
+                label="Daily Calories"
+                value={`${personalTargets.targetCalories} kcal`}
+              />
+              <SummaryCard label="Protein" value={personalTargets.protein} />
+              <SummaryCard label="Carbs" value={personalTargets.carbs} />
+              <SummaryCard label="Fats" value={personalTargets.fats} />
             </div>
 
             <div style={mealGrid}>
@@ -140,13 +282,15 @@ export default function RecipesClient({ membershipType }) {
                       <div style={mealTime}>{meal.time}</div>
                       <h4 style={mealTitle}>{meal.mealName}</h4>
                     </div>
-                    <div style={calorieBadge}>{meal.calories}</div>
+                    <div style={calorieBadge}>
+                      {scaleCalories(meal.calories, scale)}
+                    </div>
                   </div>
 
                   <div style={macroRow}>
-                    <span>Protein: {meal.protein}</span>
-                    <span>Carbs: {meal.carbs}</span>
-                    <span>Fats: {meal.fats}</span>
+                    <span>Protein: {scaleMacro(meal.protein, scale)}</span>
+                    <span>Carbs: {scaleMacro(meal.carbs, scale)}</span>
+                    <span>Fats: {scaleMacro(meal.fats, scale)}</span>
                   </div>
 
                   <div style={detailBlock}>
@@ -188,6 +332,16 @@ export default function RecipesClient({ membershipType }) {
     </div>
   );
 }
+
+function Field({ label, children }) {
+  return (
+    <div style={fieldWrap}>
+      <div style={miniLabel}>{label}</div>
+      {children}
+    </div>
+  );
+}
+
 function InfoCard({ label, value }) {
   return (
     <div style={infoCard}>
@@ -237,7 +391,7 @@ const heroText = {
 
 const filterRow = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
   gap: "14px",
   marginTop: "22px",
 };
@@ -255,14 +409,20 @@ const input = {
   width: "100%",
   padding: "14px",
   borderRadius: "12px",
-  background: "rgba(255,255,255,0.06)",
+  background: "#111",
   color: "white",
   border: "1px solid rgba(255,255,255,0.12)",
+  outline: "none",
+};
+
+const optionStyle = {
+  background: "#111",
+  color: "white",
 };
 
 const goalInfoGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))",
   gap: "14px",
   marginTop: "22px",
 };
