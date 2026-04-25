@@ -9,49 +9,69 @@ export default function PricingPage() {
 
       <div style={container}>
         <div style={header}>
-          <div style={eyebrow}>Transform Your Body</div>
-          <h1 style={title}>Stop guessing. Follow a system.</h1>
+          <div style={eyebrow}>Couple Transformation System</div>
+          <h1 style={title}>
+            Stop starting over. <br /> Build a system that actually works.
+          </h1>
+
           <p style={subtitle}>
-            Get exact daily routines, groceries, workouts, and structure.
-            Built for real life — not fitness influencers.
+            This is not another fitness app.  
+            You get a **complete structure for training, food, groceries, and
+            couple accountability** — so you never have to think “what should we
+            do today?” again.
+          </p>
+        </div>
+
+        {/* 🔥 COUPLE HOOK */}
+        <div style={hook}>
+          <div style={hookTitle}>💡 Why couples fail</div>
+          <p style={hookText}>
+            Most couples don’t fail because of discipline.  
+            They fail because:
+          </p>
+          <ul style={list}>
+            <li>No shared plan</li>
+            <li>Food decisions happen too late</li>
+            <li>One person is motivated, the other is not</li>
+            <li>No structure = no consistency</li>
+          </ul>
+
+          <p style={hookHighlight}>
+            This system fixes all of that.
           </p>
         </div>
 
         <div style={grid}>
+          {/* NUTRITION */}
           <section style={card}>
             <div>
               <h2 style={planTitle}>Nutrition</h2>
-              <div style={price}>
-                €19.99<span style={priceSmall}>/mo</span>
-              </div>
+              <div style={price}>€19.99<span style={priceSmall}>/mo</span></div>
 
               <ul style={list}>
                 <li>✔ 5 body goals</li>
-                <li>✔ 150 daily nutrition routines</li>
-                <li>✔ Weekly recipes & structure</li>
-                <li>✔ Personalized calories & macros</li>
-                <li>✔ Smart grocery generator</li>
+                <li>✔ 150 daily routines</li>
+                <li>✔ Weekly recipes</li>
+                <li>✔ Grocery generator</li>
                 <li>✔ Works for 1 or 2 people</li>
               </ul>
 
               <p style={desc}>
-                Know exactly what to eat and what to buy — every day.
+                You never have to think about food again.  
+                Just follow the structure.
               </p>
             </div>
 
-            <a href="/signup" style={button}>
-              Start Nutrition
-            </a>
+            <a href="/signup" style={button}>Start Nutrition</a>
           </section>
 
+          {/* FULL ACCESS */}
           <section style={{ ...card, ...featured }}>
-            <div style={badge}>🔥 Best Value</div>
+            <div style={badge}>🔥 MOST POPULAR</div>
 
             <div>
               <h2 style={planTitle}>Full Access</h2>
-              <div style={price}>
-                €29.99<span style={priceSmall}>/mo</span>
-              </div>
+              <div style={price}>€34.99<span style={priceSmall}>/mo</span></div>
 
               <ul style={list}>
                 <li>✔ Everything in Nutrition</li>
@@ -60,63 +80,72 @@ export default function PricingPage() {
                 <li>✔ Exercise GIF guidance</li>
                 <li>✔ Plan builder</li>
                 <li>✔ Progress tracking</li>
+                <li>✔ Couple Zone system 🔥</li>
               </ul>
 
               <p style={desc}>
-                Full transformation system — training + nutrition combined.
+                Complete transformation system.  
+                Training + food + structure + accountability.
               </p>
             </div>
 
             <a href="/signup" style={{ ...button, ...buttonFeatured }}>
-              Unlock Everything
+              Unlock Full System
             </a>
           </section>
 
-          <section style={card}>
+          {/* VIP */}
+          <section style={vipCard}>
             <div>
               <h2 style={planTitle}>VIP</h2>
-              <div style={price}>
-                €99<span style={priceSmall}>/mo</span>
-              </div>
+              <div style={price}>€90<span style={priceSmall}>/mo</span></div>
 
               <ul style={list}>
                 <li>✔ Everything in Full Access</li>
                 <li>✔ Monthly coaching call</li>
+                <li>✔ Weekly check-in system</li>
+                <li>✔ Personalized advice</li>
                 <li>✔ Priority support</li>
-                <li>✔ Strategy adjustments</li>
               </ul>
 
               <p style={desc}>
-                For people who want guidance and accountability.
+                You don’t just follow a system —  
+                you get guided and corrected.
               </p>
+
+              <div style={scarcity}>
+                Only limited VIP spots available.
+              </div>
             </div>
 
-            <a href="/signup" style={button}>
-              Go VIP
-            </a>
+            <a href="/signup" style={button}>Go VIP</a>
           </section>
 
-          <section style={card}>
+          {/* COACHING */}
+          <section style={coachingCard}>
             <div>
               <h2 style={planTitle}>Coaching</h2>
-              <div style={price}>
-                €349<span style={priceSmall}>/mo</span>
-              </div>
+              <div style={price}>€340<span style={priceSmall}>/mo</span></div>
 
               <ul style={list}>
                 <li>✔ Everything in VIP</li>
                 <li>✔ Weekly 1-on-1 calls</li>
                 <li>✔ Fully custom plan</li>
                 <li>✔ Direct support</li>
-                <li>✔ Coaching by Niels & Rosanna</li>
+                <li>✔ Personal coaching</li>
               </ul>
 
-              <p style={desc}>Fastest possible results. Fully guided.</p>
+              <p style={desc}>
+                Fastest possible results.  
+                Full accountability. No guessing.
+              </p>
+
+              <div style={scarcity}>
+                Very limited coaching spots.
+              </div>
             </div>
 
-            <a href="/signup" style={button}>
-              Start Coaching
-            </a>
+            <a href="/signup" style={button}>Start Coaching</a>
           </section>
         </div>
       </div>
@@ -124,124 +153,24 @@ export default function PricingPage() {
   );
 }
 
-const main = {
-  minHeight: "100vh",
-  background: "#0a0a0a",
-  color: "white",
-};
+/* --- styles (keep yours + add these) --- */
 
-const container = {
-  maxWidth: "1200px",
-  margin: "0 auto",
-  padding: "60px 24px 90px",
-};
-
-const header = {
+const hook = {
   marginBottom: "40px",
-};
-
-const eyebrow = {
-  fontSize: "12px",
-  textTransform: "uppercase",
-  letterSpacing: "0.16em",
-  color: "rgba(255,255,255,0.45)",
-  marginBottom: "10px",
-};
-
-const title = {
-  fontSize: "52px",
-  fontWeight: "900",
-  margin: "0 0 10px 0",
-  lineHeight: 1.05,
-};
-
-const subtitle = {
-  color: "rgba(255,255,255,0.7)",
-  fontSize: "18px",
-  lineHeight: 1.7,
-  maxWidth: "720px",
-};
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
-  gap: "22px",
-  alignItems: "stretch",
-};
-
-const card = {
+  padding: "24px",
+  borderRadius: "20px",
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "24px",
-  padding: "26px",
-  minHeight: "420px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  position: "relative",
 };
 
-const featured = {
-  border: "1px solid rgba(250,204,21,0.5)",
-  background: "rgba(250,204,21,0.08)",
+const hookTitle = { fontSize: "20px", fontWeight: "800" };
+const hookText = { color: "rgba(255,255,255,0.7)" };
+const hookHighlight = { fontWeight: "800", marginTop: "10px" };
+
+const scarcity = {
+  marginTop: "14px",
+  fontSize: "13px",
+  color: "#facc15",
 };
 
-const badge = {
-  position: "absolute",
-  top: "-10px",
-  right: "12px",
-  background: "#facc15",
-  color: "black",
-  fontSize: "12px",
-  fontWeight: "800",
-  padding: "5px 10px",
-  borderRadius: "8px",
-};
-
-const planTitle = {
-  fontSize: "26px",
-  fontWeight: "800",
-  margin: "0 0 10px 0",
-};
-
-const price = {
-  fontSize: "42px",
-  fontWeight: "900",
-  marginBottom: "18px",
-  lineHeight: 1.15,
-};
-
-const priceSmall = {
-  fontSize: "16px",
-  opacity: 0.7,
-  fontWeight: "500",
-};
-
-const list = {
-  paddingLeft: "18px",
-  lineHeight: 1.9,
-  color: "rgba(255,255,255,0.78)",
-  margin: 0,
-};
-
-const desc = {
-  marginTop: "18px",
-  color: "rgba(255,255,255,0.66)",
-  lineHeight: 1.7,
-};
-
-const button = {
-  marginTop: "28px",
-  padding: "14px 18px",
-  borderRadius: "12px",
-  background: "white",
-  color: "black",
-  textAlign: "center",
-  textDecoration: "none",
-  fontWeight: "800",
-  display: "block",
-};
-
-const buttonFeatured = {
-  background: "#facc15",
-};
+/* keep ALL your original styles below */
