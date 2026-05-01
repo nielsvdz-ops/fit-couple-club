@@ -22,104 +22,102 @@ const goalCards = [
   },
 ];
 
-export default async function Home() {
-  const vipCounter = await getVipCounter();
+export default function Home() {
+  const [loaded, setLoaded] = useState(false);
+
+  const [vipCounter, setVipCounter] = useState({
+    vip: {
+      label: "14/90 VIP spots taken",
+      isSoldOut: false,
+    },
+    coaching: {
+      label: "2/12 coaching spots taken",
+      isSoldOut: false,
+    },
+  });
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoaded(true), 100);
+
+    async function loadVipCounter() {
+      try {
+        const response = await fetch("/api/vip-counter", {
+          cache: "no-store",
+        });
+
+        const data = await response.json();
+        setVipCounter(data);
+      } catch (error) {
+        console.error("Failed to load VIP counter:", error);
+      }
+    }
+
+    loadVipCounter();
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const pricingPlans = [
-  {
-    name: "Nutrition",
-    price: "€19.99/mo",
-    points: [
-      "5 body goals",
-      "150 daily nutrition routines",
-      "Weekly recipes & structure",
-      "Smart grocery generator",
-      "Couple grocery mode",
-    ],
-    cta: "Start Nutrition",
-    featured: false,
-  },
-  {
-    name: "Full Access",
-    price: "€34.99/mo",
-    points: [
-      "Everything in Nutrition",
-      "Full workout system",
-      "Step-by-step programs",
-      "Exercise GIF guidance",
-      "Progress tracking",
-      "Couple Zone system",
-    ],
-    cta: "Unlock Full System",
-    featured: true,
-  },
-  {
-    name: "VIP",
-    price: "€90/mo",
-    points: [
-      "Everything in Full Access",
-      "Monthly coaching call",
-      "Weekly couple check-ins",
-      "Personalized advice",
-      "Priority support",
-      "Limited VIP spots",
-    ],
-    cta: vipCounter.vip.isSoldOut ? "Sold Out" : "Go VIP",
+    {
+      name: "Nutrition",
+      price: "€19.99/mo",
+      points: [
+        "5 body goals",
+        "150 daily nutrition routines",
+        "Weekly recipes & structure",
+        "Smart grocery generator",
+        "Couple grocery mode",
+      ],
+      cta: "Start Nutrition",
+      featured: false,
+    },
+    {
+      name: "Full Access",
+      price: "€34.99/mo",
+      points: [
+        "Everything in Nutrition",
+        "Full workout system",
+        "Step-by-step programs",
+        "Exercise GIF guidance",
+        "Progress tracking",
+        "Couple Zone system",
+      ],
+      cta: "Unlock Full System",
+      featured: true,
+    },
+    {
+      name: "VIP",
+      price: "€90/mo",
+      points: [
+        "Everything in Full Access",
+        "Monthly coaching call",
+        "Weekly couple check-ins",
+        "Personalized advice",
+        "Priority support",
+        "Limited VIP spots",
+      ],
+      cta: vipCounter.vip.isSoldOut ? "Sold Out" : "Go VIP",
       featured: false,
       scarcity: vipCounter.vip.label,
       disabled: vipCounter.vip.isSoldOut,
-  },
-  {
-    name: "Coaching",
-    price: "€340/mo",
-    points: [
-      "Everything in VIP",
-      "Weekly 1-on-1 calls",
-      "Fully custom plan",
-      "Direct support",
-      "Couple coaching available",
-      "Coaching by Niels & Rosanna",
-    ],
-    cta: vipCounter.coaching.isSoldOut ? "Sold Out" : "Start Coaching",
+    },
+    {
+      name: "Coaching",
+      price: "€340/mo",
+      points: [
+        "Everything in VIP",
+        "Weekly 1-on-1 calls",
+        "Fully custom plan",
+        "Direct support",
+        "Couple coaching available",
+        "Coaching by Niels & Rosanna",
+      ],
+      cta: vipCounter.coaching.isSoldOut ? "Sold Out" : "Start Coaching",
       featured: false,
       scarcity: vipCounter.coaching.label,
       disabled: vipCounter.coaching.isSoldOut,
-  },
-];
-
-export default function Home() {
-  const [loaded, setLoaded] = useState(false);
-  const [vipCounter, setVipCounter] = useState({
-  vip: {
-    label: "14/90 VIP spots taken",
-    isSoldOut: false,
-  },
-  coaching: {
-    label: "2/12 coaching spots taken",
-    isSoldOut: false,
-  },
-});
-
-useEffect(() => {
-  const timer = setTimeout(() => setLoaded(true), 100);
-
-  async function loadVipCounter() {
-    try {
-      const response = await fetch("/api/vip-counter", {
-        cache: "no-store",
-      });
-
-      const data = await response.json();
-      setVipCounter(data);
-    } catch (error) {
-      console.error("Failed to load VIP counter:", error);
-    }
-  }
-
-  loadVipCounter();
-
-  return () => clearTimeout(timer);
-}, []);
+    },
+  ];
 
   return (
     <main style={main}>
@@ -148,7 +146,9 @@ useEffect(() => {
         }}
       >
         <div>
-          <div style={badgeStyle}>Fitness, nutrition, groceries & couple accountability</div>
+          <div style={badgeStyle}>
+            Fitness, nutrition, groceries & couple accountability
+          </div>
 
           <h1 style={heroTitle}>
             Stop guessing. Build a body and routine that actually lasts.
@@ -161,8 +161,12 @@ useEffect(() => {
           </p>
 
           <div style={heroButtonRow}>
-            <a href="/signup" style={primaryButton}>Start Your Journey</a>
-            <a href="#pricing" style={secondaryButton}>View Plans</a>
+            <a href="/signup" style={primaryButton}>
+              Start Your Journey
+            </a>
+            <a href="#pricing" style={secondaryButton}>
+              View Plans
+            </a>
           </div>
 
           <div style={trustRow}>
@@ -186,7 +190,8 @@ useEffect(() => {
           <div style={imageOverlay}>
             <div style={overlayTitle}>Solo or together</div>
             <div style={overlayText}>
-              Built for real discipline, real routines, and real couples who want structure.
+              Built for real discipline, real routines, and real couples who want
+              structure.
             </div>
           </div>
         </div>
@@ -195,15 +200,33 @@ useEffect(() => {
       <section id="features" style={sectionWrap}>
         <div style={sectionHeader}>
           <div style={eyebrow}>How It Works</div>
-          <h2 style={sectionTitle}>One system. Less guessing. Better consistency.</h2>
+          <h2 style={sectionTitle}>
+            One system. Less guessing. Better consistency.
+          </h2>
         </div>
 
         <div style={featureGrid}>
           {[
-            ["01", "Choose your goal", "Lose fat, build muscle, tone, improve performance, or transform as a couple."],
-            ["02", "Follow the structure", "Use daily routines, workouts, recipes, grocery planning, and progress tools."],
-            ["03", "Stay accountable", "Couple Zone helps you score the week, detect weak points, and improve together."],
-            ["04", "Upgrade support", "Choose VIP or Coaching when you want personal guidance and accountability."],
+            [
+              "01",
+              "Choose your goal",
+              "Lose fat, build muscle, tone, improve performance, or transform as a couple.",
+            ],
+            [
+              "02",
+              "Follow the structure",
+              "Use daily routines, workouts, recipes, grocery planning, and progress tools.",
+            ],
+            [
+              "03",
+              "Stay accountable",
+              "Couple Zone helps you score the week, detect weak points, and improve together.",
+            ],
+            [
+              "04",
+              "Upgrade support",
+              "Choose VIP or Coaching when you want personal guidance and accountability.",
+            ],
           ].map(([number, title, text]) => (
             <div key={title} style={featureCard}>
               <div style={featureNumber}>{number}</div>
@@ -227,8 +250,8 @@ useEffect(() => {
           <div style={eyebrow}>About Us</div>
           <h2 style={sectionTitle}>Built from real experience, not theory.</h2>
           <p style={sectionText}>
-            We have been together for over 12 years. We train together, eat together,
-            and built our bodies and lifestyle side by side.
+            We have been together for over 12 years. We train together, eat
+            together, and built our bodies and lifestyle side by side.
           </p>
           <p style={sectionText}>
             Rosanna’s journey gave her deep real-world knowledge about food,
@@ -260,7 +283,9 @@ useEffect(() => {
       <section style={splitSection}>
         <div>
           <div style={eyebrow}>Couple Zone</div>
-          <h2 style={sectionTitle}>Your biggest advantage is doing this together.</h2>
+          <h2 style={sectionTitle}>
+            Your biggest advantage is doing this together.
+          </h2>
           <p style={sectionText}>
             Couple Zone is a premium accountability system for couples who want
             to train, eat, shop, and stay consistent together without pressure or
@@ -291,11 +316,17 @@ useEffect(() => {
         <div style={sectionHeader}>
           <div style={eyebrow}>Membership Plans</div>
           <h2 style={sectionTitle}>Choose the level of support you need.</h2>
+
           <p style={sectionIntro}>
             Start with nutrition, unlock the full transformation system, or get
             guided with VIP and personal coaching.
-            All content and services are delivered digitally through a secure member dashboard after purchase,
-            including structured workout programs, nutrition plans, and optional coaching and support services.
+          </p>
+
+          <p style={digitalDeliveryText}>
+            All content and services are delivered digitally through a secure
+            member dashboard after purchase, including structured workout
+            programs, nutrition plans, and optional coaching and support
+            services.
           </p>
         </div>
 
@@ -306,6 +337,7 @@ useEffect(() => {
               style={{
                 ...pricingCard,
                 ...(plan.featured ? pricingCardFeatured : {}),
+                ...(plan.disabled ? disabledCard : {}),
               }}
             >
               {plan.featured && <div style={bestValue}>🔥 Best Value</div>}
@@ -324,10 +356,11 @@ useEffect(() => {
               </div>
 
               <a
-                href="/signup"
+                href={plan.disabled ? "#pricing" : "/signup"}
                 style={{
                   ...pricingButton,
                   ...(plan.featured ? pricingButtonFeatured : {}),
+                  ...(plan.disabled ? disabledButton : {}),
                 }}
               >
                 {plan.cta}
@@ -338,18 +371,26 @@ useEffect(() => {
       </section>
 
       <footer style={footer}>
-  <div>© Fit Couple Club — Build your body, health, and lifestyle solo or as a team.</div>
+        <div>
+          © Fit Couple Club — Build your body, health, and lifestyle solo or as a
+          team.
+        </div>
 
-  <div style={footerLinks}>
-    <a href="/terms" style={footerLink}>Terms</a>
-    <a href="/privacy" style={footerLink}>Privacy Policy</a>
-    <a href="/refund" style={footerLink}>Refund Policy</a>
-  </div>
-</footer>
+        <div style={footerLinks}>
+          <a href="/terms" style={footerLink}>
+            Terms
+          </a>
+          <a href="/privacy" style={footerLink}>
+            Privacy Policy
+          </a>
+          <a href="/refund" style={footerLink}>
+            Refund Policy
+          </a>
+        </div>
+      </footer>
     </main>
   );
 }
-
 
 const main = {
   minHeight: "100vh",
@@ -435,7 +476,8 @@ const heroImageWrap = {
   position: "relative",
   border: "1px solid rgba(255,255,255,0.12)",
   boxShadow: "0 30px 100px rgba(0,0,0,0.55)",
-  background: "radial-gradient(circle at center, rgba(250,204,21,0.1), transparent 70%)",
+  background:
+    "radial-gradient(circle at center, rgba(250,204,21,0.1), transparent 70%)",
 };
 
 const heroGlow = {
@@ -527,6 +569,14 @@ const sectionIntro = {
   lineHeight: 1.8,
   marginTop: "16px",
   fontSize: "18px",
+};
+
+const digitalDeliveryText = {
+  marginTop: "14px",
+  color: "rgba(255,255,255,0.6)",
+  fontSize: "14px",
+  lineHeight: 1.6,
+  maxWidth: "700px",
 };
 
 const featureGrid = {
@@ -660,6 +710,10 @@ const pricingCardFeatured = {
   border: "1px solid rgba(250,204,21,0.45)",
 };
 
+const disabledCard = {
+  opacity: 0.55,
+};
+
 const bestValue = {
   position: "absolute",
   top: "-11px",
@@ -717,12 +771,19 @@ const pricingButtonFeatured = {
   background: "#facc15",
 };
 
+const disabledButton = {
+  pointerEvents: "none",
+  cursor: "not-allowed",
+  opacity: 0.6,
+};
+
 const footer = {
   borderTop: "1px solid rgba(255,255,255,0.08)",
   padding: "30px 24px",
   color: "rgba(255,255,255,0.58)",
   textAlign: "center",
 };
+
 const footerLinks = {
   display: "flex",
   justifyContent: "center",
