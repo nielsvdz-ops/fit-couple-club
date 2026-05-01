@@ -310,6 +310,15 @@ export default function Home() {
     </main>
   );
 }
+<footer style={footer}>
+  <div>© Fit Couple Club — Build your body, health, and lifestyle solo or as a team.</div>
+
+  <div style={footerLinks}>
+    <a href="/terms" style={footerLink}>Terms</a>
+    <a href="/privacy" style={footerLink}>Privacy Policy</a>
+    <a href="/refund" style={footerLink}>Refund Policy</a>
+  </div>
+</footer>
 
 const main = {
   minHeight: "100vh",
