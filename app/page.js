@@ -263,6 +263,8 @@ export default function Home() {
           <p style={sectionIntro}>
             Start with nutrition, unlock the full transformation system, or get
             guided with VIP and personal coaching.
+            All content and services are delivered digitally through a secure member dashboard after purchase,
+            including structured workout programs, nutrition plans, and optional coaching and support services.
           </p>
         </div>
 
