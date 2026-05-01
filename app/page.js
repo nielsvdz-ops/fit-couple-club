@@ -305,12 +305,6 @@ export default function Home() {
       </section>
 
       <footer style={footer}>
-        © Fit Couple Club — Build your body, health, and lifestyle solo or as a team.
-      </footer>
-    </main>
-  );
-}
-<footer style={footer}>
   <div>© Fit Couple Club — Build your body, health, and lifestyle solo or as a team.</div>
 
   <div style={footerLinks}>
@@ -319,6 +313,10 @@ export default function Home() {
     <a href="/refund" style={footerLink}>Refund Policy</a>
   </div>
 </footer>
+    </main>
+  );
+}
+
 
 const main = {
   minHeight: "100vh",
