@@ -690,3 +690,17 @@ const footer = {
   color: "rgba(255,255,255,0.58)",
   textAlign: "center",
 };
+const footerLinks = {
+  display: "flex",
+  justifyContent: "center",
+  gap: "18px",
+  flexWrap: "wrap",
+  marginTop: "14px",
+};
+
+const footerLink = {
+  color: "rgba(255,255,255,0.72)",
+  textDecoration: "none",
+  fontSize: "14px",
+  fontWeight: "700",
+};
