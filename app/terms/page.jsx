@@ -59,7 +59,7 @@ export default function TermsPage() {
 
           <h2 className="text-2xl font-semibold text-white">8. Contact</h2>
           <p>
-            For questions, contact us at: support@fitcoupleclub.com
+            For questions, contact us at: fitcoupleclub1@gmail.com
           </p>
         </div>
       </div>
