@@ -1,5 +1,6 @@
 "use client";
 
+import { getVipCounter } from "../lib/vipCounter";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 
@@ -22,7 +23,10 @@ const goalCards = [
   },
 ];
 
-const pricingPlans = [
+export default async function Home() {
+  const vipCounter = await getVipCounter();
+
+  const pricingPlans = [
   {
     name: "Nutrition",
     price: "€19.99/mo",
@@ -61,9 +65,10 @@ const pricingPlans = [
       "Priority support",
       "Limited VIP spots",
     ],
-    cta: "Go VIP",
-    featured: false,
-    scarcity: "14/90 VIP spots taken",
+    cta: vipCounter.vip.isSoldOut ? "Sold Out" : "Go VIP",
+      featured: false,
+      scarcity: vipCounter.vip.label,
+      disabled: vipCounter.vip.isSoldOut,
   },
   {
     name: "Coaching",
@@ -76,9 +81,10 @@ const pricingPlans = [
       "Couple coaching available",
       "Coaching by Niels & Rosanna",
     ],
-    cta: "Start Coaching",
-    featured: false,
-    scarcity: "2/12 coaching spots taken",
+    cta: vipCounter.coaching.isSoldOut ? "Sold Out" : "Start Coaching",
+      featured: false,
+      scarcity: vipCounter.coaching.label,
+      disabled: vipCounter.coaching.isSoldOut,
   },
 ];
 
