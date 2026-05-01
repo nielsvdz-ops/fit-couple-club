@@ -1,6 +1,5 @@
 "use client";
 
-import { getVipCounter } from "../lib/vipCounter";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 
@@ -90,11 +89,37 @@ export default async function Home() {
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
+  const [vipCounter, setVipCounter] = useState({
+  vip: {
+    label: "14/90 VIP spots taken",
+    isSoldOut: false,
+  },
+  coaching: {
+    label: "2/12 coaching spots taken",
+    isSoldOut: false,
+  },
+});
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoaded(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
+useEffect(() => {
+  const timer = setTimeout(() => setLoaded(true), 100);
+
+  async function loadVipCounter() {
+    try {
+      const response = await fetch("/api/vip-counter", {
+        cache: "no-store",
+      });
+
+      const data = await response.json();
+      setVipCounter(data);
+    } catch (error) {
+      console.error("Failed to load VIP counter:", error);
+    }
+  }
+
+  loadVipCounter();
+
+  return () => clearTimeout(timer);
+}, []);
 
   return (
     <main style={main}>
