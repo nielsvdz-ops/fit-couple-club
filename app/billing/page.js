@@ -11,12 +11,15 @@ export default async function BillingPage({ searchParams = {} }) {
 
   if (!user) redirect("/login");
 
-  const userEmail = user?.email || "";
+  const userEmail = String(user?.email || "").toLowerCase().trim();
   const success = searchParams?.success === "1";
-  const membership = String(profile?.membership_type || "free").toLowerCase();
 
-const isActive = Boolean(isActive);
-const customerId = customerId || null;
+  const membership = String(profile?.membership_type || "free")
+    .toLowerCase()
+    .trim();
+
+  const isActive = Boolean(profile?.is_active);
+  const customerId = profile?.stripe_customer_id || null;
 
   const vipTaken = 14;
   const vipMax = 90;
@@ -32,31 +35,23 @@ const customerId = customerId || null;
     <DashboardLayout
       title="Billing"
       subtitle="Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching."
-      membershipType={profile?.membership_type}
+      membershipType={membership}
     >
       <div style={pageWrap}>
         {success && (
           <section style={successBox}>
-            ✅ Payment successful — your membership should now be active.
+            ✅ Payment successful — refresh once if your membership has not updated yet.
           </section>
         )}
 
         <section style={statusCard}>
           <div>
             <div style={eyebrow}>Current Membership</div>
-            <h2 style={title}>
-              {isActive
-                ? formatMembership(profile?.membership_type)
-                : "Free"}
-            </h2>
-            <p style={text}>
-              Status: {isActive ? "Active" : "No active plan"}
-            </p>
+            <h2 style={title}>{isActive ? formatMembership(membership) : "Free"}</h2>
+            <p style={text}>Status: {isActive ? "Active" : "No active plan"}</p>
           </div>
 
-          {customerId && (
-            <ManageSubscriptionButton label="Manage Subscription" />
-          )}
+          {customerId && <ManageSubscriptionButton label="Manage Subscription" />}
         </section>
 
         <section style={heroUpsellCard}>
@@ -65,41 +60,52 @@ const customerId = customerId || null;
           <p style={text}>
             The full system combines nutrition routines, smart grocery planning,
             workouts, programs, progress tracking, and Couple Zone accountability
-            so members can follow a clear structure instead of restarting every
-            week.
+            so members can follow a clear structure instead of restarting every week.
           </p>
         </section>
 
         <section style={grid}>
-          <PlanCard
-            active={membership === "nutrition" && isActive}
-            title="Nutrition — €19.99"
-            tag="Best for food structure"
-            textLines={[
-              "✔ 5 body goals",
-              "✔ 150 daily nutrition routines",
-              "✔ Weekly recipes & structure",
-              "✔ Smart supermarket grocery generator",
-              "✔ Personalized calories & macros",
-              "✔ Couple grocery mode",
-            ]}
-            footer="Know exactly what to eat and what to buy every week."
-            button={
-              membership === "nutrition" && isActive ? (
-                <button style={disabledBtn}>Already Active</button>
-              ) : (
-                <CheckoutButton
-                  plan="nutrition"
-                  label="Get Nutrition"
-                  email={userEmail}
-                  variant="green"
-                />
-              )
-            }
-          />
+          <div style={card}>
+            {membership === "nutrition" && isActive && (
+              <div style={currentBadge}>Your Plan</div>
+            )}
+
+            <div>
+              <div style={cardTitle}>Nutrition — €19.99</div>
+              <div style={planTag}>Best for food structure</div>
+              <div style={text}>
+                ✔ 5 body goals
+                <br />
+                ✔ 150 daily nutrition routines
+                <br />
+                ✔ Weekly recipes & structure
+                <br />
+                ✔ Smart supermarket grocery generator
+                <br />
+                ✔ Personalized calories & macros
+                <br />
+                ✔ Couple grocery mode
+                <br />
+                <br />
+                Know exactly what to eat and what to buy every week.
+              </div>
+            </div>
+
+            {membership === "nutrition" && isActive ? (
+              <button style={disabledBtn}>Already Active</button>
+            ) : (
+              <CheckoutButton
+                plan="nutrition"
+                label="Get Nutrition"
+                email={userEmail}
+                variant="green"
+              />
+            )}
+          </div>
 
           <div style={highlightCard}>
             <div style={bestValue}>🔥 Best Value</div>
+
             {membership === "full_access" && isActive && (
               <div style={currentBadge}>Your Plan</div>
             )}
@@ -107,7 +113,6 @@ const customerId = customerId || null;
             <div>
               <div style={cardTitle}>Full Access — €34.99</div>
               <div style={planTag}>Most complete self-guided system</div>
-
               <div style={text}>
                 ✔ Everything in Nutrition
                 <br />
@@ -134,11 +139,7 @@ const customerId = customerId || null;
             ) : (
               <CheckoutButton
                 plan="full_access"
-                label={
-                  membership === "nutrition"
-                    ? "Upgrade to Full Access"
-                    : "Unlock Full System"
-                }
+                label={membership === "nutrition" ? "Upgrade to Full Access" : "Unlock Full System"}
                 email={userEmail}
                 variant="yellow"
               />
@@ -153,7 +154,6 @@ const customerId = customerId || null;
             <div>
               <div style={cardTitle}>VIP — €90</div>
               <div style={planTag}>Guided accountability</div>
-
               <div style={text}>
                 ✔ Everything in Full Access
                 <br />
@@ -178,11 +178,8 @@ const customerId = customerId || null;
                 <div style={vipScarcityText}>
                   {vipTaken}/{vipMax} VIP spots taken — {vipLeft} spots left
                 </div>
-
                 <div style={progressBar}>
-                  <div
-                    style={{ ...progressFillBlue, width: `${vipPercentage}%` }}
-                  />
+                  <div style={{ ...progressFillBlue, width: `${vipPercentage}%` }} />
                 </div>
               </div>
             </div>
@@ -190,12 +187,7 @@ const customerId = customerId || null;
             {membership === "vip" && isActive ? (
               <button style={disabledBtn}>Already Active</button>
             ) : (
-              <CheckoutButton
-                plan="vip"
-                label="Go VIP"
-                email={userEmail}
-                variant="blue"
-              />
+              <CheckoutButton plan="vip" label="Go VIP" email={userEmail} variant="blue" />
             )}
           </div>
 
@@ -207,7 +199,6 @@ const customerId = customerId || null;
             <div>
               <div style={cardTitle}>Coaching — €340</div>
               <div style={planTag}>Maximum personal guidance</div>
-
               <div style={text}>
                 ✔ Everything in VIP
                 <br />
@@ -224,23 +215,15 @@ const customerId = customerId || null;
                 ✔ Coaching by Niels & Rosanna
                 <br />
                 <br />
-                Maximum results with full accountability, personal feedback, and
-                no guessing.
+                Maximum results with full accountability, personal feedback, and no guessing.
               </div>
 
               <div style={scarcityBox}>
                 <div style={scarcityText}>
-                  {coachingTaken}/{coachingMax} coaching spots taken —{" "}
-                  {coachingLeft} left
+                  {coachingTaken}/{coachingMax} coaching spots taken — {coachingLeft} left
                 </div>
-
                 <div style={progressBar}>
-                  <div
-                    style={{
-                      ...progressFillYellow,
-                      width: `${coachingPercentage}%`,
-                    }}
-                  />
+                  <div style={{ ...progressFillYellow, width: `${coachingPercentage}%` }} />
                 </div>
               </div>
             </div>
@@ -266,37 +249,12 @@ const customerId = customerId || null;
   );
 }
 
-function PlanCard({ active, title, tag, textLines, footer, button }) {
-  return (
-    <div style={card}>
-      {active && <div style={currentBadge}>Your Plan</div>}
-
-      <div>
-        <div style={cardTitle}>{title}</div>
-        <div style={planTag}>{tag}</div>
-
-        <div style={text}>
-          {textLines.map((line) => (
-            <div key={line}>{line}</div>
-          ))}
-          <br />
-          {footer}
-        </div>
-      </div>
-
-      {button}
-    </div>
-  );
-}
-
 function formatMembership(type) {
   const m = String(type || "").toLowerCase().trim();
-
   if (m === "nutrition") return "Nutrition";
   if (m === "full_access") return "Full Access";
   if (m === "vip") return "VIP";
   if (m === "coaching") return "Coaching";
-
   return "Free";
 }
 
