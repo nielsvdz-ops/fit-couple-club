@@ -38,13 +38,16 @@ async function getOrCreateCustomer(user, email) {
     },
   });
 
-  const { error: updateError } = await supabase
-    .from("profiles")
-    .update({
-      stripe_customer_id: customer.id,
-      email,
-    })
-    .eq("id", user.id);
+ const { error: updateError } = await supabase.from("profiles").upsert(
+  {
+    id: user.id,
+    email,
+    stripe_customer_id: customer.id,
+    membership_type: "free",
+    is_active: false,
+  },
+  { onConflict: "id" }
+);
 
   if (updateError) {
     console.error("SAVE STRIPE CUSTOMER ERROR:", updateError);
