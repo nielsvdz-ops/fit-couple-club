@@ -15,8 +15,8 @@ export default async function BillingPage({ searchParams = {} }) {
   const success = searchParams?.success === "1";
   const membership = String(profile?.membership_type || "free").toLowerCase();
 
-const isActive = Boolean(profile?.is_active);
-const customerId = profile?.stripe_customer_id || null;
+const isActive = Boolean(isActive);
+const customerId = customerId || null;
 
   const vipTaken = 14;
   const vipMax = 90;
@@ -45,16 +45,16 @@ const customerId = profile?.stripe_customer_id || null;
           <div>
             <div style={eyebrow}>Current Membership</div>
             <h2 style={title}>
-              {profile?.is_active
+              {isActive
                 ? formatMembership(profile?.membership_type)
                 : "Free"}
             </h2>
             <p style={text}>
-              Status: {profile?.is_active ? "Active" : "No active plan"}
+              Status: {isActive ? "Active" : "No active plan"}
             </p>
           </div>
 
-          {profile?.stripe_customer_id && (
+          {customerId && (
             <ManageSubscriptionButton label="Manage Subscription" />
           )}
         </section>
@@ -72,7 +72,7 @@ const customerId = profile?.stripe_customer_id || null;
 
         <section style={grid}>
           <PlanCard
-            active={membership === "nutrition" && profile?.is_active}
+            active={membership === "nutrition" && isActive}
             title="Nutrition — €19.99"
             tag="Best for food structure"
             textLines={[
@@ -85,7 +85,7 @@ const customerId = profile?.stripe_customer_id || null;
             ]}
             footer="Know exactly what to eat and what to buy every week."
             button={
-              membership === "nutrition" && profile?.is_active ? (
+              membership === "nutrition" && isActive ? (
                 <button style={disabledBtn}>Already Active</button>
               ) : (
                 <CheckoutButton
@@ -100,7 +100,7 @@ const customerId = profile?.stripe_customer_id || null;
 
           <div style={highlightCard}>
             <div style={bestValue}>🔥 Best Value</div>
-            {membership === "full_access" && profile?.is_active && (
+            {membership === "full_access" && isActive && (
               <div style={currentBadge}>Your Plan</div>
             )}
 
@@ -129,7 +129,7 @@ const customerId = profile?.stripe_customer_id || null;
               </div>
             </div>
 
-            {membership === "full_access" && profile?.is_active ? (
+            {membership === "full_access" && isActive ? (
               <button style={disabledBtn}>Already Active</button>
             ) : (
               <CheckoutButton
@@ -146,7 +146,7 @@ const customerId = profile?.stripe_customer_id || null;
           </div>
 
           <div style={vipCard}>
-            {membership === "vip" && profile?.is_active && (
+            {membership === "vip" && isActive && (
               <div style={currentBadge}>Your Plan</div>
             )}
 
@@ -187,7 +187,7 @@ const customerId = profile?.stripe_customer_id || null;
               </div>
             </div>
 
-            {membership === "vip" && profile?.is_active ? (
+            {membership === "vip" && isActive ? (
               <button style={disabledBtn}>Already Active</button>
             ) : (
               <CheckoutButton
@@ -200,7 +200,7 @@ const customerId = profile?.stripe_customer_id || null;
           </div>
 
           <div style={coachingCard}>
-            {membership === "coaching" && profile?.is_active && (
+            {membership === "coaching" && isActive && (
               <div style={currentBadge}>Your Plan</div>
             )}
 
@@ -245,7 +245,7 @@ const customerId = profile?.stripe_customer_id || null;
               </div>
             </div>
 
-            {membership === "coaching" && profile?.is_active ? (
+            {membership === "coaching" && isActive ? (
               <button style={disabledBtn}>Already Active</button>
             ) : (
               <CheckoutButton
