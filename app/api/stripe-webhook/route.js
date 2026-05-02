@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -17,6 +18,13 @@ const PLAN_MEMBERSHIP_MAP = {
   coaching: "coaching",
 };
 
+const PRICE_MEMBERSHIP_MAP = {
+  [process.env.STRIPE_PRICE_NUTRITION]: "nutrition",
+  [process.env.STRIPE_PRICE_FULL_ACCESS]: "full_access",
+  [process.env.STRIPE_PRICE_VIP]: "vip",
+  [process.env.STRIPE_PRICE_COACHING]: "coaching",
+};
+
 async function updateProfileAccess({
   userId,
   customerId,
@@ -26,14 +34,17 @@ async function updateProfileAccess({
 }) {
   const normalizedEmail = String(email || "").toLowerCase().trim();
 
+  const updateData = {
+    membership_type: membershipType,
+    is_active: isActive,
+    ...(customerId ? { stripe_customer_id: customerId } : {}),
+    ...(normalizedEmail ? { email: normalizedEmail } : {}),
+  };
+
   if (userId) {
     const { error, count } = await supabase
       .from("profiles")
-      .update({
-        membership_type: membershipType,
-        is_active: isActive,
-        ...(customerId ? { stripe_customer_id: customerId } : {}),
-      })
+      .update(updateData)
       .eq("id", userId)
       .select("*", { count: "exact", head: true });
 
@@ -44,11 +55,7 @@ async function updateProfileAccess({
   if (customerId) {
     const { error, count } = await supabase
       .from("profiles")
-      .update({
-        membership_type: membershipType,
-        is_active: isActive,
-        stripe_customer_id: customerId,
-      })
+      .update(updateData)
       .eq("stripe_customer_id", customerId)
       .select("*", { count: "exact", head: true });
 
@@ -59,11 +66,7 @@ async function updateProfileAccess({
   if (normalizedEmail) {
     const { error, count } = await supabase
       .from("profiles")
-      .update({
-        membership_type: membershipType,
-        is_active: isActive,
-        ...(customerId ? { stripe_customer_id: customerId } : {}),
-      })
+      .update(updateData)
       .eq("email", normalizedEmail)
       .select("*", { count: "exact", head: true });
 
@@ -71,7 +74,42 @@ async function updateProfileAccess({
     if (error) console.error("UPDATE BY EMAIL ERROR:", error);
   }
 
+  if (userId) {
+    const { error } = await supabase.from("profiles").upsert(
+      {
+        id: userId,
+        email: normalizedEmail,
+        membership_type: membershipType,
+        is_active: isActive,
+        ...(customerId ? { stripe_customer_id: customerId } : {}),
+      },
+      { onConflict: "id" }
+    );
+
+    if (!error) return null;
+    console.error("UPSERT PROFILE ERROR:", error);
+  }
+
   return new Error("No matching profile found to update.");
+}
+
+function getMembershipFromPlan(plan) {
+  return PLAN_MEMBERSHIP_MAP[String(plan || "").toLowerCase().trim()] || null;
+}
+
+function getMembershipFromPriceId(priceId) {
+  return PRICE_MEMBERSHIP_MAP[priceId] || null;
+}
+
+async function getMembershipFromSubscription(subscriptionId) {
+  if (!subscriptionId) return null;
+
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+    expand: ["items.data.price"],
+  });
+
+  const priceId = subscription?.items?.data?.[0]?.price?.id;
+  return getMembershipFromPriceId(priceId);
 }
 
 export async function POST(req) {
@@ -99,7 +137,10 @@ export async function POST(req) {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
 
-      const customerEmail = String(
+      const customerId = String(session.customer || "").trim();
+      const subscriptionId = String(session.subscription || "").trim();
+
+      const email = String(
         session.customer_email ||
           session.customer_details?.email ||
           session.metadata?.email ||
@@ -108,41 +149,37 @@ export async function POST(req) {
         .toLowerCase()
         .trim();
 
-      const plan = String(session.metadata?.plan || "")
-        .toLowerCase()
-        .trim();
-
       const userId = String(
         session.metadata?.user_id || session.client_reference_id || ""
       ).trim();
 
-      const customerId = String(session.customer || "").trim();
+      const plan = String(session.metadata?.plan || "").toLowerCase().trim();
 
-      console.log("STRIPE SESSION COMPLETED:", {
-        id: session.id,
-        customer: customerId,
-        customer_email: session.customer_email,
-        customer_details_email: session.customer_details?.email,
-        client_reference_id: session.client_reference_id,
-        metadata: session.metadata,
-      });
+      let membershipType = getMembershipFromPlan(plan);
 
-      if (!plan) {
-        console.error("MISSING PLAN IN STRIPE SESSION:", session.id);
-        return new Response("Missing plan", { status: 200 });
+      if (!membershipType && subscriptionId) {
+        membershipType = await getMembershipFromSubscription(subscriptionId);
       }
 
-      const membershipType = PLAN_MEMBERSHIP_MAP[plan];
+      console.log("STRIPE SESSION COMPLETED:", {
+        session: session.id,
+        customerId,
+        subscriptionId,
+        userId,
+        email,
+        plan,
+        membershipType,
+      });
 
       if (!membershipType) {
-        console.error("INVALID PLAN FROM STRIPE:", plan);
-        return new Response("Invalid membership type", { status: 200 });
+        console.error("NO MEMBERSHIP TYPE FOUND:", session.id);
+        return new Response("No membership type found", { status: 200 });
       }
 
       const updateError = await updateProfileAccess({
         userId,
         customerId,
-        email: customerEmail,
+        email,
         membershipType,
         isActive: true,
       });
@@ -151,30 +188,25 @@ export async function POST(req) {
         console.error("SUPABASE UPDATE ERROR:", updateError.message);
         return new Response("Database update failed", { status: 500 });
       }
-
-      console.log(
-        `Updated profile to ${membershipType} | userId=${
-          userId || "none"
-        } | email=${customerEmail || "none"} | customer=${
-          customerId || "none"
-        }`
-      );
     }
 
     if (event.type === "customer.subscription.updated") {
       const subscription = event.data.object;
+
       const customerId = String(subscription.customer || "").trim();
-
-      const plan = String(subscription.metadata?.plan || "")
-        .toLowerCase()
-        .trim();
-
       const userId = String(subscription.metadata?.user_id || "").trim();
       const email = String(subscription.metadata?.email || "")
         .toLowerCase()
         .trim();
 
-      const membershipType = PLAN_MEMBERSHIP_MAP[plan];
+      const plan = String(subscription.metadata?.plan || "")
+        .toLowerCase()
+        .trim();
+
+      const priceId = subscription?.items?.data?.[0]?.price?.id;
+
+      const membershipType =
+        getMembershipFromPlan(plan) || getMembershipFromPriceId(priceId);
 
       if (customerId && membershipType) {
         const updateError = await updateProfileAccess({
@@ -211,8 +243,6 @@ export async function POST(req) {
             status: 500,
           });
         }
-
-        console.log(`Deactivated profile for customer=${customerId}`);
       }
     }
 
@@ -223,17 +253,13 @@ export async function POST(req) {
       if (customerId) {
         const { error } = await supabase
           .from("profiles")
-          .update({
-            is_active: false,
-          })
+          .update({ is_active: false })
           .eq("stripe_customer_id", customerId);
 
         if (error) {
           console.error("PAYMENT FAILED UPDATE ERROR:", error);
           return new Response("Payment failed update failed", { status: 500 });
         }
-
-        console.log(`Marked inactive for failed payment customer=${customerId}`);
       }
     }
 
@@ -244,9 +270,7 @@ export async function POST(req) {
       if (customerId) {
         const { error } = await supabase
           .from("profiles")
-          .update({
-            is_active: true,
-          })
+          .update({ is_active: true })
           .eq("stripe_customer_id", customerId);
 
         if (error) {
@@ -255,8 +279,6 @@ export async function POST(req) {
             status: 500,
           });
         }
-
-        console.log(`Marked active for customer=${customerId}`);
       }
     }
 
