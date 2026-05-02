@@ -336,9 +336,40 @@ const card = {
 };
 
 const highlightCard = {
-  ...card,
   background: "rgba(250,204,21,0.08)",
   border: "1px solid rgba(250,204,21,0.45)",
+  borderRadius: "20px",
+  padding: "22px",
+  minHeight: "520px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  position: "relative",
+};
+
+const vipCard = {
+  background: "rgba(96,165,250,0.08)",
+  border: "1px solid rgba(96,165,250,0.28)",
+  borderRadius: "20px",
+  padding: "22px",
+  minHeight: "520px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  position: "relative",
+};
+
+const coachingCard = {
+  background:
+    "linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.04))",
+  border: "1px solid rgba(255,255,255,0.22)",
+  borderRadius: "20px",
+  padding: "22px",
+  minHeight: "520px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  position: "relative",
 };
 
 const bestValue = {
@@ -363,19 +394,6 @@ const currentBadge = {
   fontWeight: "900",
   padding: "5px 9px",
   borderRadius: "8px",
-};
-
-const vipCard = {
-  ...card,
-  background: "rgba(96,165,250,0.08)",
-  border: "1px solid rgba(96,165,250,0.28)",
-};
-
-const coachingCard = {
-  ...card,
-  background:
-    "linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(255,255,255,0.22)",
 };
 
 const cardTitle = {
