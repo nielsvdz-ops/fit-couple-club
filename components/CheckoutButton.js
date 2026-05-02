@@ -2,12 +2,7 @@
 
 import { useState } from "react";
 
-export default function CheckoutButton({
-  plan,
-  label,
-  email,
-  variant = "green",
-}) {
+export default function CheckoutButton({ plan, label, variant = "green" }) {
   const [loading, setLoading] = useState(false);
 
   async function handleCheckout() {
@@ -18,13 +13,8 @@ export default function CheckoutButton({
 
       const response = await fetch("/api/checkout", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          plan,
-          email,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
       });
 
       const data = await response.json().catch(() => ({}));
@@ -34,12 +24,12 @@ export default function CheckoutButton({
         return;
       }
 
-      if (data?.url) {
-        window.location.href = data.url;
+      if (!data?.url) {
+        alert("No checkout URL returned.");
         return;
       }
 
-      alert("No checkout URL returned.");
+      window.location.href = data.url;
     } catch (error) {
       console.error("CHECKOUT ERROR:", error);
       alert("Something went wrong while starting checkout.");
@@ -64,11 +54,7 @@ function buttonStyle(variant, loading) {
   let background = "#22c55e";
   let color = "white";
 
-  if (variant === "blue") {
-    background = "#60a5fa";
-    color = "white";
-  }
-
+  if (variant === "blue") background = "#60a5fa";
   if (variant === "yellow") {
     background = "#facc15";
     color = "black";
