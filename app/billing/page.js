@@ -6,257 +6,7 @@ import DashboardLayout from "../../components/DashboardLayout";
 import CheckoutButton from "../../components/CheckoutButton";
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
 
-export default async function BillingPage({ searchParams = {} }) {
-  const { user, profile } = await getCurrentUserAndProfile();
-
-  if (!user) redirect("/login");
-
-  const userEmail = String(user?.email || "").toLowerCase().trim();
-  const success = searchParams?.success === "1";
-
-  const membership = String(profile?.membership_type || "free")
-    .toLowerCase()
-    .trim();
-
-  const isActive = Boolean(profile?.is_active);
-  const customerId = profile?.stripe_customer_id || null;
-
-  const vipTaken = 14;
-  const vipMax = 90;
-  const vipLeft = vipMax - vipTaken;
-  const vipPercentage = (vipTaken / vipMax) * 100;
-
-  const coachingTaken = 2;
-  const coachingMax = 12;
-  const coachingLeft = coachingMax - coachingTaken;
-  const coachingPercentage = (coachingTaken / coachingMax) * 100;
-
-  return (
-    <DashboardLayout
-      title="Billing"
-      subtitle="Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching."
-      membershipType={membership}
-    >
-      <div style={pageWrap}>
-        {success && (
-          <section style={successBox}>
-            ✅ Payment successful — refresh once if your membership has not updated yet.
-          </section>
-        )}
-
-        <section style={statusCard}>
-          <div>
-            <div style={eyebrow}>Current Membership</div>
-            <h2 style={title}>{isActive ? formatMembership(membership) : "Free"}</h2>
-            <p style={text}>Status: {isActive ? "Active" : "No active plan"}</p>
-          </div>
-
-          {customerId && <ManageSubscriptionButton label="Manage Subscription" />}
-        </section>
-
-        <section style={heroUpsellCard}>
-          <div style={eyebrow}>Why upgrade?</div>
-          <h2 style={heroTitle}>Stop guessing what to eat, buy, and train.</h2>
-          <p style={text}>
-            The full system combines nutrition routines, smart grocery planning,
-            workouts, programs, progress tracking, and Couple Zone accountability
-            so members can follow a clear structure instead of restarting every week.
-          </p>
-        </section>
-
-        <section style={grid}>
-          <div style={card}>
-            {membership === "nutrition" && isActive && (
-              <div style={currentBadge}>Your Plan</div>
-            )}
-
-            <div>
-              <div style={cardTitle}>Nutrition — €19.99</div>
-              <div style={planTag}>Best for food structure</div>
-              <div style={text}>
-                ✔ 5 body goals
-                <br />
-                ✔ 150 daily nutrition routines
-                <br />
-                ✔ Weekly recipes & structure
-                <br />
-                ✔ Smart supermarket grocery generator
-                <br />
-                ✔ Personalized calories & macros
-                <br />
-                ✔ Couple grocery mode
-                <br />
-                <br />
-                Know exactly what to eat and what to buy every week.
-              </div>
-            </div>
-
-            {membership === "nutrition" && isActive ? (
-              <button style={disabledBtn}>Already Active</button>
-            ) : (
-              <CheckoutButton
-                plan="nutrition"
-                label="Get Nutrition"
-                email={userEmail}
-                variant="green"
-              />
-            )}
-          </div>
-
-          <div style={highlightCard}>
-            <div style={bestValue}>🔥 Best Value</div>
-
-            {membership === "full_access" && isActive && (
-              <div style={currentBadge}>Your Plan</div>
-            )}
-
-            <div>
-              <div style={cardTitle}>Full Access — €34.99</div>
-              <div style={planTag}>Most complete self-guided system</div>
-              <div style={text}>
-                ✔ Everything in Nutrition
-                <br />
-                ✔ Full workout system
-                <br />
-                ✔ Step-by-step programs
-                <br />
-                ✔ Exercise GIF guidance
-                <br />
-                ✔ Plan builder
-                <br />
-                ✔ Progress tracking
-                <br />
-                ✔ Couple Zone system
-                <br />
-                <br />
-                Complete transformation structure: training, food, groceries,
-                progress, and couple accountability.
-              </div>
-            </div>
-
-            {membership === "full_access" && isActive ? (
-              <button style={disabledBtn}>Already Active</button>
-            ) : (
-              <CheckoutButton
-                plan="full_access"
-                label={membership === "nutrition" ? "Upgrade to Full Access" : "Unlock Full System"}
-                email={userEmail}
-                variant="yellow"
-              />
-            )}
-          </div>
-
-          <div style={vipCard}>
-            {membership === "vip" && isActive && (
-              <div style={currentBadge}>Your Plan</div>
-            )}
-
-            <div>
-              <div style={cardTitle}>VIP — €90</div>
-              <div style={planTag}>Guided accountability</div>
-              <div style={text}>
-                ✔ Everything in Full Access
-                <br />
-                ✔ Monthly coaching call
-                <br />
-                ✔ Weekly couple check-in system
-                <br />
-                ✔ Weakest-area auto detection
-                <br />
-                ✔ Personalized advice based on scores
-                <br />
-                ✔ Priority support
-                <br />
-                ✔ Strategy adjustments
-                <br />
-                <br />
-                You do not just follow the system — you get guided, corrected,
-                and kept accountable.
-              </div>
-
-              <div style={scarcityBox}>
-                <div style={vipScarcityText}>
-                  {vipTaken}/{vipMax} VIP spots taken — {vipLeft} spots left
-                </div>
-                <div style={progressBar}>
-                  <div style={{ ...progressFillBlue, width: `${vipPercentage}%` }} />
-                </div>
-              </div>
-            </div>
-
-            {membership === "vip" && isActive ? (
-              <button style={disabledBtn}>Already Active</button>
-            ) : (
-              <CheckoutButton plan="vip" label="Go VIP" email={userEmail} variant="blue" />
-            )}
-          </div>
-
-          <div style={coachingCard}>
-            {membership === "coaching" && isActive && (
-              <div style={currentBadge}>Your Plan</div>
-            )}
-
-            <div>
-              <div style={cardTitle}>Coaching — €340</div>
-              <div style={planTag}>Maximum personal guidance</div>
-              <div style={text}>
-                ✔ Everything in VIP
-                <br />
-                ✔ Weekly 1-on-1 calls
-                <br />
-                ✔ Fully custom training plan
-                <br />
-                ✔ Fully custom nutrition direction
-                <br />
-                ✔ Direct support
-                <br />
-                ✔ Couple coaching available
-                <br />
-                ✔ Coaching by Niels & Rosanna
-                <br />
-                <br />
-                Maximum results with full accountability, personal feedback, and no guessing.
-              </div>
-
-              <div style={scarcityBox}>
-                <div style={scarcityText}>
-                  {coachingTaken}/{coachingMax} coaching spots taken — {coachingLeft} left
-                </div>
-                <div style={progressBar}>
-                  <div style={{ ...progressFillYellow, width: `${coachingPercentage}%` }} />
-                </div>
-              </div>
-            </div>
-
-            {membership === "coaching" && isActive ? (
-              <button style={disabledBtn}>Already Active</button>
-            ) : (
-              <CheckoutButton
-                plan="coaching"
-                label="Start Coaching"
-                email={userEmail}
-                variant="yellow"
-              />
-            )}
-          </div>
-        </section>
-
-        <div style={trust}>
-          ✔ Secure Stripe payments · Cancel anytime · Instant access after payment
-        </div>
-      </div>
-    </DashboardLayout>
-  );
-}
-
-function formatMembership(type) {
-  const m = String(type || "").toLowerCase().trim();
-  if (m === "nutrition") return "Nutrition";
-  if (m === "full_access") return "Full Access";
-  if (m === "vip") return "VIP";
-  if (m === "coaching") return "Coaching";
-  return "Free";
-}
+/* ---------- STYLES FIRST TO PREVENT INITIALIZATION ERRORS ---------- */
 
 const pageWrap = {
   display: "grid",
@@ -298,7 +48,7 @@ const eyebrow = {
   marginBottom: "8px",
 };
 
-const title = {
+const titleStyle = {
   margin: 0,
   fontSize: "30px",
   fontWeight: "800",
@@ -465,3 +215,285 @@ const trust = {
   color: "rgba(255,255,255,0.58)",
   lineHeight: 1.7,
 };
+
+export default async function BillingPage({ searchParams = {} }) {
+  const { user, profile } = await getCurrentUserAndProfile();
+
+  if (!user) redirect("/login");
+
+  const userEmail = String(user?.email || "").toLowerCase().trim();
+  const success = searchParams?.success === "1";
+
+  const membership = String(profile?.membership_type || "free")
+    .toLowerCase()
+    .trim();
+
+  const isActive = Boolean(profile?.is_active);
+  const customerId = profile?.stripe_customer_id || null;
+
+  const vipTaken = 14;
+  const vipMax = 90;
+  const vipLeft = vipMax - vipTaken;
+  const vipPercentage = (vipTaken / vipMax) * 100;
+
+  const coachingTaken = 2;
+  const coachingMax = 12;
+  const coachingLeft = coachingMax - coachingTaken;
+  const coachingPercentage = (coachingTaken / coachingMax) * 100;
+
+  return (
+    <DashboardLayout
+      title="Billing"
+      subtitle="Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching."
+      membershipType={membership}
+    >
+      <div style={pageWrap}>
+        {success && (
+          <section style={successBox}>
+            ✅ Payment successful — refresh once if your membership has not
+            updated yet.
+          </section>
+        )}
+
+        <section style={statusCard}>
+          <div>
+            <div style={eyebrow}>Current Membership</div>
+            <h2 style={titleStyle}>
+              {isActive ? formatMembership(membership) : "Free"}
+            </h2>
+            <p style={text}>Status: {isActive ? "Active" : "No active plan"}</p>
+          </div>
+
+          {customerId && (
+            <ManageSubscriptionButton label="Manage Subscription" />
+          )}
+        </section>
+
+        <section style={heroUpsellCard}>
+          <div style={eyebrow}>Why upgrade?</div>
+          <h2 style={heroTitle}>Stop guessing what to eat, buy, and train.</h2>
+          <p style={text}>
+            The full system combines nutrition routines, smart grocery planning,
+            workouts, programs, progress tracking, and Couple Zone accountability
+            so members can follow a clear structure instead of restarting every
+            week.
+          </p>
+        </section>
+
+        <section style={grid}>
+          <div style={card}>
+            {membership === "nutrition" && isActive && (
+              <div style={currentBadge}>Your Plan</div>
+            )}
+
+            <div>
+              <div style={cardTitle}>Nutrition — €19.99</div>
+              <div style={planTag}>Best for food structure</div>
+              <div style={text}>
+                ✔ 5 body goals
+                <br />
+                ✔ 150 daily nutrition routines
+                <br />
+                ✔ Weekly recipes & structure
+                <br />
+                ✔ Smart supermarket grocery generator
+                <br />
+                ✔ Personalized calories & macros
+                <br />
+                ✔ Couple grocery mode
+                <br />
+                <br />
+                Know exactly what to eat and what to buy every week.
+              </div>
+            </div>
+
+            {membership === "nutrition" && isActive ? (
+              <button style={disabledBtn}>Already Active</button>
+            ) : (
+              <CheckoutButton
+                plan="nutrition"
+                label="Get Nutrition"
+                email={userEmail}
+                variant="green"
+              />
+            )}
+          </div>
+
+          <div style={highlightCard}>
+            <div style={bestValue}>🔥 Best Value</div>
+
+            {membership === "full_access" && isActive && (
+              <div style={currentBadge}>Your Plan</div>
+            )}
+
+            <div>
+              <div style={cardTitle}>Full Access — €34.99</div>
+              <div style={planTag}>Most complete self-guided system</div>
+              <div style={text}>
+                ✔ Everything in Nutrition
+                <br />
+                ✔ Full workout system
+                <br />
+                ✔ Step-by-step programs
+                <br />
+                ✔ Exercise GIF guidance
+                <br />
+                ✔ Plan builder
+                <br />
+                ✔ Progress tracking
+                <br />
+                ✔ Couple Zone system
+                <br />
+                <br />
+                Complete transformation structure: training, food, groceries,
+                progress, and couple accountability.
+              </div>
+            </div>
+
+            {membership === "full_access" && isActive ? (
+              <button style={disabledBtn}>Already Active</button>
+            ) : (
+              <CheckoutButton
+                plan="full_access"
+                label={
+                  membership === "nutrition"
+                    ? "Upgrade to Full Access"
+                    : "Unlock Full System"
+                }
+                email={userEmail}
+                variant="yellow"
+              />
+            )}
+          </div>
+
+          <div style={vipCard}>
+            {membership === "vip" && isActive && (
+              <div style={currentBadge}>Your Plan</div>
+            )}
+
+            <div>
+              <div style={cardTitle}>VIP — €90</div>
+              <div style={planTag}>Guided accountability</div>
+              <div style={text}>
+                ✔ Everything in Full Access
+                <br />
+                ✔ Monthly coaching call
+                <br />
+                ✔ Weekly couple check-in system
+                <br />
+                ✔ Weakest-area auto detection
+                <br />
+                ✔ Personalized advice based on scores
+                <br />
+                ✔ Priority support
+                <br />
+                ✔ Strategy adjustments
+                <br />
+                <br />
+                You do not just follow the system — you get guided, corrected,
+                and kept accountable.
+              </div>
+
+              <div style={scarcityBox}>
+                <div style={vipScarcityText}>
+                  {vipTaken}/{vipMax} VIP spots taken — {vipLeft} spots left
+                </div>
+                <div style={progressBar}>
+                  <div
+                    style={{
+                      ...progressFillBlue,
+                      width: `${vipPercentage}%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {membership === "vip" && isActive ? (
+              <button style={disabledBtn}>Already Active</button>
+            ) : (
+              <CheckoutButton
+                plan="vip"
+                label="Go VIP"
+                email={userEmail}
+                variant="blue"
+              />
+            )}
+          </div>
+
+          <div style={coachingCard}>
+            {membership === "coaching" && isActive && (
+              <div style={currentBadge}>Your Plan</div>
+            )}
+
+            <div>
+              <div style={cardTitle}>Coaching — €340</div>
+              <div style={planTag}>Maximum personal guidance</div>
+              <div style={text}>
+                ✔ Everything in VIP
+                <br />
+                ✔ Weekly 1-on-1 calls
+                <br />
+                ✔ Fully custom training plan
+                <br />
+                ✔ Fully custom nutrition direction
+                <br />
+                ✔ Direct support
+                <br />
+                ✔ Couple coaching available
+                <br />
+                ✔ Coaching by Niels & Rosanna
+                <br />
+                <br />
+                Maximum results with full accountability, personal feedback, and
+                no guessing.
+              </div>
+
+              <div style={scarcityBox}>
+                <div style={scarcityText}>
+                  {coachingTaken}/{coachingMax} coaching spots taken —{" "}
+                  {coachingLeft} left
+                </div>
+                <div style={progressBar}>
+                  <div
+                    style={{
+                      ...progressFillYellow,
+                      width: `${coachingPercentage}%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {membership === "coaching" && isActive ? (
+              <button style={disabledBtn}>Already Active</button>
+            ) : (
+              <CheckoutButton
+                plan="coaching"
+                label="Start Coaching"
+                email={userEmail}
+                variant="yellow"
+              />
+            )}
+          </div>
+        </section>
+
+        <div style={trust}>
+          ✔ Secure Stripe payments · Cancel anytime · Instant access after
+          payment
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+function formatMembership(type) {
+  const m = String(type || "").toLowerCase().trim();
+
+  if (m === "nutrition") return "Nutrition";
+  if (m === "full_access") return "Full Access";
+  if (m === "vip") return "VIP";
+  if (m === "coaching") return "Coaching";
+
+  return "Free";
+}
