@@ -6,17 +6,35 @@ import DashboardLayout from "../../components/DashboardLayout";
 import CheckoutButton from "../../components/CheckoutButton";
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
 
-export default async function BillingPage() {
+export default async function BillingPage({ searchParams }) {
   const { user, profile } = await getCurrentUserAndProfile();
 
   if (!user) redirect("/login");
 
   const userEmail = user?.email || "";
+  const success = searchParams?.success === "1";
+
+  const membership = String(profile?.membership_type || "free");
+
+  const missingFeatures = {
+    nutrition: [
+      "Workouts & programs",
+      "Couple Zone system",
+      "Progress tracking",
+      "VIP coaching system",
+    ],
+    full_access: [
+      "Monthly coaching call",
+      "Weakness detection system",
+      "Priority support",
+    ],
+  };
 
   const vipTaken = 14;
   const vipMax = 90;
   const vipLeft = vipMax - vipTaken;
   const vipPercentage = (vipTaken / vipMax) * 100;
+  const vipUrgency = vipLeft < 20 ? "⚠️ Almost full" : "Limited spots";
 
   const coachingTaken = 2;
   const coachingMax = 12;
@@ -26,14 +44,25 @@ export default async function BillingPage() {
   return (
     <DashboardLayout
       title="Billing"
-      subtitle="Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching."
+      subtitle="Choose your system level — from nutrition to full transformation and coaching."
       membershipType={profile?.membership_type}
     >
       <div style={pageWrap}>
+
+        {success && (
+          <div style={successBox}>
+            ✅ Payment successful — your membership is now active
+          </div>
+        )}
+
         <section style={statusCard}>
           <div>
             <div style={eyebrow}>Current Membership</div>
-            <h2 style={title}>{formatMembership(profile?.membership_type)}</h2>
+            <h2 style={title}>
+              {profile?.is_active
+                ? formatMembership(profile?.membership_type)
+                : "Free"}
+            </h2>
             <p style={text}>
               Status: {profile?.is_active ? "Active" : "No active plan"}
             </p>
@@ -44,114 +73,119 @@ export default async function BillingPage() {
           )}
         </section>
 
+        {membership !== "coaching" && (
+          <section style={lockCard}>
+            <div style={eyebrow}>You are currently missing</div>
+
+            <ul style={list}>
+              {(missingFeatures[membership] || []).map((f) => (
+                <li key={f}>🔒 {f}</li>
+              ))}
+            </ul>
+
+            <div style={upgradeText}>
+              Upgrade to unlock full system
+            </div>
+          </section>
+        )}
+
         <section style={heroUpsellCard}>
           <div style={eyebrow}>Why upgrade?</div>
-          <h2 style={heroTitle}>Stop guessing what to eat, buy, and train.</h2>
+          <h2 style={heroTitle}>Stop guessing. Follow a system.</h2>
           <p style={text}>
-            The full system combines nutrition routines, smart grocery planning,
-            workouts, programs, progress tracking, and Couple Zone accountability
-            so members can follow a clear structure instead of restarting every
-            week.
+            The full system combines nutrition, groceries, workouts, tracking,
+            and Couple Zone accountability so you stop restarting every week.
           </p>
         </section>
 
         <section style={grid}>
+
+          {/* NUTRITION */}
           <div style={card}>
+            {membership === "nutrition" && (
+              <div style={currentBadge}>Your Plan</div>
+            )}
+
             <div>
               <div style={cardTitle}>Nutrition — €19.99</div>
-              <div style={planTag}>Best for food structure</div>
+              <div style={planTag}>Food structure</div>
 
               <div style={text}>
-                ✔ 5 body goals
-                <br />
-                ✔ 150 daily nutrition routines
-                <br />
-                ✔ Weekly recipes & structure
-                <br />
-                ✔ Smart supermarket grocery generator
-                <br />
-                ✔ Personalized calories & macros
-                <br />
-                ✔ Couple grocery mode
-                <br />
-                <br />
-                Know exactly what to eat and what to buy every week.
+                ✔ 150 daily routines
+                <br />✔ Weekly recipes
+                <br />✔ Grocery generator
+                <br />✔ Calories & macros
               </div>
             </div>
 
-            <CheckoutButton
-              plan="nutrition"
-              label="Get Nutrition"
-              email={userEmail}
-              variant="green"
-            />
+            {membership === "nutrition" ? (
+              <button style={disabledBtn}>Already Active</button>
+            ) : (
+              <CheckoutButton
+                plan="nutrition"
+                label="Start Nutrition"
+                email={userEmail}
+              />
+            )}
           </div>
 
+          {/* FULL ACCESS */}
           <div style={highlightCard}>
+            {membership === "full_access" && (
+              <div style={currentBadge}>Your Plan</div>
+            )}
+
             <div style={bestValue}>🔥 Best Value</div>
 
             <div>
               <div style={cardTitle}>Full Access — €34.99</div>
-              <div style={planTag}>Most complete self-guided system</div>
+              <div style={planTag}>Complete system</div>
 
               <div style={text}>
                 ✔ Everything in Nutrition
-                <br />
-                ✔ Full workout system
-                <br />
-                ✔ Step-by-step programs
-                <br />
-                ✔ Exercise GIF guidance
-                <br />
-                ✔ Plan builder
-                <br />
-                ✔ Progress tracking
-                <br />
-                ✔ Couple Zone system
-                <br />
-                <br />
-                Complete transformation structure: training, food, groceries,
-                progress, and couple accountability.
+                <br />✔ Workouts & programs
+                <br />✔ Plan builder
+                <br />✔ Couple Zone
               </div>
             </div>
 
-            <CheckoutButton
-              plan="full_access"
-              label="Unlock Full System"
-              email={userEmail}
-              variant="yellow"
-            />
+            {membership === "full_access" ? (
+              <button style={disabledBtn}>Already Active</button>
+            ) : (
+              <CheckoutButton
+                plan="full_access"
+                label={
+                  membership === "nutrition"
+                    ? "Upgrade to Full Access"
+                    : "Unlock Full System"
+                }
+                email={userEmail}
+              />
+            )}
           </div>
 
+          {/* VIP */}
           <div style={vipCard}>
+            {membership === "vip" && (
+              <div style={currentBadge}>Your Plan</div>
+            )}
+
             <div>
               <div style={cardTitle}>VIP — €90</div>
               <div style={planTag}>Guided accountability</div>
 
               <div style={text}>
                 ✔ Everything in Full Access
-                <br />
-                ✔ Monthly coaching call
-                <br />
-                ✔ Weekly couple check-in system
-                <br />
-                ✔ Weakest-area auto detection
-                <br />
-                ✔ Personalized advice based on scores
-                <br />
-                ✔ Priority support
-                <br />
-                ✔ Strategy adjustments
-                <br />
-                <br />
-                You do not just follow the system — you get guided, corrected,
-                and kept accountable.
+                <br />✔ Monthly coaching call
+                <br />✔ Weakness detection
+                <br />✔ Priority support
               </div>
 
               <div style={scarcityBox}>
                 <div style={vipScarcityText}>
-                  {vipTaken}/{vipMax} VIP spots taken — {vipLeft} spots left
+                  {vipTaken}/{vipMax} spots taken — {vipLeft} left
                 </div>
+                <div>{vipUrgency}</div>
 
                 <div style={progressBar}>
                   <div
@@ -161,43 +195,36 @@ export default async function BillingPage() {
               </div>
             </div>
 
-            <CheckoutButton
-              plan="vip"
-              label="Go VIP"
-              email={userEmail}
-              variant="blue"
-            />
+            {membership === "vip" ? (
+              <button style={disabledBtn}>Already Active</button>
+            ) : (
+              <CheckoutButton
+                plan="vip"
+                label="Go VIP"
+                email={userEmail}
+              />
+            )}
           </div>
 
+          {/* COACHING */}
           <div style={coachingCard}>
+            {membership === "coaching" && (
+              <div style={currentBadge}>Your Plan</div>
+            )}
+
             <div>
               <div style={cardTitle}>Coaching — €340</div>
-              <div style={planTag}>Maximum personal guidance</div>
+              <div style={planTag}>Maximum results</div>
 
               <div style={text}>
                 ✔ Everything in VIP
-                <br />
-                ✔ Weekly 1-on-1 calls
-                <br />
-                ✔ Fully custom training plan
-                <br />
-                ✔ Fully custom nutrition direction
-                <br />
-                ✔ Direct support
-                <br />
-                ✔ Couple coaching available
-                <br />
-                ✔ Coaching by Niels & Rosanna
-                <br />
-                <br />
-                Maximum results with full accountability, personal feedback, and
-                no guessing.
+                <br />✔ Weekly 1-on-1 calls
+                <br />✔ Fully custom plan
               </div>
 
               <div style={scarcityBox}>
                 <div style={scarcityText}>
-                  {coachingTaken}/{coachingMax} coaching spots taken —{" "}
-                  {coachingLeft} left
+                  {coachingTaken}/{coachingMax} taken — {coachingLeft} left
                 </div>
 
                 <div style={progressBar}>
@@ -211,14 +238,23 @@ export default async function BillingPage() {
               </div>
             </div>
 
-            <CheckoutButton
-              plan="coaching"
-              label="Start Coaching"
-              email={userEmail}
-              variant="yellow"
-            />
+            {membership === "coaching" ? (
+              <button style={disabledBtn}>Already Active</button>
+            ) : (
+              <CheckoutButton
+                plan="coaching"
+                label="Start Coaching"
+                email={userEmail}
+              />
+            )}
           </div>
+
         </section>
+
+        <div style={trust}>
+          ✔ Secure Stripe payments · Cancel anytime · Instant access
+        </div>
+
       </div>
     </DashboardLayout>
   );
@@ -226,163 +262,52 @@ export default async function BillingPage() {
 
 function formatMembership(type) {
   const m = String(type || "").toLowerCase().trim();
-
   if (m === "nutrition") return "Nutrition";
   if (m === "full_access") return "Full Access";
   if (m === "vip") return "VIP";
   if (m === "coaching") return "Coaching";
-
   return "Free";
 }
 
-const pageWrap = {
-  display: "grid",
-  gap: "22px",
-  maxWidth: "1160px",
+const successBox = {
+  background: "#16a34a",
+  padding: "14px",
+  borderRadius: "10px",
+  fontWeight: "700",
 };
 
-const statusCard = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "22px",
-  padding: "24px",
-  display: "grid",
-  gap: "14px",
-};
-
-const heroUpsellCard = {
-  background:
-    "linear-gradient(135deg, rgba(250,204,21,0.10), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(250,204,21,0.22)",
-  borderRadius: "22px",
-  padding: "26px",
-};
-
-const eyebrow = {
-  fontSize: "12px",
-  textTransform: "uppercase",
-  letterSpacing: "0.16em",
-  color: "rgba(255,255,255,0.45)",
-  marginBottom: "8px",
-};
-
-const title = {
-  margin: 0,
-  fontSize: "30px",
-  fontWeight: "800",
-};
-
-const heroTitle = {
-  margin: "0 0 10px 0",
-  fontSize: "clamp(28px, 4vw, 40px)",
-  fontWeight: "900",
-  lineHeight: 1.08,
-};
-
-const text = {
-  color: "rgba(255,255,255,0.72)",
-  lineHeight: 1.8,
-};
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
-  gap: "18px",
-  alignItems: "stretch",
-};
-
-const card = {
+const lockCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "20px",
-  padding: "22px",
-  minHeight: "520px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  position: "relative",
+  padding: "20px",
 };
 
-const highlightCard = {
-  ...card,
-  background: "rgba(250,204,21,0.08)",
-  border: "1px solid rgba(250,204,21,0.45)",
+const upgradeText = {
+  marginTop: "10px",
+  fontWeight: "800",
+  color: "#facc15",
 };
 
-const bestValue = {
+const disabledBtn = {
+  padding: "12px",
+  borderRadius: "10px",
+  background: "#444",
+  color: "#aaa",
+};
+
+const currentBadge = {
   position: "absolute",
   top: "-10px",
-  right: "10px",
-  background: "#facc15",
-  color: "black",
-  fontSize: "12px",
-  fontWeight: "800",
-  padding: "5px 10px",
-  borderRadius: "8px",
+  left: "10px",
+  background: "#16a34a",
+  padding: "5px 8px",
+  borderRadius: "6px",
+  fontSize: "11px",
 };
 
-const vipCard = {
-  ...card,
-  background: "rgba(96,165,250,0.08)",
-  border: "1px solid rgba(96,165,250,0.28)",
-};
-
-const coachingCard = {
-  ...card,
-  background:
-    "linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(255,255,255,0.22)",
-};
-
-const cardTitle = {
-  fontSize: "24px",
-  fontWeight: "900",
-  marginBottom: "8px",
-};
-
-const planTag = {
-  display: "inline-block",
-  marginBottom: "14px",
-  padding: "6px 10px",
-  borderRadius: "999px",
-  background: "rgba(255,255,255,0.07)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  color: "rgba(255,255,255,0.72)",
-  fontSize: "12px",
-  fontWeight: "800",
-};
-
-const scarcityBox = {
-  marginTop: "18px",
-};
-
-const scarcityText = {
-  fontSize: "13px",
-  marginBottom: "6px",
-  color: "#facc15",
-  fontWeight: "800",
-};
-
-const vipScarcityText = {
-  fontSize: "13px",
-  marginBottom: "6px",
-  color: "#60a5fa",
-  fontWeight: "800",
-};
-
-const progressBar = {
-  height: "7px",
-  background: "rgba(255,255,255,0.1)",
-  borderRadius: "10px",
-  overflow: "hidden",
-};
-
-const progressFillYellow = {
-  height: "100%",
-  background: "#facc15",
-};
-
-const progressFillBlue = {
-  height: "100%",
-  background: "#60a5fa",
+const trust = {
+  marginTop: "20px",
+  textAlign: "center",
+  color: "rgba(255,255,255,0.6)",
 };
