@@ -447,33 +447,3 @@ const trust = {
   color: "rgba(255,255,255,0.58)",
   lineHeight: 1.7,
 };
-const card = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "20px",
-  padding: "22px",
-  minHeight: "520px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  position: "relative",
-};
-
-const highlightCard = {
-  ...card,
-  background: "rgba(250,204,21,0.08)",
-  border: "1px solid rgba(250,204,21,0.45)",
-};
-
-const vipCard = {
-  ...card,
-  background: "rgba(96,165,250,0.08)",
-  border: "1px solid rgba(96,165,250,0.28)",
-};
-
-const coachingCard = {
-  ...card,
-  background:
-    "linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(255,255,255,0.22)",
-};
