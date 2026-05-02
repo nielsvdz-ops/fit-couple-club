@@ -15,6 +15,9 @@ export default async function BillingPage({ searchParams = {} }) {
   const success = searchParams?.success === "1";
   const membership = String(profile?.membership_type || "free").toLowerCase();
 
+const isActive = Boolean(profile?.is_active);
+const customerId = profile?.stripe_customer_id || null;
+
   const vipTaken = 14;
   const vipMax = 90;
   const vipLeft = vipMax - vipTaken;
