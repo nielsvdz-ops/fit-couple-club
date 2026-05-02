@@ -6,7 +6,7 @@ import DashboardLayout from "../../components/DashboardLayout";
 import CheckoutButton from "../../components/CheckoutButton";
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
 
-export default async function BillingPage({ searchParams }) {
+export default async function BillingPage({ searchParams = {} }) {
   const { user, profile } = await getCurrentUserAndProfile();
 
   if (!user) redirect("/login");
