@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
-import { createClient } from "../../lib/supabase/server";
-import { getCurrentUserAndProfile } from "../../lib/getProfile";
+import { Resend } from "resend";
+import { getCurrentUserAndProfile } from "../../../lib/getProfile";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function getPeriodKey(membershipType) {
   const now = new Date();
@@ -15,6 +17,35 @@ function getPeriodKey(membershipType) {
 
   const month = String(now.getUTCMonth() + 1).padStart(2, "0");
   return `vip-${year}-${month}`;
+}
+
+function getCallTypeLabel(membership) {
+  return membership === "coaching" ? "Weekly Coaching Call" : "Monthly VIP Call";
+}
+
+async function sendCallRequestEmail({ user, profile, membership, body, existing }) {
+  if (!process.env.RESEND_API_KEY) return;
+
+  const fullName = profile?.full_name || user?.email || "Member";
+  const callType = getCallTypeLabel(membership);
+  const action = existing ? "Updated" : "New";
+
+  await resend.emails.send({
+    from: "Fit Couple Club <onboarding@resend.dev>",
+    to: ["YOUR_EMAIL_HERE"],
+    subject: `${action} ${callType} Request`,
+    html: `
+      <h2>${action} ${callType} Request</h2>
+      <p><strong>Name:</strong> ${fullName}</p>
+      <p><strong>Email:</strong> ${user?.email || ""}</p>
+      <p><strong>Membership:</strong> ${membership}</p>
+      <p><strong>Preferred date:</strong> ${body.preferredDate || "Not set"}</p>
+      <p><strong>Preferred time:</strong> ${body.preferredTime || "Not set"}</p>
+      <p><strong>Topic:</strong> ${body.topic || "Not set"}</p>
+      <p><strong>Notes:</strong></p>
+      <p>${body.notes || "No notes"}</p>
+    `,
+  });
 }
 
 export async function GET() {
@@ -70,12 +101,16 @@ export async function POST(req) {
   const body = await req.json();
   const periodKey = getPeriodKey(membership);
 
-  const { data: existing } = await supabase
+  const { data: existing, error: existingError } = await supabase
     .from("call_requests")
     .select("*")
     .eq("user_id", user.id)
     .eq("period_key", periodKey)
     .maybeSingle();
+
+  if (existingError) {
+    return NextResponse.json({ error: existingError.message }, { status: 500 });
+  }
 
   if (existing?.status === "completed") {
     return NextResponse.json(
@@ -104,6 +139,18 @@ export async function POST(req) {
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  try {
+    await sendCallRequestEmail({
+      user,
+      profile,
+      membership,
+      body,
+      existing,
+    });
+  } catch (emailError) {
+    console.error("CALL REQUEST EMAIL ERROR:", emailError);
   }
 
   return NextResponse.json({ request: data });
