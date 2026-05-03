@@ -1,107 +1,89 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "../lib/supabase/client";
 
-export default function VipClient() {
-  const supabase = createClient();
+export default function VipClient({ membershipType }) {
+  const [request, setRequest] = useState(null);
+  const [canEdit, setCanEdit] = useState(true);
+  const [limitText, setLimitText] = useState("");
 
-  const [requests, setRequests] = useState([]);
   const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [notes, setNotes] = useState("");
+
   const [message, setMessage] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  async function loadRequests() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  async function load() {
+    const res = await fetch("/api/call-request");
+    const data = await res.json();
 
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from("vip_requests")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    if (!error) {
-      setRequests(data || []);
-    }
-  }
-
-  async function requestCall() {
-    setSubmitting(true);
-    setMessage("Requesting...");
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      setSubmitting(false);
-      setMessage("Login required");
+    if (!res.ok) {
+      setMessage(data.error || "Failed to load");
       return;
     }
 
-    let fullName = "";
+    setRequest(data.request);
+    setCanEdit(data.canEdit);
+    setLimitText(data.limitText);
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("full_name")
-      .eq("id", user.id)
-      .single();
-
-    if (profile?.full_name) {
-      fullName = profile.full_name;
+    if (data.request) {
+      setDate(data.request.preferred_date || "");
+      setTime(data.request.preferred_time || "");
+      setNotes(data.request.notes || "");
     }
+  }
 
-    const response = await fetch("/api/vip-request", {
+  async function submit() {
+    setLoading(true);
+    setMessage("Saving...");
+
+    const res = await fetch("/api/call-request", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userId: user.id,
-        email: user.email || "",
-        fullName: fullName || "",
-        preferredDate: date || null,
-        notes: notes || "",
+        preferredDate: date,
+        preferredTime: time,
+        notes,
       }),
     });
 
-    const result = await response.json();
+    const data = await res.json();
 
-    if (!response.ok) {
-      setSubmitting(false);
-      setMessage(result.error || "Failed to send request");
+    if (!res.ok) {
+      setMessage(data.error || "Failed");
+      setLoading(false);
       return;
     }
 
-    if (result.warning) {
-      setMessage(`Call request saved ✅ ${result.warning}`);
-    } else {
-      setMessage("Call request sent ✅");
-    }
-
-    setDate("");
-    setNotes("");
-    await loadRequests();
-    setSubmitting(false);
+    setMessage("Saved ✅");
+    await load();
+    setLoading(false);
   }
 
   useEffect(() => {
-    loadRequests();
+    load();
   }, []);
 
   return (
     <div style={{ display: "grid", gap: "22px" }}>
       <section style={card}>
-        <div style={eyebrow}>VIP Benefit</div>
-        <h2 style={title}>Request your monthly call</h2>
-        <p style={text}>
-          Submit your preferred date and notes. You’ll be contacted to confirm.
-        </p>
+        <div style={eyebrow}>Call Request</div>
+        <h2 style={title}>
+          {membershipType === "coaching"
+            ? "Request your weekly call"
+            : "Request your monthly call"}
+        </h2>
+
+        <p style={text}>{limitText}</p>
+
+        {!canEdit && (
+          <div style={lockedBox}>
+            This request is completed and cannot be changed.
+          </div>
+        )}
 
         <div style={{ display: "grid", gap: "12px", marginTop: "14px" }}>
           <input
@@ -109,84 +91,68 @@ export default function VipClient() {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             style={input}
+            disabled={!canEdit}
+          />
+
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            style={input}
+            disabled={!canEdit}
           />
 
           <textarea
-            placeholder="What do you want to focus on? Progress, diet, struggles..."
+            placeholder="Focus, struggles, goals..."
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             style={textarea}
+            disabled={!canEdit}
           />
 
           <button
-            onClick={requestCall}
+            onClick={submit}
             style={button}
-            disabled={submitting}
+            disabled={loading || !canEdit}
           >
-            {submitting ? "Requesting..." : "Request Call"}
+            {loading
+              ? "Saving..."
+              : request
+              ? "Update Request"
+              : "Request Call"}
           </button>
 
           {message && <div style={info}>{message}</div>}
         </div>
       </section>
 
-      <section style={card}>
-        <div style={cardTitle}>Your requests</div>
+      {request && (
+        <section style={card}>
+          <div style={cardTitle}>Current Request</div>
 
-        {requests.length === 0 ? (
-          <div style={text}>No requests yet.</div>
-        ) : (
-          <div style={{ display: "grid", gap: "12px" }}>
-            {requests.map((r) => (
-              <div key={r.id} style={requestCard}>
-                <div style={status(r.status)}>{r.status}</div>
-                <div style={textSmall}>
-                  Date: {r.preferred_date || "Not set"}
-                </div>
-                <div style={textSmall}>{r.notes}</div>
-              </div>
-            ))}
+          <div style={requestCard}>
+            <div style={status(request.status)}>{request.status}</div>
+            <div style={textSmall}>
+              Date: {request.preferred_date || "Not set"}
+            </div>
+            <div style={textSmall}>
+              Time: {request.preferred_time || "Not set"}
+            </div>
+            <div style={textSmall}>{request.notes}</div>
           </div>
-        )}
-      </section>
-
-      <section style={grid}>
-        <div style={card}>
-          <div style={cardTitle}>Monthly Evaluation</div>
-          <div style={text}>
-            Deep dive into your progress, body changes, and performance.
-          </div>
-        </div>
-
-        <div style={card}>
-          <div style={cardTitle}>Priority Support</div>
-          <div style={text}>
-            VIP clients get faster responses and direct coaching adjustments.
-          </div>
-        </div>
-
-        <div style={card}>
-          <div style={cardTitle}>Custom Adjustments</div>
-          <div style={text}>
-            Your plan gets optimized monthly based on real data.
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
+
+/* styles (keep yours if you want) */
 
 const card = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "22px",
   padding: "22px",
-};
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
-  gap: "16px",
 };
 
 const eyebrow = {
@@ -209,7 +175,6 @@ const cardTitle = {
 
 const text = {
   color: "rgba(255,255,255,0.7)",
-  lineHeight: 1.7,
 };
 
 const textSmall = {
@@ -253,6 +218,14 @@ const requestCard = {
   border: "1px solid rgba(255,255,255,0.08)",
 };
 
+const lockedBox = {
+  padding: "10px",
+  borderRadius: "10px",
+  background: "rgba(239,68,68,0.2)",
+  border: "1px solid rgba(239,68,68,0.4)",
+  color: "white",
+};
+
 const status = (s) => ({
   fontWeight: "700",
   color:
@@ -264,6 +237,5 @@ const status = (s) => ({
       ? "#60a5fa"
       : s === "completed"
       ? "#c084fc"
-      : "rgba(255,255,255,0.6)",
-  textTransform: "capitalize",
+      : "white",
 });
