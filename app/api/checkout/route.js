@@ -137,9 +137,6 @@ export async function POST(req) {
       customer: customerId,
       client_reference_id: user.id,
       
-automatic_payment_methods: {
-  enabled: true,
-},
       line_items: [
         {
           price: priceId,
