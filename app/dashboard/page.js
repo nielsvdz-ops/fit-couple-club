@@ -14,7 +14,7 @@ export default async function DashboardPage() {
   const { user, profile } = await getCurrentUserAndProfile();
 
   if (!user) redirect("/login");
-  if (!canAccessStarterPages(profile)) redirect("/pricing");
+  if (!canAccessStarterPages(profile)) redirect("/billing");
 
   return (
     <DashboardLayout
