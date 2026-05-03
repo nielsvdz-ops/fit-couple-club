@@ -32,7 +32,7 @@ async function sendCallRequestEmail({ user, profile, membership, body, existing 
 
   await resend.emails.send({
     from: "Fit Couple Club <onboarding@resend.dev>",
-    to: ["YOUR_EMAIL_HERE"],
+    to: ["fitcoupleclub1@gmail.com"],
     subject: `${action} ${callType} Request`,
     html: `
       <h2>${action} ${callType} Request</h2>
