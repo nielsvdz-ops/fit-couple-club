@@ -12,16 +12,18 @@ export default async function PlanBuilderPage() {
 
   if (!user) redirect("/login");
 
+  const membership = String(profile?.membership_type || "").toLowerCase().trim();
+
   if (!canAccessFitnessPages(profile)) {
     return (
       <DashboardLayout
         title="Plan Builder"
         subtitle="Generate your training plan based on your goal and member level."
-        membershipType={profile?.membership_type}
+        membershipType={membership}
       >
         <UpgradeLockScreen
-          title="Unlock the plan builder"
-          text="The full training plan builder is included with Full Access and above."
+          title="Unlock the Plan Builder"
+          text="Build structured training plans based on your goal, focus, and weekly schedule. This feature is part of Full Access and above."
           requiredPlan="Full Access"
           buttonLabel="Upgrade to Full Access"
         />
@@ -32,10 +34,10 @@ export default async function PlanBuilderPage() {
   return (
     <DashboardLayout
       title="Plan Builder"
-      subtitle="Generate your training plan based on your goal and member level."
-      membershipType={profile?.membership_type}
+      subtitle="Build a structured training plan based on your goal, focus, and weekly schedule."
+      membershipType={membership}
     >
-      <PlanBuilderClient membershipType={profile?.membership_type} />
+      <PlanBuilderClient membershipType={membership} />
     </DashboardLayout>
   );
 }
