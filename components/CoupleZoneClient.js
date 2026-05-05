@@ -1,57 +1,136 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useLanguage } from "../lib/useLanguage";
+
+const STORAGE_KEY = "fit_couple_zone_history";
 
 const scoreAreas = [
   {
     key: "training",
-    title: "Training",
-    text: "Workouts completed, effort, consistency, and showing up.",
+    title: { en: "Training", nl: "Training" },
+    text: {
+      en: "Workouts completed, effort, consistency, and showing up.",
+      nl: "Afgeronde workouts, inzet, consistentie en komen opdagen.",
+    },
   },
   {
     key: "nutrition",
-    title: "Nutrition",
-    text: "Meals, protein, grocery structure, weekends, and food control.",
+    title: { en: "Nutrition", nl: "Voeding" },
+    text: {
+      en: "Meals, protein, grocery structure, weekends, and food control.",
+      nl: "Maaltijden, eiwitten, boodschappenstructuur, weekenden en controle.",
+    },
   },
   {
     key: "support",
-    title: "Support",
-    text: "Encouragement, teamwork, communication, and no pressure.",
+    title: { en: "Support", nl: "Support" },
+    text: {
+      en: "Encouragement, teamwork, communication, and no pressure.",
+      nl: "Aanmoediging, teamwork, communicatie en geen druk.",
+    },
   },
   {
     key: "recovery",
-    title: "Recovery",
-    text: "Sleep, stress, steps, hydration, and reset habits.",
+    title: { en: "Recovery", nl: "Herstel" },
+    text: {
+      en: "Sleep, stress, steps, hydration, and reset habits.",
+      nl: "Slaap, stress, stappen, hydratatie en reset-gewoontes.",
+    },
   },
 ];
 
 const weeklyTargets = [
-  { label: "Shared workouts", value: "4", detail: "Train together or hold each other accountable." },
-  { label: "Steps together", value: "8k+", detail: "Aim for walks after meals or in the evening." },
-  { label: "High-protein dinners", value: "3", detail: "Cook structured dinners together this week." },
-  { label: "Sunday check-in", value: "1", detail: "Review the week and plan the next one." },
+  {
+    label: { en: "Shared workouts", nl: "Samen trainen" },
+    value: "4",
+    detail: {
+      en: "Train together or hold each other accountable.",
+      nl: "Train samen of houd elkaar verantwoordelijk.",
+    },
+  },
+  {
+    label: { en: "Steps together", nl: "Samen stappen" },
+    value: "8k+",
+    detail: {
+      en: "Aim for walks after meals or in the evening.",
+      nl: "Doe wandelingen na maaltijden of in de avond.",
+    },
+  },
+  {
+    label: { en: "High-protein dinners", nl: "Eiwitrijke diners" },
+    value: "3",
+    detail: {
+      en: "Cook structured dinners together this week.",
+      nl: "Kook deze week gestructureerde diners samen.",
+    },
+  },
+  {
+    label: { en: "Sunday check-in", nl: "Zondag check-in" },
+    value: "1",
+    detail: {
+      en: "Review the week and plan the next one.",
+      nl: "Evalueer de week en plan de volgende.",
+    },
+  },
 ];
 
 const advice = {
   training: {
-    low: "Lower the barrier. Plan 2 realistic workouts first, then build back up. Do not chase a perfect week.",
-    mid: "Training is close. Lock in exact days and decide who starts the session when motivation is low.",
-    high: "Training is strong. Keep the routine and focus on better execution or progressive overload.",
+    low: {
+      en: "Lower the barrier. Plan 2 realistic workouts first, then build back up. Do not chase a perfect week.",
+      nl: "Maak de drempel lager. Plan eerst 2 realistische workouts en bouw daarna op. Jaag niet op een perfecte week.",
+    },
+    mid: {
+      en: "Training is close. Lock in exact days and decide who starts the session when motivation is low.",
+      nl: "Training zit bijna goed. Leg vaste dagen vast en spreek af wie start als motivatie laag is.",
+    },
+    high: {
+      en: "Training is strong. Keep the routine and focus on better execution or progressive overload.",
+      nl: "Training is sterk. Houd de routine vast en focus op betere uitvoering of progressive overload.",
+    },
   },
   nutrition: {
-    low: "Nutrition needs structure. Use the grocery generator, plan 3 dinners, and keep protein ready at home.",
-    mid: "Food is partly working. Fix the weakest moment: breakfast, evenings, weekends, or shopping.",
-    high: "Nutrition is strong. Keep meals repeatable and only change small things.",
+    low: {
+      en: "Nutrition needs structure. Use the grocery generator, plan 3 dinners, and keep protein ready at home.",
+      nl: "Voeding heeft structuur nodig. Gebruik de boodschappen generator, plan 3 diners en houd eiwitten klaar in huis.",
+    },
+    mid: {
+      en: "Food is partly working. Fix the weakest moment: breakfast, evenings, weekends, or shopping.",
+      nl: "Voeding werkt deels. Fix het zwakste moment: ontbijt, avonden, weekenden of boodschappen.",
+    },
+    high: {
+      en: "Nutrition is strong. Keep meals repeatable and only change small things.",
+      nl: "Voeding is sterk. Houd maaltijden herhaalbaar en verander alleen kleine dingen.",
+    },
   },
   support: {
-    low: "Support needs attention. Replace criticism with one question: ‘How can I help you today?’",
-    mid: "Support is okay, but needs more intention. Praise effort and avoid discussing mistakes when emotions are high.",
-    high: "Support is a strength. Use it to carry the weaker areas.",
+    low: {
+      en: "Support needs attention. Replace criticism with one question: ‘How can I help you today?’",
+      nl: "Support heeft aandacht nodig. Vervang kritiek door één vraag: ‘Hoe kan ik je vandaag helpen?’",
+    },
+    mid: {
+      en: "Support is okay, but needs more intention. Praise effort and avoid discussing mistakes when emotions are high.",
+      nl: "Support is oké, maar mag bewuster. Complimenteer inzet en bespreek fouten niet wanneer emoties hoog zitten.",
+    },
+    high: {
+      en: "Support is a strength. Use it to carry the weaker areas.",
+      nl: "Support is een kracht. Gebruik dit om de zwakkere onderdelen te dragen.",
+    },
   },
   recovery: {
-    low: "Recovery is holding progress back. Prioritize sleep, hydration, walks, and less late-night stress.",
-    mid: "Recovery is decent. Add one easy evening walk and one earlier sleep night.",
-    high: "Recovery is strong. Keep it stable while pushing training or nutrition.",
+    low: {
+      en: "Recovery is holding progress back. Prioritize sleep, hydration, walks, and less late-night stress.",
+      nl: "Herstel houdt progressie tegen. Prioriteer slaap, hydratatie, wandelingen en minder late-night stress.",
+    },
+    mid: {
+      en: "Recovery is decent. Add one easy evening walk and one earlier sleep night.",
+      nl: "Herstel is redelijk. Voeg één makkelijke avondwandeling en één vroegere slaapavond toe.",
+    },
+    high: {
+      en: "Recovery is strong. Keep it stable while pushing training or nutrition.",
+      nl: "Herstel is sterk. Houd dit stabiel terwijl je training of voeding opbouwt.",
+    },
   },
 };
 
@@ -61,8 +140,17 @@ function getAdviceLevel(score) {
   return "high";
 }
 
-function getDefaultWeekLabel() {
+function getDefaultWeekLabel(language) {
   const now = new Date();
+
+  if (language === "nl") {
+    return `Week van ${now.toLocaleDateString("nl-NL", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })}`;
+  }
+
   return `Week of ${now.toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
@@ -71,7 +159,64 @@ function getDefaultWeekLabel() {
 }
 
 export default function CoupleZoneClient() {
-  const [weekLabel, setWeekLabel] = useState(getDefaultWeekLabel());
+  const { language } = useLanguage();
+
+  const t = {
+    en: {
+      eyebrow: "Couple Transformation System",
+      heroTitle:
+        "Build discipline together without turning fitness into pressure",
+      heroText:
+        "Score the week, find the weakest area, get advice, and save weekly history so couples can see what is actually improving.",
+      weeklyScore: "Weekly accountability score",
+      clickScore: "Click a score from 0 to 5",
+      saveWeek: "Save week",
+      reset: "Reset",
+      weakPoint: "Auto-detected weak point",
+      weakText:
+        "This is the lowest scoring area this week. Focus here first instead of trying to improve everything at once.",
+      average: "Average couple score",
+      averageText:
+        "Use this as a weekly trend score. If the average improves, the couple system is working.",
+      advice: "Personalized advice",
+      focusNext: "What to focus on next",
+      history: "Weekly history",
+      saved: "Saved check-ins",
+      emptyHistory: "No saved weeks yet. Score this week and press “Save week”.",
+      averageLabel: "Average",
+      weakestLabel: "Weakest area",
+      savedMessage: "Week saved ✅",
+      resetMessage: "Scores reset",
+    },
+    nl: {
+      eyebrow: "Couple Transformatie Systeem",
+      heroTitle:
+        "Bouw discipline samen zonder dat fitness druk wordt",
+      heroText:
+        "Score de week, vind het zwakste punt, krijg advies en sla wekelijkse geschiedenis op zodat koppels zien wat echt verbetert.",
+      weeklyScore: "Wekelijkse accountability score",
+      clickScore: "Klik een score van 0 tot 5",
+      saveWeek: "Week opslaan",
+      reset: "Reset",
+      weakPoint: "Automatisch zwakste punt",
+      weakText:
+        "Dit is het laagst scorende onderdeel van deze week. Focus hier eerst op in plaats van alles tegelijk te verbeteren.",
+      average: "Gemiddelde koppelscore",
+      averageText:
+        "Gebruik dit als wekelijkse trendscore. Als het gemiddelde stijgt, werkt het systeem.",
+      advice: "Persoonlijk advies",
+      focusNext: "Waar focus je nu op",
+      history: "Wekelijkse geschiedenis",
+      saved: "Opgeslagen check-ins",
+      emptyHistory: "Nog geen weken opgeslagen. Score deze week en klik op “Week opslaan”.",
+      averageLabel: "Gemiddelde",
+      weakestLabel: "Zwakste punt",
+      savedMessage: "Week opgeslagen ✅",
+      resetMessage: "Scores gereset",
+    },
+  }[language];
+
+  const [weekLabel, setWeekLabel] = useState(getDefaultWeekLabel(language));
   const [scores, setScores] = useState({
     training: 0,
     nutrition: 0,
@@ -80,6 +225,26 @@ export default function CoupleZoneClient() {
   });
 
   const [history, setHistory] = useState([]);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) setHistory(JSON.parse(saved));
+    } catch {
+      setHistory([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    setWeekLabel((current) => {
+      if (!current || current.startsWith("Week of") || current.startsWith("Week van")) {
+        return getDefaultWeekLabel(language);
+      }
+
+      return current;
+    });
+  }, [language]);
 
   const weakestArea = useMemo(() => {
     return scoreAreas.reduce((lowest, area) =>
@@ -98,12 +263,13 @@ export default function CoupleZoneClient() {
       const level = getAdviceLevel(score);
 
       return {
-        title: area.title,
+        key: area.key,
+        title: area.title[language],
         score,
-        text: advice[area.key][level],
+        text: advice[area.key][level][language],
       };
     });
-  }, [scores]);
+  }, [scores, language]);
 
   function setScore(key, value) {
     setScores((current) => ({
@@ -117,11 +283,15 @@ export default function CoupleZoneClient() {
       id: Date.now(),
       weekLabel,
       scores,
-      weakest: weakestArea.title,
+      weakest: weakestArea.title[language],
       average: averageScore,
     };
 
-    setHistory((current) => [entry, ...current].slice(0, 8));
+    const nextHistory = [entry, ...history].slice(0, 12);
+
+    setHistory(nextHistory);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextHistory));
+    setMessage(t.savedMessage);
   }
 
   function resetScores() {
@@ -131,34 +301,30 @@ export default function CoupleZoneClient() {
       support: 0,
       recovery: 0,
     });
+    setMessage(t.resetMessage);
   }
 
   return (
     <div style={pageWrap}>
       <section style={heroCard}>
-        <div style={eyebrow}>Couple Transformation System</div>
-        <h2 style={heroTitle}>
-          Build discipline together without turning fitness into pressure
-        </h2>
-        <p style={heroText}>
-          Score the week, find the weakest area, get advice, and save weekly
-          history so couples can see what is actually improving.
-        </p>
+        <div style={eyebrow}>{t.eyebrow}</div>
+        <h2 style={heroTitle}>{t.heroTitle}</h2>
+        <p style={heroText}>{t.heroText}</p>
 
         <div style={targetGrid}>
           {weeklyTargets.map((item) => (
-            <div key={item.label} style={targetCard}>
+            <div key={item.label.en} style={targetCard}>
               <div style={targetValue}>{item.value}</div>
-              <div style={targetLabel}>{item.label}</div>
-              <div style={targetText}>{item.detail}</div>
+              <div style={targetLabel}>{item.label[language]}</div>
+              <div style={targetText}>{item.detail[language]}</div>
             </div>
           ))}
         </div>
       </section>
 
       <section style={sectionCard}>
-        <div style={sectionEyebrow}>Weekly accountability score</div>
-        <h3 style={sectionTitle}>Click a score from 0 to 5</h3>
+        <div style={sectionEyebrow}>{t.weeklyScore}</div>
+        <h3 style={sectionTitle}>{t.clickScore}</h3>
 
         <div style={weekRow}>
           <input
@@ -168,19 +334,21 @@ export default function CoupleZoneClient() {
           />
 
           <button type="button" onClick={saveWeek} style={primaryButton}>
-            Save week
+            {t.saveWeek}
           </button>
 
           <button type="button" onClick={resetScores} style={secondaryButton}>
-            Reset
+            {t.reset}
           </button>
         </div>
+
+        {message && <div style={messageBox}>{message}</div>}
 
         <div style={statsGrid}>
           {scoreAreas.map((area) => (
             <div key={area.key} style={scoreCard}>
               <div style={scoreHeader}>
-                <div style={scoreTitle}>{area.title}</div>
+                <div style={scoreTitle}>{area.title[language]}</div>
                 <div style={scoreValue}>{scores[area.key]}/5</div>
               </div>
 
@@ -205,7 +373,7 @@ export default function CoupleZoneClient() {
                 })}
               </div>
 
-              <p style={text}>{area.text}</p>
+              <p style={text}>{area.text[language]}</p>
             </div>
           ))}
         </div>
@@ -213,31 +381,25 @@ export default function CoupleZoneClient() {
 
       <section style={insightGrid}>
         <div style={insightCard}>
-          <div style={sectionEyebrow}>Auto-detected weak point</div>
-          <h3 style={sectionTitle}>{weakestArea.title}</h3>
-          <p style={text}>
-            This is the lowest scoring area this week. Focus here first instead
-            of trying to improve everything at once.
-          </p>
+          <div style={sectionEyebrow}>{t.weakPoint}</div>
+          <h3 style={sectionTitle}>{weakestArea.title[language]}</h3>
+          <p style={text}>{t.weakText}</p>
         </div>
 
         <div style={insightCard}>
-          <div style={sectionEyebrow}>Average couple score</div>
+          <div style={sectionEyebrow}>{t.average}</div>
           <h3 style={sectionTitle}>{averageScore}/5</h3>
-          <p style={text}>
-            Use this as a weekly trend score. If the average improves, the
-            couple system is working.
-          </p>
+          <p style={text}>{t.averageText}</p>
         </div>
       </section>
 
       <section style={sectionCard}>
-        <div style={sectionEyebrow}>Personalized advice</div>
-        <h3 style={sectionTitle}>What to focus on next</h3>
+        <div style={sectionEyebrow}>{t.advice}</div>
+        <h3 style={sectionTitle}>{t.focusNext}</h3>
 
         <div style={adviceGrid}>
           {personalizedAdvice.map((item) => (
-            <div key={item.title} style={adviceCard}>
+            <div key={item.key} style={adviceCard}>
               <div style={adviceTop}>
                 <div style={adviceTitle}>{item.title}</div>
                 <div style={scoreValue}>{item.score}/5</div>
@@ -249,26 +411,28 @@ export default function CoupleZoneClient() {
       </section>
 
       <section style={sectionCard}>
-        <div style={sectionEyebrow}>Weekly history</div>
-        <h3 style={sectionTitle}>Saved check-ins</h3>
+        <div style={sectionEyebrow}>{t.history}</div>
+        <h3 style={sectionTitle}>{t.saved}</h3>
 
         {history.length === 0 ? (
-          <p style={text}>
-            No saved weeks yet. Score this week and press “Save week”.
-          </p>
+          <p style={text}>{t.emptyHistory}</p>
         ) : (
           <div style={historyGrid}>
             {history.map((entry) => (
               <div key={entry.id} style={historyCard}>
                 <div style={historyTitle}>{entry.weekLabel}</div>
-                <div style={historyMeta}>Average: {entry.average}/5</div>
-                <div style={historyMeta}>Weakest area: {entry.weakest}</div>
+                <div style={historyMeta}>
+                  {t.averageLabel}: {entry.average}/5
+                </div>
+                <div style={historyMeta}>
+                  {t.weakestLabel}: {entry.weakest}
+                </div>
 
                 <div style={historyScores}>
-                  <span>Training {entry.scores.training}</span>
-                  <span>Nutrition {entry.scores.nutrition}</span>
-                  <span>Support {entry.scores.support}</span>
-                  <span>Recovery {entry.scores.recovery}</span>
+                  <span>{scoreAreas[0].title[language]} {entry.scores.training}</span>
+                  <span>{scoreAreas[1].title[language]} {entry.scores.nutrition}</span>
+                  <span>{scoreAreas[2].title[language]} {entry.scores.support}</span>
+                  <span>{scoreAreas[3].title[language]} {entry.scores.recovery}</span>
                 </div>
               </div>
             ))}
@@ -279,21 +443,24 @@ export default function CoupleZoneClient() {
   );
 }
 
-const pageWrap = { display: "grid", gap: "22px" };
+const pageWrap = {
+  display: "grid",
+  gap: "22px",
+};
 
 const heroCard = {
   background:
     "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "24px",
-  padding: "28px",
+  padding: "clamp(18px, 4vw, 28px)",
 };
 
 const sectionCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "22px",
-  padding: "24px",
+  padding: "clamp(18px, 4vw, 24px)",
 };
 
 const eyebrow = {
@@ -308,7 +475,7 @@ const sectionEyebrow = eyebrow;
 
 const heroTitle = {
   margin: 0,
-  fontSize: "clamp(30px, 4vw, 46px)",
+  fontSize: "clamp(30px, 7vw, 46px)",
   fontWeight: "900",
   lineHeight: 1.05,
 };
@@ -322,14 +489,14 @@ const heroText = {
 
 const sectionTitle = {
   margin: 0,
-  fontSize: "28px",
+  fontSize: "clamp(24px, 6vw, 30px)",
   fontWeight: "900",
   lineHeight: 1.15,
 };
 
 const targetGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,180px),1fr))",
   gap: "14px",
   marginTop: "22px",
 };
@@ -349,7 +516,7 @@ const targetValue = {
 
 const targetLabel = {
   fontSize: "15px",
-  fontWeight: "800",
+  fontWeight: "900",
   marginBottom: "6px",
 };
 
@@ -369,12 +536,15 @@ const weekRow = {
 
 const input = {
   flex: "1 1 260px",
+  width: "100%",
+  boxSizing: "border-box",
   padding: "14px",
   borderRadius: "12px",
   background: "#111",
   color: "white",
   border: "1px solid rgba(255,255,255,0.14)",
   outline: "none",
+  fontSize: "16px",
 };
 
 const primaryButton = {
@@ -385,6 +555,7 @@ const primaryButton = {
   color: "black",
   fontWeight: "900",
   cursor: "pointer",
+  flex: "1 1 140px",
 };
 
 const secondaryButton = {
@@ -395,11 +566,22 @@ const secondaryButton = {
   border: "1px solid rgba(255,255,255,0.12)",
   fontWeight: "900",
   cursor: "pointer",
+  flex: "1 1 110px",
+};
+
+const messageBox = {
+  marginBottom: "16px",
+  padding: "12px 14px",
+  borderRadius: "14px",
+  background: "rgba(34,197,94,0.12)",
+  border: "1px solid rgba(34,197,94,0.28)",
+  color: "white",
+  fontWeight: "800",
 };
 
 const statsGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,240px),1fr))",
   gap: "16px",
 };
 
@@ -444,11 +626,12 @@ const scoreButton = {
   padding: "10px 0",
   fontWeight: "900",
   cursor: "pointer",
+  minWidth: 0,
 };
 
 const insightGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,280px),1fr))",
   gap: "16px",
 };
 
@@ -456,12 +639,12 @@ const insightCard = {
   background: "rgba(250,204,21,0.08)",
   border: "1px solid rgba(250,204,21,0.22)",
   borderRadius: "22px",
-  padding: "24px",
+  padding: "clamp(18px, 4vw, 24px)",
 };
 
 const adviceGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,240px),1fr))",
   gap: "16px",
   marginTop: "18px",
 };
@@ -487,7 +670,7 @@ const adviceTitle = {
 
 const historyGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,240px),1fr))",
   gap: "14px",
   marginTop: "18px",
 };
