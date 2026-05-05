@@ -1,34 +1,67 @@
+"use client";
+
+import { useLanguage } from "../lib/useLanguage";
+
 export default function UpgradeLockScreen({
-  title = "Upgrade required",
-  text = "Your current plan does not include access to this section.",
+  title,
+  text,
   requiredPlan = "Full Access",
-  buttonLabel = "See Upgrade Options",
+  buttonLabel,
   href = "/billing",
 }) {
+  const { language } = useLanguage();
+
+  const copy = {
+    en: {
+      badge: "Locked Content",
+      defaultTitle: "Upgrade required",
+      defaultText: "Your current plan does not include access to this section.",
+      requiredPlan: "Required plan",
+      unlock: "✔ Unlock access instantly",
+      keepAccount: "✔ Keep your current account",
+      billing: "✔ Upgrade in one step from billing",
+      button: "See Upgrade Options",
+      back: "Back to Dashboard",
+    },
+    nl: {
+      badge: "Vergrendelde Content",
+      defaultTitle: "Upgrade vereist",
+      defaultText: "Je huidige plan geeft geen toegang tot dit onderdeel.",
+      requiredPlan: "Vereist plan",
+      unlock: "✔ Direct toegang ontgrendelen",
+      keepAccount: "✔ Behoud je huidige account",
+      billing: "✔ Upgrade in één stap via abonnement",
+      button: "Bekijk Upgrade Opties",
+      back: "Terug naar Dashboard",
+    },
+  }[language];
+
   return (
     <div style={wrap}>
       <div style={card}>
-        <div style={badge}>Locked Content</div>
-        <h1 style={titleStyle}>{title}</h1>
-        <p style={textStyle}>{text}</p>
+        <div style={badge}>{copy.badge}</div>
+
+        <h1 style={titleStyle}>{title || copy.defaultTitle}</h1>
+        <p style={textStyle}>{text || copy.defaultText}</p>
 
         <div style={planBox}>
-          <div style={planLabel}>Required plan</div>
+          <div style={planLabel}>{copy.requiredPlan}</div>
           <div style={planValue}>{requiredPlan}</div>
         </div>
 
         <div style={featureList}>
-          <div style={featureItem}>✔ Unlock access instantly</div>
-          <div style={featureItem}>✔ Keep your current account</div>
-          <div style={featureItem}>✔ Upgrade in one step from billing</div>
+          <div style={featureItem}>{copy.unlock}</div>
+          <div style={featureItem}>{copy.keepAccount}</div>
+          <div style={featureItem}>{copy.billing}</div>
         </div>
 
         <div style={buttonRow}>
           <a href={href} style={primaryButton}>
-            {buttonLabel}
+            {buttonLabel || copy.button}
           </a>
+
           <a href="/dashboard" style={secondaryButton}>
-            Back to Dashboard
+            {copy.back}
           </a>
         </div>
       </div>
@@ -41,7 +74,7 @@ const wrap = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  padding: "24px",
+  padding: "clamp(14px, 4vw, 24px)",
 };
 
 const card = {
@@ -50,7 +83,7 @@ const card = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "24px",
-  padding: "32px",
+  padding: "clamp(22px, 5vw, 32px)",
 };
 
 const badge = {
@@ -61,22 +94,22 @@ const badge = {
   border: "1px solid rgba(250,204,21,0.35)",
   color: "#facc15",
   fontSize: "13px",
-  fontWeight: "700",
+  fontWeight: "900",
   marginBottom: "18px",
 };
 
 const titleStyle = {
-  fontSize: "40px",
+  fontSize: "clamp(30px, 8vw, 44px)",
   lineHeight: 1.05,
   margin: "0 0 14px",
-  fontWeight: "800",
+  fontWeight: "900",
 };
 
 const textStyle = {
   color: "rgba(255,255,255,0.72)",
   lineHeight: 1.8,
   marginBottom: "24px",
-  fontSize: "18px",
+  fontSize: "clamp(16px, 4vw, 18px)",
 };
 
 const planBox = {
@@ -97,7 +130,7 @@ const planLabel = {
 
 const planValue = {
   fontSize: "28px",
-  fontWeight: "800",
+  fontWeight: "900",
 };
 
 const featureList = {
@@ -124,7 +157,8 @@ const primaryButton = {
   background: "#facc15",
   color: "black",
   textDecoration: "none",
-  fontWeight: "800",
+  fontWeight: "900",
+  textAlign: "center",
 };
 
 const secondaryButton = {
@@ -134,5 +168,6 @@ const secondaryButton = {
   border: "1px solid rgba(255,255,255,0.14)",
   color: "white",
   textDecoration: "none",
-  fontWeight: "700",
+  fontWeight: "800",
+  textAlign: "center",
 };
