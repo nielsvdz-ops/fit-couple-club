@@ -2,14 +2,52 @@
 
 import { useState } from "react";
 import { createClient } from "../../lib/supabase/client";
+import { useLanguage } from "../../lib/useLanguage";
 
 export default function SignupPage() {
   const supabase = createClient();
+  const { language } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const t =
+    {
+      en: {
+        eyebrow: "Create Account",
+        title: "Start your journey",
+        subtitle:
+          "Create your account first. After that, you can choose your membership on the billing page.",
+        email: "Email",
+        emailPlaceholder: "you@example.com",
+        password: "Password",
+        passwordPlaceholder: "Create a password",
+        loading: "Creating Account...",
+        button: "Create Account",
+        success: "Account created. Redirecting to billing...",
+        error: "Something went wrong while creating your account.",
+        already: "Already have an account?",
+        login: "Log in here",
+      },
+      nl: {
+        eyebrow: "Account Aanmaken",
+        title: "Start je journey",
+        subtitle:
+          "Maak eerst je account aan. Daarna kun je je membership kiezen op de billing pagina.",
+        email: "E-mail",
+        emailPlaceholder: "jij@example.com",
+        password: "Wachtwoord",
+        passwordPlaceholder: "Maak een wachtwoord",
+        loading: "Account wordt aangemaakt...",
+        button: "Account Aanmaken",
+        success: "Account aangemaakt. Je wordt doorgestuurd naar billing...",
+        error: "Er ging iets mis tijdens het aanmaken van je account.",
+        already: "Heb je al een account?",
+        login: "Log hier in",
+      },
+    }[language] || {};
 
   async function handleSignup(e) {
     e.preventDefault();
@@ -31,14 +69,14 @@ export default function SignupPage() {
         return;
       }
 
-      setMessage("Account created. Redirecting to billing...");
+      setMessage(t.success);
 
       setTimeout(() => {
         window.location.href = "/billing";
       }, 1200);
     } catch (error) {
       console.error("SIGNUP ERROR:", error);
-      setMessage("Something went wrong while creating your account.");
+      setMessage(t.error);
     } finally {
       setLoading(false);
     }
@@ -47,21 +85,18 @@ export default function SignupPage() {
   return (
     <main style={main}>
       <div style={card}>
-        <div style={eyebrow}>Create Account</div>
-        <h1 style={title}>Start your journey</h1>
-        <p style={subtitle}>
-          Create your account first. After that, you can choose your membership
-          on the billing page.
-        </p>
+        <div style={eyebrow}>{t.eyebrow}</div>
+        <h1 style={title}>{t.title}</h1>
+        <p style={subtitle}>{t.subtitle}</p>
 
         <form onSubmit={handleSignup} style={form}>
           <div style={fieldWrap}>
             <label htmlFor="email" style={label}>
-              Email
+              {t.email}
             </label>
             <input
               id="email"
-              placeholder="you@example.com"
+              placeholder={t.emailPlaceholder}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -73,11 +108,11 @@ export default function SignupPage() {
 
           <div style={fieldWrap}>
             <label htmlFor="password" style={label}>
-              Password
+              {t.password}
             </label>
             <input
               id="password"
-              placeholder="Create a password"
+              placeholder={t.passwordPlaceholder}
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -88,16 +123,16 @@ export default function SignupPage() {
           </div>
 
           <button type="submit" disabled={loading} style={button(loading)}>
-            {loading ? "Creating Account..." : "Create Account"}
+            {loading ? t.loading : t.button}
           </button>
         </form>
 
         {message && <p style={messageStyle}>{message}</p>}
 
         <p style={footerText}>
-          Already have an account?{" "}
+          {t.already}{" "}
           <a href="/login" style={link}>
-            Log in here
+            {t.login}
           </a>
         </p>
       </div>
@@ -112,7 +147,8 @@ const main = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  padding: "24px",
+  padding: "clamp(20px, 5vw, 32px)",
+  overflowX: "hidden",
 };
 
 const card = {
@@ -120,8 +156,9 @@ const card = {
   maxWidth: "480px",
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "24px",
-  padding: "32px",
+  borderRadius: "clamp(18px, 4vw, 24px)",
+  padding: "clamp(24px, 6vw, 36px)",
+  boxSizing: "border-box",
 };
 
 const eyebrow = {
@@ -134,7 +171,8 @@ const eyebrow = {
 
 const title = {
   margin: 0,
-  fontSize: "42px",
+  fontSize: "clamp(36px, 9vw, 42px)",
+  lineHeight: 1.05,
   fontWeight: "900",
 };
 
@@ -143,6 +181,7 @@ const subtitle = {
   lineHeight: 1.7,
   marginTop: "12px",
   marginBottom: "24px",
+  fontSize: "clamp(15px, 3.8vw, 16px)",
 };
 
 const form = {
@@ -169,6 +208,7 @@ const input = {
   color: "white",
   outline: "none",
   boxSizing: "border-box",
+  fontSize: "16px",
 };
 
 const button = (loading) => ({
@@ -181,18 +221,21 @@ const button = (loading) => ({
   fontWeight: "800",
   cursor: loading ? "not-allowed" : "pointer",
   opacity: loading ? 0.8 : 1,
+  fontSize: "16px",
 });
 
 const messageStyle = {
   marginTop: "18px",
   color: "rgba(255,255,255,0.75)",
   lineHeight: 1.6,
+  fontSize: "15px",
 };
 
 const footerText = {
   marginTop: "18px",
   color: "rgba(255,255,255,0.68)",
   lineHeight: 1.6,
+  fontSize: "15px",
 };
 
 const link = {
