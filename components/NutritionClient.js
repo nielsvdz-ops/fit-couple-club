@@ -375,6 +375,18 @@ export default function NutritionClient({ membershipType }) {
 
   const t = {
     en: {
+      rule1Title: "Every main meal",
+rule1Text:
+  "Add a protein source first, then build carbs and fats around the goal.",
+rule2Title: "Quick shopping mode",
+rule2Text:
+  "Use quick mode when you want a smaller list with fewer products and less decision fatigue.",
+rule3Title: "For fat loss",
+rule3Text:
+  "Use lean protein, high-volume vegetables, water, zero drinks, and controlled portions of fats.",
+rule4Title: "For muscle gain",
+rule4Text:
+  "Add rice, oats, bread, pasta, potatoes, bananas, and extra protein around training.",
       command: "Nutrition Command Center",
       heroTitle: "Smart supermarket grocery generator",
       heroText:
@@ -434,6 +446,18 @@ export default function NutritionClient({ membershipType }) {
       electrolytesSingle: "Electrolytes if needed",
     },
     nl: {
+      rule1Title: "Elke hoofdmaaltijd",
+rule1Text:
+  "Begin met een eiwitbron en bouw daarna koolhydraten en vetten eromheen afhankelijk van je doel.",
+rule2Title: "Snelle boodschappen mode",
+rule2Text:
+  "Gebruik quick mode voor een kortere lijst met minder producten en minder keuzestress.",
+rule3Title: "Voor vetverlies",
+rule3Text:
+  "Gebruik magere eiwitten, veel groenten, water, zero drankjes en gecontroleerde vetporties.",
+rule4Title: "Voor spieropbouw",
+rule4Text:
+  "Voeg rijst, havermout, brood, pasta, aardappelen, bananen en extra eiwitten toe rondom training.",
       command: "Voeding Command Center",
       heroTitle: "Slimme supermarkt boodschappen generator",
       heroText:
@@ -749,10 +773,10 @@ export default function NutritionClient({ membershipType }) {
         <h3 style={sectionTitle}>{t.rules}</h3>
 
         <div style={rulesGrid}>
-          <RuleCard title="Every main meal" text="Add a protein source first, then build carbs and fats around the goal." />
-          <RuleCard title="Quick shopping mode" text="Use quick mode when you want a smaller list with fewer products and less decision fatigue." />
-          <RuleCard title="For fat loss" text="Use lean protein, high-volume vegetables, water, zero drinks, and controlled portions of fats." />
-          <RuleCard title="For muscle gain" text="Add rice, oats, bread, pasta, potatoes, bananas, and extra protein around training." />
+          <RuleCard title={t.rule1Title} text={t.rule1Text} />
+<RuleCard title={t.rule2Title} text={t.rule2Text} />
+<RuleCard title={t.rule3Title} text={t.rule3Text} />
+<RuleCard title={t.rule4Title} text={t.rule4Text} />
         </div>
       </section>
 
