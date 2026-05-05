@@ -39,7 +39,149 @@ export default function PricingPage() {
       coaching: "Start Coaching",
     },
   }[language];
+const main = {
+  minHeight: "100vh",
+  background: "#050505",
+  color: "white",
+  padding: "100px 20px",
+};
 
+const container = {
+  maxWidth: "1100px",
+  margin: "0 auto",
+  display: "grid",
+  gap: "40px",
+};
+
+const header = {
+  textAlign: "center",
+};
+
+const eyebrow = {
+  fontSize: "12px",
+  textTransform: "uppercase",
+  letterSpacing: "0.2em",
+  opacity: 0.6,
+  marginBottom: "10px",
+};
+
+const title = {
+  fontSize: "42px",
+  fontWeight: "900",
+  lineHeight: 1.1,
+};
+
+const subtitle = {
+  opacity: 0.7,
+  maxWidth: "700px",
+  margin: "0 auto",
+};
+
+const hook = {
+  background: "rgba(255,255,255,0.04)",
+  padding: "20px",
+  borderRadius: "16px",
+};
+
+const hookTitle = {
+  fontWeight: "800",
+  marginBottom: "10px",
+};
+
+const hookText = {
+  opacity: 0.7,
+};
+
+const hookHighlight = {
+  marginTop: "10px",
+  fontWeight: "800",
+};
+
+const grid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+  gap: "20px",
+};
+
+const card = {
+  background: "rgba(255,255,255,0.04)",
+  padding: "20px",
+  borderRadius: "16px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+};
+
+const featured = {
+  border: "2px solid #facc15",
+};
+
+const vipCard = {
+  ...card,
+  border: "1px solid #60a5fa",
+};
+
+const coachingCard = {
+  ...card,
+  border: "1px solid white",
+};
+
+const planTitle = {
+  fontSize: "22px",
+  fontWeight: "800",
+};
+
+const price = {
+  fontSize: "28px",
+  fontWeight: "900",
+};
+
+const priceSmall = {
+  fontSize: "14px",
+  opacity: 0.7,
+};
+
+const list = {
+  marginTop: "10px",
+  marginBottom: "10px",
+};
+
+const desc = {
+  opacity: 0.7,
+};
+
+const button = {
+  marginTop: "20px",
+  padding: "12px",
+  borderRadius: "10px",
+  background: "#facc15",
+  color: "black",
+  fontWeight: "800",
+  textAlign: "center",
+  textDecoration: "none",
+};
+
+const buttonFeatured = {
+  background: "#fff",
+};
+
+const badge = {
+  position: "absolute",
+  top: "-10px",
+  right: "10px",
+  background: "#facc15",
+  color: "black",
+  padding: "5px 10px",
+  borderRadius: "6px",
+  fontSize: "12px",
+};
+
+const scarcity = {
+  marginTop: "10px",
+  fontSize: "12px",
+  fontWeight: "800",
+  color: "#facc15",
+};
   return (
     <main style={main}>
       <Navbar />
