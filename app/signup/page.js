@@ -28,6 +28,9 @@ export default function SignupPage() {
         button: "Create Account",
         success: "Account created. Redirecting to billing...",
         error: "Something went wrong while creating your account.",
+        alreadyExists:
+          "This email already exists. Please log in to keep your membership.",
+        redirectLogin: "Redirecting to login...",
         already: "Already have an account?",
         login: "Log in here",
       },
@@ -44,6 +47,9 @@ export default function SignupPage() {
         button: "Account Aanmaken",
         success: "Account aangemaakt. Je wordt doorgestuurd naar billing...",
         error: "Er ging iets mis tijdens het aanmaken van je account.",
+        alreadyExists:
+          "Dit e-mailadres bestaat al. Log in om je membership te behouden.",
+        redirectLogin: "Je wordt doorgestuurd naar login...",
         already: "Heb je al een account?",
         login: "Log hier in",
       },
@@ -59,12 +65,49 @@ export default function SignupPage() {
 
       const normalizedEmail = email.trim().toLowerCase();
 
+      const { data: existingProfile, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, email, membership_type, is_active, stripe_customer_id")
+        .eq("email", normalizedEmail)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error("PROFILE CHECK ERROR:", profileError);
+        setMessage(t.error);
+        return;
+      }
+
+      if (existingProfile) {
+        setMessage(`${t.alreadyExists} ${t.redirectLogin}`);
+
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1500);
+
+        return;
+      }
+
       const { error } = await supabase.auth.signUp({
         email: normalizedEmail,
         password,
       });
 
       if (error) {
+        const alreadyRegistered =
+          error.message?.toLowerCase().includes("already") ||
+          error.message?.toLowerCase().includes("registered") ||
+          error.message?.toLowerCase().includes("exists");
+
+        if (alreadyRegistered) {
+          setMessage(`${t.alreadyExists} ${t.redirectLogin}`);
+
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 1500);
+
+          return;
+        }
+
         setMessage(error.message);
         return;
       }
