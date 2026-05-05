@@ -2,13 +2,46 @@
 
 import { useState } from "react";
 import { createClient } from "../../lib/supabase/client";
+import { useLanguage } from "../../lib/useLanguage";
 
 export default function LoginPage() {
   const supabase = createClient();
+  const { language } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const t = {
+    en: {
+      eyebrow: "Member Access",
+      title: "Login",
+      subtitle: "Log in to access your dashboard or choose your membership.",
+      email: "Email",
+      emailPlaceholder: "you@example.com",
+      password: "Password",
+      passwordPlaceholder: "Enter your password",
+      loading: "Logging in...",
+      button: "Login",
+      error: "Something went wrong while logging in.",
+      noAccount: "No account yet?",
+      create: "Create one here",
+    },
+    nl: {
+      eyebrow: "Member Toegang",
+      title: "Inloggen",
+      subtitle: "Log in om je dashboard te openen of je membership te kiezen.",
+      email: "E-mail",
+      emailPlaceholder: "jij@example.com",
+      password: "Wachtwoord",
+      passwordPlaceholder: "Vul je wachtwoord in",
+      loading: "Bezig met inloggen...",
+      button: "Inloggen",
+      error: "Er ging iets mis tijdens het inloggen.",
+      noAccount: "Nog geen account?",
+      create: "Maak hier een account",
+    },
+  }[language] || {};
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -42,7 +75,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error("LOGIN ERROR:", error);
-      alert("Something went wrong while logging in.");
+      alert(t.error);
     } finally {
       setLoading(false);
     }
@@ -51,22 +84,20 @@ export default function LoginPage() {
   return (
     <main style={main}>
       <div style={card}>
-        <div style={eyebrow}>Member Access</div>
-        <h1 style={title}>Login</h1>
-        <p style={subtitle}>
-          Log in to access your dashboard or choose your membership.
-        </p>
+        <div style={eyebrow}>{t.eyebrow}</div>
+        <h1 style={title}>{t.title}</h1>
+        <p style={subtitle}>{t.subtitle}</p>
 
         <form onSubmit={handleLogin} style={form}>
           <div style={fieldWrap}>
             <label htmlFor="email" style={label}>
-              Email
+              {t.email}
             </label>
             <input
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              placeholder={t.emailPlaceholder}
               type="email"
               autoComplete="email"
               required
@@ -76,13 +107,13 @@ export default function LoginPage() {
 
           <div style={fieldWrap}>
             <label htmlFor="password" style={label}>
-              Password
+              {t.password}
             </label>
             <input
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder={t.passwordPlaceholder}
               type="password"
               autoComplete="current-password"
               required
@@ -91,14 +122,14 @@ export default function LoginPage() {
           </div>
 
           <button type="submit" disabled={loading} style={button(loading)}>
-            {loading ? "Logging in..." : "Login"}
+            {loading ? t.loading : t.button}
           </button>
         </form>
 
         <p style={footerText}>
-          No account yet?{" "}
+          {t.noAccount}{" "}
           <a href="/signup" style={link}>
-            Create one here
+            {t.create}
           </a>
         </p>
       </div>
@@ -113,7 +144,8 @@ const main = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  padding: "24px",
+  padding: "clamp(20px, 5vw, 32px)",
+  overflowX: "hidden",
 };
 
 const card = {
@@ -121,8 +153,9 @@ const card = {
   maxWidth: "480px",
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "24px",
-  padding: "32px",
+  borderRadius: "clamp(18px, 4vw, 24px)",
+  padding: "clamp(24px, 6vw, 36px)",
+  boxSizing: "border-box",
 };
 
 const eyebrow = {
@@ -135,7 +168,8 @@ const eyebrow = {
 
 const title = {
   margin: 0,
-  fontSize: "42px",
+  fontSize: "clamp(36px, 9vw, 42px)",
+  lineHeight: 1.05,
   fontWeight: "900",
 };
 
@@ -144,6 +178,7 @@ const subtitle = {
   lineHeight: 1.7,
   marginTop: "12px",
   marginBottom: "24px",
+  fontSize: "clamp(15px, 3.8vw, 16px)",
 };
 
 const form = {
@@ -170,6 +205,7 @@ const input = {
   color: "white",
   outline: "none",
   boxSizing: "border-box",
+  fontSize: "16px",
 };
 
 const button = (loading) => ({
@@ -182,12 +218,14 @@ const button = (loading) => ({
   fontWeight: "800",
   cursor: loading ? "not-allowed" : "pointer",
   opacity: loading ? 0.8 : 1,
+  fontSize: "16px",
 });
 
 const footerText = {
   marginTop: "18px",
   color: "rgba(255,255,255,0.68)",
   lineHeight: 1.6,
+  fontSize: "15px",
 };
 
 const link = {
