@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../lib/supabase/client";
+import { useLanguage } from "../lib/useLanguage";
 import {
   GOALS,
   FOCUS_AREAS,
@@ -14,11 +15,110 @@ import {
 } from "../lib/workoutplan";
 
 export default function PlanBuilderClient({ membershipType }) {
-  const membership = String(membershipType || "").toLowerCase();
-  const canSave = membership === "premium" || membership === "vip";
-  const canUseAdvanced = membership === "premium" || membership === "vip";
-  const maxVariation = canUseAdvanced ? 3 : 1;
+  const { language } = useLanguage();
   const supabase = createClient();
+
+  const t = {
+    en: {
+      build: "Build Your Plan",
+      goal: "Goal",
+      focus: "Focus Area",
+      bodyType: "Body Type",
+      level: "Experience Level",
+      lifestyle: "Lifestyle",
+      days: "Training Days",
+      variation: "Workout Variation",
+      daysWeek: "days / week",
+      recommended: "Recommended for your profile",
+      recommendedText: "training days per week",
+      useRecommended: "Use Recommended Days",
+      generate: "Generate Plan",
+      save: "Save Plan",
+      saving: "Saving...",
+      generateFirst: "Generate a plan first.",
+      upgradeSave: "Upgrade to Full Access, VIP, or Coaching to save plans.",
+      loginRequired: "You need to be logged in.",
+      saved: "Plan saved.",
+      loaded: "Loaded your saved plan.",
+      unlocked:
+        "Full Access/VIP/Coaching unlocked: save plans and use advanced rotations.",
+      locked:
+        "Nutrition plan users can preview the builder, but saving and advanced rotations are unlocked in Full Access and above.",
+      ready: "Ready to build",
+      readyText:
+        "Choose your goal, focus area, body type, level, lifestyle, training days, and variation. Then click Generate Plan.",
+      generated: "Generated Plan",
+      category: "Category",
+      trainingStyle: "Training Style",
+      nutrition: "Nutrition",
+      cardio: "Cardio",
+      bodyLogic: "Body Type Logic",
+      recovery: "Recovery Note",
+      restRule: "Rest Rule",
+      levelRule: "Level Rule",
+      limitation: "Upgrade limitation",
+      limitationText:
+        "You can generate and view your plan, but saving plans, advanced rotations, and deeper progression logic are unlocked in Full Access and above.",
+      upgrade: "Upgrade to Full Access",
+    },
+    nl: {
+      build: "Bouw Je Plan",
+      goal: "Doel",
+      focus: "Focusgebied",
+      bodyType: "Lichaamstype",
+      level: "Ervaringsniveau",
+      lifestyle: "Levensstijl",
+      days: "Trainingsdagen",
+      variation: "Workout Variatie",
+      daysWeek: "dagen / week",
+      recommended: "Aanbevolen voor jouw profiel",
+      recommendedText: "trainingsdagen per week",
+      useRecommended: "Gebruik Aanbevolen Dagen",
+      generate: "Plan Genereren",
+      save: "Plan Opslaan",
+      saving: "Opslaan...",
+      generateFirst: "Genereer eerst een plan.",
+      upgradeSave:
+        "Upgrade naar Full Access, VIP of Coaching om plannen op te slaan.",
+      loginRequired: "Je moet ingelogd zijn.",
+      saved: "Plan opgeslagen.",
+      loaded: "Je opgeslagen plan is geladen.",
+      unlocked:
+        "Full Access/VIP/Coaching ontgrendeld: plannen opslaan en geavanceerde rotaties gebruiken.",
+      locked:
+        "Nutrition leden kunnen de builder bekijken, maar opslaan en geavanceerde rotaties zijn beschikbaar vanaf Full Access.",
+      ready: "Klaar om te bouwen",
+      readyText:
+        "Kies je doel, focusgebied, lichaamstype, niveau, levensstijl, trainingsdagen en variatie. Klik daarna op Plan Genereren.",
+      generated: "Gegenereerd Plan",
+      category: "Categorie",
+      trainingStyle: "Trainingsstijl",
+      nutrition: "Voeding",
+      cardio: "Cardio",
+      bodyLogic: "Lichaamstype Logica",
+      recovery: "Herstel Notitie",
+      restRule: "Rust Regel",
+      levelRule: "Niveau Regel",
+      limitation: "Upgrade beperking",
+      limitationText:
+        "Je kunt je plan genereren en bekijken, maar plannen opslaan, geavanceerde rotaties en diepere progressie zijn beschikbaar vanaf Full Access.",
+      upgrade: "Upgrade naar Full Access",
+    },
+  }[language];
+
+  const membership = String(membershipType || "").toLowerCase().trim();
+
+  const canSave =
+    membership === "full_access" ||
+    membership === "vip" ||
+    membership === "coaching";
+
+  const canUseAdvanced =
+    membership === "full_access" ||
+    membership === "vip" ||
+    membership === "coaching";
+
+  const maxVariation = canUseAdvanced ? 3 : 1;
 
   const [goal, setGoal] = useState("Build Muscle");
   const [focus, setFocus] = useState("Booty");
@@ -31,8 +131,6 @@ export default function PlanBuilderClient({ membershipType }) {
   const [generated, setGenerated] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-
-  const focusOptions = FOCUS_AREAS;
 
   const recommendedDefaults = useMemo(() => {
     return getRecommendedDefaults({
@@ -57,9 +155,11 @@ export default function PlanBuilderClient({ membershipType }) {
 
   function handleGoalChange(newGoal) {
     setGoal(newGoal);
+
     if (!FOCUS_AREAS.includes(focus)) {
       setFocus("Full Body");
     }
+
     setVariation(0);
     setGenerated(false);
   }
@@ -77,17 +177,17 @@ export default function PlanBuilderClient({ membershipType }) {
 
   async function handleSavePlan() {
     if (!generated) {
-      setSaveMessage("Generate a plan first.");
+      setSaveMessage(t.generateFirst);
       return;
     }
 
     if (!canSave) {
-      setSaveMessage("Upgrade to Premium or VIP to save plans.");
+      setSaveMessage(t.upgradeSave);
       return;
     }
 
     setIsSaving(true);
-    setSaveMessage("Saving plan...");
+    setSaveMessage(t.saving);
 
     const {
       data: { user },
@@ -95,7 +195,7 @@ export default function PlanBuilderClient({ membershipType }) {
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      setSaveMessage("You need to be logged in.");
+      setSaveMessage(t.loginRequired);
       setIsSaving(false);
       return;
     }
@@ -134,7 +234,7 @@ export default function PlanBuilderClient({ membershipType }) {
     if (error) {
       setSaveMessage(error.message);
     } else {
-      setSaveMessage("Plan saved.");
+      setSaveMessage(t.saved);
     }
 
     setIsSaving(false);
@@ -154,7 +254,7 @@ export default function PlanBuilderClient({ membershipType }) {
         .from("saved_plans")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (error || !data) return;
 
@@ -168,104 +268,111 @@ export default function PlanBuilderClient({ membershipType }) {
       setLevel(savedJson.level || "Beginner");
       setLifestyle(savedJson.lifestyle || "Balanced Lifestyle");
       setGenerated(true);
-      setSaveMessage("Loaded your saved plan.");
+      setSaveMessage(t.loaded);
     }
 
     loadSavedPlan();
-  }, [canSave, supabase]);
+  }, [canSave, supabase, t.loaded]);
 
   return (
     <div style={layout}>
       <section style={sidebarCard}>
-        <div style={eyebrow}>Build Your Plan</div>
+        <div style={eyebrow}>{t.build}</div>
 
-        <label style={label}>Goal</label>
-        <select
-          value={goal}
-          onChange={(e) => handleGoalChange(e.target.value)}
-          style={input}
-        >
-          {GOALS.map((item) => (
-            <option key={item}>{item}</option>
-          ))}
-        </select>
+        <Field label={t.goal}>
+          <select
+            value={goal}
+            onChange={(e) => handleGoalChange(e.target.value)}
+            style={input}
+          >
+            {GOALS.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        </Field>
 
-        <label style={label}>Focus Area</label>
-        <select
-          value={focus}
-          onChange={(e) => handleFocusChange(e.target.value)}
-          style={input}
-        >
-          {focusOptions.map((item) => (
-            <option key={item}>{item}</option>
-          ))}
-        </select>
+        <Field label={t.focus}>
+          <select
+            value={focus}
+            onChange={(e) => handleFocusChange(e.target.value)}
+            style={input}
+          >
+            {FOCUS_AREAS.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        </Field>
 
-        <label style={label}>Body Type</label>
-        <select
-          value={bodyType}
-          onChange={(e) => {
-            setBodyType(e.target.value);
-            setGenerated(false);
-          }}
-          style={input}
-        >
-          {BODY_TYPES.map((item) => (
-            <option key={item}>{item}</option>
-          ))}
-        </select>
+        <Field label={t.bodyType}>
+          <select
+            value={bodyType}
+            onChange={(e) => {
+              setBodyType(e.target.value);
+              setGenerated(false);
+            }}
+            style={input}
+          >
+            {BODY_TYPES.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        </Field>
 
-        <label style={label}>Experience Level</label>
-        <select
-          value={level}
-          onChange={(e) => {
-            setLevel(e.target.value);
-            setGenerated(false);
-          }}
-          style={input}
-        >
-          {EXPERIENCE_LEVELS.map((item) => (
-            <option key={item}>{item}</option>
-          ))}
-        </select>
+        <Field label={t.level}>
+          <select
+            value={level}
+            onChange={(e) => {
+              setLevel(e.target.value);
+              setGenerated(false);
+            }}
+            style={input}
+          >
+            {EXPERIENCE_LEVELS.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        </Field>
 
-        <label style={label}>Lifestyle</label>
-        <select
-          value={lifestyle}
-          onChange={(e) => {
-            setLifestyle(e.target.value);
-            setGenerated(false);
-          }}
-          style={input}
-        >
-          {LIFESTYLES.map((item) => (
-            <option key={item}>{item}</option>
-          ))}
-        </select>
+        <Field label={t.lifestyle}>
+          <select
+            value={lifestyle}
+            onChange={(e) => {
+              setLifestyle(e.target.value);
+              setGenerated(false);
+            }}
+            style={input}
+          >
+            {LIFESTYLES.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        </Field>
 
-        <label style={label}>Training Days</label>
-        <select
-          value={days}
-          onChange={(e) => {
-            setDays(Number(e.target.value));
-            setGenerated(false);
-          }}
-          style={input}
-        >
-          {TRAINING_DAYS.map((d) => (
-            <option key={d} value={d}>
-              {d} days / week
-            </option>
-          ))}
-        </select>
+        <Field label={t.days}>
+          <select
+            value={days}
+            onChange={(e) => {
+              setDays(Number(e.target.value));
+              setGenerated(false);
+            }}
+            style={input}
+          >
+            {TRAINING_DAYS.map((d) => (
+              <option key={d} value={d}>
+                {d} {t.daysWeek}
+              </option>
+            ))}
+          </select>
+        </Field>
 
-        <label style={label}>Workout Variation</label>
+        <label style={label}>{t.variation}</label>
         <div style={variationWrap}>
           {[0, 1, 2].map((i) => {
             const locked = i >= maxVariation;
 
             return (
               <button
+                type="button"
                 key={i}
                 onClick={() => {
                   if (locked) return;
@@ -289,57 +396,58 @@ export default function PlanBuilderClient({ membershipType }) {
         </div>
 
         <div style={recommendedBox}>
-          <div style={smallLabel}>Recommended for your profile</div>
+          <div style={smallLabel}>{t.recommended}</div>
           <div style={recommendedText}>
-            {recommendedDefaults.recommendedDays} training days per week
+            {recommendedDefaults.recommendedDays} {t.recommendedText}
           </div>
-          <button onClick={handleUseRecommendedDays} style={secondarySmallButton}>
-            Use Recommended Days
+          <button
+            type="button"
+            onClick={handleUseRecommendedDays}
+            style={secondarySmallButton}
+          >
+            {t.useRecommended}
           </button>
         </div>
 
-        <button onClick={() => setGenerated(true)} style={generateButton}>
-          Generate Plan
+        <button
+          type="button"
+          onClick={() => setGenerated(true)}
+          style={generateButton}
+        >
+          {t.generate}
         </button>
 
         {generated && (
           <div style={{ marginTop: "16px" }}>
             <button
+              type="button"
               onClick={handleSavePlan}
               disabled={isSaving}
               style={{ ...generateButton, marginTop: 0 }}
             >
-              {isSaving ? "Saving..." : "Save Plan"}
+              {isSaving ? t.saving : t.save}
             </button>
-            {saveMessage && (
-              <div style={{ marginTop: "10px", color: "rgba(255,255,255,0.7)" }}>
-                {saveMessage}
-              </div>
-            )}
+
+            {saveMessage && <div style={saveInfo}>{saveMessage}</div>}
           </div>
         )}
 
-        <div style={smallNote}>
-          {canSave
-            ? "Premium/VIP unlocked: save plans and use advanced rotations."
-            : "Starter includes full plan output but saving and advanced rotations are locked."}
-        </div>
+        <div style={smallNote}>{canSave ? t.unlocked : t.locked}</div>
       </section>
 
       <section style={contentCard}>
         {!generated ? (
           <div style={emptyState}>
-            <div style={emptyTitle}>Ready to build</div>
-            <div style={emptyText}>
-              Choose your goal, focus area, body type, level, lifestyle, training
-              days, and variation. Then click Generate Plan.
+            <div>
+              <div style={emptyTitle}>{t.ready}</div>
+              <div style={emptyText}>{t.readyText}</div>
             </div>
           </div>
         ) : (
           <>
             <div style={planHeader}>
               <div>
-                <div style={eyebrow}>Generated Plan</div>
+                <div style={eyebrow}>{t.generated}</div>
                 <h2 style={planTitle}>{currentPlan.title}</h2>
                 <p style={planText}>{currentPlan.note}</p>
               </div>
@@ -347,42 +455,32 @@ export default function PlanBuilderClient({ membershipType }) {
             </div>
 
             <div style={summaryGrid}>
-              <InfoCard label="Category" value={currentPlan.category} />
-              <InfoCard label="Training Style" value={currentPlan.profile.trainingStyle} />
-              <InfoCard label="Nutrition" value={currentPlan.nutritionHint} />
-              <InfoCard label="Cardio" value={currentPlan.cardioHint} />
+              <InfoCard label={t.category} value={currentPlan.category} />
+              <InfoCard
+                label={t.trainingStyle}
+                value={currentPlan.profile.trainingStyle}
+              />
+              <InfoCard label={t.nutrition} value={currentPlan.nutritionHint} />
+              <InfoCard label={t.cardio} value={currentPlan.cardioHint} />
             </div>
 
             <div style={noteGrid}>
-              <div style={noteCard}>
-                <div style={smallLabel}>Body Type Logic</div>
-                <div style={noteText}>{currentPlan.profile.bodyTypeNote}</div>
-              </div>
-
-              <div style={noteCard}>
-                <div style={smallLabel}>Recovery Note</div>
-                <div style={noteText}>{currentPlan.recoveryNote}</div>
-              </div>
-
-              <div style={noteCard}>
-                <div style={smallLabel}>Rest Rule</div>
-                <div style={noteText}>{currentPlan.profile.restRule}</div>
-              </div>
-
-              <div style={noteCard}>
-                <div style={smallLabel}>Level Rule</div>
-                <div style={noteText}>{currentPlan.profile.levelRule.note}</div>
-              </div>
+              <NoteCard label={t.bodyLogic} value={currentPlan.profile.bodyTypeNote} />
+              <NoteCard label={t.recovery} value={currentPlan.recoveryNote} />
+              <NoteCard label={t.restRule} value={currentPlan.profile.restRule} />
+              <NoteCard label={t.levelRule} value={currentPlan.profile.levelRule.note} />
             </div>
 
             <div style={dayGrid}>
               {currentPlan.split.map((day, index) => (
                 <div key={`${day.day}-${index}`} style={dayCard}>
                   <div style={dayTop}>
-                    <div>
-                      <div style={dayLabel}>{day.day}</div>
-                      <h3 style={dayTitle}>{day.day.includes("—") ? day.day.split("—")[1]?.trim() : day.day}</h3>
-                    </div>
+                    <div style={dayLabel}>{day.day}</div>
+                    <h3 style={dayTitle}>
+                      {day.day.includes("—")
+                        ? day.day.split("—")[1]?.trim()
+                        : day.day}
+                    </h3>
                   </div>
 
                   <div style={exerciseList}>
@@ -402,20 +500,18 @@ export default function PlanBuilderClient({ membershipType }) {
 
             {!canSave && (
               <div style={lockedBox}>
-                <div style={lockedTitle}>Starter limitation</div>
-                <p style={lockedText}>
-                  You can generate and view your full plan on Starter, but saving
-                  plans, advanced rotations, and deeper progression logic are unlocked
-                  in Premium and VIP.
-                </p>
+                <div style={lockedTitle}>{t.limitation}</div>
+                <p style={lockedText}>{t.limitationText}</p>
+
                 <ul style={lockedList}>
                   <li>Save plans to your account</li>
                   <li>Advanced workout rotations</li>
                   <li>Body type based deeper profile logic</li>
                   <li>More advanced progression and program depth</li>
                 </ul>
-                <a href="/pricing" style={unlockButton}>
-                  Upgrade to Premium
+
+                <a href="/billing" style={unlockButton}>
+                  {t.upgrade}
                 </a>
               </div>
             )}
@@ -423,6 +519,15 @@ export default function PlanBuilderClient({ membershipType }) {
         )}
       </section>
     </div>
+  );
+}
+
+function Field({ label, children }) {
+  return (
+    <>
+      <label style={labelStyle}>{label}</label>
+      {children}
+    </>
   );
 }
 
@@ -435,9 +540,18 @@ function InfoCard({ label, value }) {
   );
 }
 
+function NoteCard({ label, value }) {
+  return (
+    <div style={noteCard}>
+      <div style={smallLabel}>{label}</div>
+      <div style={noteText}>{value}</div>
+    </div>
+  );
+}
+
 const layout = {
   display: "grid",
-  gridTemplateColumns: "320px 1fr",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,320px),1fr))",
   gap: "22px",
 };
 
@@ -445,7 +559,7 @@ const sidebarCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "22px",
-  padding: "22px",
+  padding: "clamp(18px, 4vw, 22px)",
   alignSelf: "start",
 };
 
@@ -453,8 +567,9 @@ const contentCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "22px",
-  padding: "22px",
+  padding: "clamp(18px, 4vw, 22px)",
   minHeight: "500px",
+  minWidth: 0,
 };
 
 const eyebrow = {
@@ -472,13 +587,17 @@ const label = {
   fontWeight: "700",
 };
 
+const labelStyle = label;
+
 const input = {
   width: "100%",
-  padding: "12px 14px",
+  boxSizing: "border-box",
+  padding: "13px 14px",
   borderRadius: "12px",
   border: "1px solid rgba(255,255,255,0.14)",
   background: "#111",
   color: "white",
+  fontSize: "16px",
 };
 
 const variationWrap = {
@@ -489,10 +608,11 @@ const variationWrap = {
 };
 
 const variationButton = {
-  padding: "10px 14px",
+  flex: "1 1 70px",
+  padding: "11px 14px",
   borderRadius: "10px",
   border: "1px solid rgba(255,255,255,0.14)",
-  fontWeight: "700",
+  fontWeight: "800",
 };
 
 const recommendedBox = {
@@ -519,25 +639,31 @@ const recommendedText = {
 
 const secondarySmallButton = {
   width: "100%",
-  padding: "11px 14px",
+  padding: "12px 14px",
   borderRadius: "10px",
   border: "1px solid rgba(255,255,255,0.14)",
   background: "rgba(255,255,255,0.05)",
   color: "white",
-  fontWeight: "700",
+  fontWeight: "800",
   cursor: "pointer",
 };
 
 const generateButton = {
   marginTop: "18px",
   width: "100%",
-  padding: "14px 16px",
+  padding: "15px 16px",
   borderRadius: "12px",
   border: "none",
   background: "white",
   color: "black",
-  fontWeight: "800",
+  fontWeight: "900",
   cursor: "pointer",
+};
+
+const saveInfo = {
+  marginTop: "10px",
+  color: "rgba(255,255,255,0.72)",
+  lineHeight: 1.6,
 };
 
 const smallNote = {
@@ -555,8 +681,8 @@ const emptyState = {
 };
 
 const emptyTitle = {
-  fontSize: "28px",
-  fontWeight: "800",
+  fontSize: "clamp(26px, 6vw, 34px)",
+  fontWeight: "900",
   marginBottom: "10px",
 };
 
@@ -576,9 +702,10 @@ const planHeader = {
 };
 
 const planTitle = {
-  fontSize: "30px",
-  fontWeight: "800",
+  fontSize: "clamp(26px, 6vw, 34px)",
+  fontWeight: "900",
   margin: "0 0 8px 0",
+  lineHeight: 1.1,
 };
 
 const planText = {
@@ -592,12 +719,12 @@ const badge = {
   borderRadius: "999px",
   background: "rgba(255,255,255,0.08)",
   border: "1px solid rgba(255,255,255,0.12)",
-  fontWeight: "700",
+  fontWeight: "800",
 };
 
 const summaryGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))",
   gap: "12px",
   marginBottom: "18px",
 };
@@ -616,7 +743,7 @@ const infoValue = {
 
 const noteGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))",
   gap: "12px",
   marginBottom: "18px",
 };
@@ -635,7 +762,7 @@ const noteText = {
 
 const dayGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(270px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,270px),1fr))",
   gap: "16px",
 };
 
@@ -660,7 +787,7 @@ const dayLabel = {
 
 const dayTitle = {
   fontSize: "22px",
-  fontWeight: "800",
+  fontWeight: "900",
   margin: "0",
 };
 
@@ -677,7 +804,7 @@ const exerciseRow = {
 };
 
 const exerciseName = {
-  fontWeight: "700",
+  fontWeight: "800",
   marginBottom: "6px",
 };
 
@@ -700,7 +827,7 @@ const lockedBox = {
 
 const lockedTitle = {
   fontSize: "24px",
-  fontWeight: "800",
+  fontWeight: "900",
   marginBottom: "8px",
 };
 
@@ -725,6 +852,6 @@ const unlockButton = {
   background: "white",
   color: "black",
   borderRadius: "12px",
-  fontWeight: "800",
+  fontWeight: "900",
   textDecoration: "none",
 };
