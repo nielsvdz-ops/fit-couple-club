@@ -211,5 +211,5 @@ const trust = {
     en: {
       current: "Current Membership",
       status: "Status",
-      active: "Active"
+      active: "Active",
 
