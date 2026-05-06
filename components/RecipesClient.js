@@ -214,6 +214,35 @@ function translateMealText(value, language) {
 "Add Greek yogurt to a bowl.": "Doe Griekse yoghurt in een kom.",
 "Top with oats and berries.": "Voeg havermout en bessen toe.",
 "Add chia seeds and peanut butter.": "Voeg chiazaad en pindakaas toe.",
+    "Greek yogurt": "Griekse yoghurt",
+"greek yogurt": "Griekse yoghurt",
+
+"breast": "filet",
+"kip breast": "kipfilet",
+
+"cooked rice": "gekookte rijst",
+"cooked rijst": "gekookte rijst",
+
+"whey protein": "whey eiwit",
+"whey": "whey",
+"protein smoothie": "eiwit smoothie",
+
+"green beans": "groene bonen",
+
+"Finish with olive oil.": "Werk af met olijfolie.",
+"Assemble rice, chicken, broccoli, and avocado.": "Voeg rijst, kip, broccoli en avocado samen.",
+"Assemble rijst, kip, broccoli, en avocado.": "Voeg rijst, kip, broccoli en avocado samen.",
+
+"Serve together with olive oil.": "Serveer samen met olijfolie.",
+"Plate together with olive oil.": "Serveer samen met olijfolie.",
+
+"Bake salmon until cooked through.": "Bak de zalm gaar.",
+"Roast sweet potato cubes.": "Rooster blokjes zoete aardappel.",
+"Steam green beans.": "Stoom de groene bonen.",
+
+"Add all ingredients to a blender.": "Voeg alle ingrediënten toe aan een blender.",
+"Blend until smooth.": "Mix tot een glad geheel.",
+"Serve cold.": "Serveer koud.",
 };
   if (exactMap[text]) return exactMap[text];
 
@@ -346,6 +375,30 @@ function translateMealText(value, language) {
   ["through", "gaar"],
 
   ["together", "samen"],
+   ["Greek", "Griekse"],
+["greek", "Griekse"],
+
+["breast", "filet"],
+
+["cooked", "gekookte"],
+
+["smoothie", "smoothie"],
+
+["beans", "bonen"],
+
+["Finish", "Werk af"],
+["finish", "werk af"],
+
+["Assemble", "Voeg samen"],
+["assemble", "voeg samen"],
+
+["Plate", "Serveer"],
+["plate", "serveer"],
+
+["cold", "koud"],
+
+["Smooth", "Glad"],
+["smooth", "glad"],
 ];
 
   replacements.forEach(([from, to]) => {
