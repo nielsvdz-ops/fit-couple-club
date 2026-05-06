@@ -284,12 +284,6 @@ export default function RecipesClient({ membershipType }) {
   const t = copy[language] || copy.en;
     const membership = String(membershipType || "").toLowerCase().trim();
 
-  const hasNutritionAccess =
-    membership === "nutrition" ||
-    membership === "full_access" ||
-    membership === "vip" ||
-    membership === "coaching";
-
   const [selectedGoal, setSelectedGoal] = useState(MEAL_GOALS[0].value);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const [selectedDay, setSelectedDay] = useState("Monday");
@@ -645,24 +639,6 @@ export default function RecipesClient({ membershipType }) {
           </div>
         )}
 
-        {!hasNutritionAccess && (
-          <div style={lockedBox}>
-            <div style={lockedTitle}>
-              {language === "nl"
-                ? "Recepten toegang vergrendeld"
-                : "Recipe access locked"}
-            </div>
-
-            <p style={lockedText}>
-              {language === "nl"
-                ? "Upgrade je membership om de volledige receptenbibliotheek en maaltijdplannen te ontgrendelen."
-                : "Upgrade your membership to unlock the full recipe library and meal plans."}
-            </p>
-
-            <a href="/billing" style={unlockButton}>
-              {language === "nl" ? "Upgrade Nu" : "Upgrade Now"}
-            </a>
-          </div>
         )}
       </section>
     </div>
@@ -952,30 +928,4 @@ const orderedList = {
   overflowWrap: "anywhere",
 };
 
-const lockedBox = {
-  marginTop: "24px",
-  border: "1px dashed rgba(255,255,255,0.2)",
-  borderRadius: "18px",
-  padding: "20px",
-};
 
-const lockedTitle = {
-  fontSize: "clamp(22px, 5vw, 24px)",
-  fontWeight: "900",
-};
-
-const lockedText = {
-  color: "rgba(255,255,255,0.68)",
-  lineHeight: 1.8,
-};
-
-const unlockButton = {
-  display: "inline-block",
-  marginTop: "12px",
-  padding: "12px 16px",
-  borderRadius: "12px",
-  background: "white",
-  color: "black",
-  textDecoration: "none",
-  fontWeight: "900",
-};
