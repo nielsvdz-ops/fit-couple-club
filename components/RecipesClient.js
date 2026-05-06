@@ -243,6 +243,101 @@ function translateMealText(value, language) {
 "Add all ingredients to a blender.": "Voeg alle ingrediënten toe aan een blender.",
 "Blend until smooth.": "Mix tot een glad geheel.",
 "Serve cold.": "Serveer koud.",
+    "2 eggs": "2 eieren",
+"1 whole egg": "1 heel ei",
+"egg whites": "eiwitten",
+"whole grain bread": "volkoren brood",
+
+"Toast the bread.": "Rooster het brood.",
+"Cook eggs to preference.": "Bak de eieren naar voorkeur.",
+"Mash avocado and spread on toast.": "Prak avocado en smeer op toast.",
+"Top with eggs and seasoning.": "Werk af met eieren en kruiden.",
+
+"Mix all ingredients until smooth.": "Mix alle ingrediënten tot een glad geheel.",
+"Cook in a non-stick pan on medium heat.": "Bak in een anti-aanbakpan op middelhoog vuur.",
+"Flip when bubbles form.": "Draai om wanneer er bubbels ontstaan.",
+"Serve warm.": "Serveer warm.",
+
+"1 scoop protein powder": "1 scoop eiwitpoeder",
+"protein powder": "eiwitpoeder",
+
+"dark chocolate": "pure chocolade",
+"chopped dark chocolate": "stukjes pure chocolade",
+
+"lean steak": "mager steak",
+"lean beef": "mager rundvlees",
+
+"Cook steak to preference.": "Bak steak naar voorkeur.",
+"Sauté peppers and zucchini.": "Bak paprika en courgette.",
+"Serve over rice.": "Serveer over rijst.",
+
+"1 tortilla wrap": "1 tortilla wrap",
+"lettuce": "sla",
+"cucumber": "komkommer",
+
+"Mix tuna with Greek yogurt.": "Mix tonijn met Griekse yoghurt.",
+"Add vegetables to wrap.": "Voeg groenten toe aan de wrap.",
+"Fill with tuna mix and fold tightly.": "Vul met tonijnmix en vouw stevig dicht.",
+
+"Add yogurt to a bowl.": "Doe yoghurt in een kom.",
+"Top with berries, honey, and chopped dark chocolate.": "Werk af met bessen, honing en stukjes pure chocolade.",
+
+"Cook beef with taco seasoning.": "Bak rundvlees met taco kruiden.",
+"Prepare rice.": "Bereid rijst.",
+"Add corn, lettuce, and salsa on top.": "Voeg maïs, sla en salsa toe bovenop.",
+
+"corn": "maïs",
+"tomato salsa": "tomaten salsa",
+
+"Mash banana in bowl.": "Prak banaan in een kom.",
+"Mix with cocoa, protein, and yogurt.": "Mix met cacao, eiwit en yoghurt.",
+"Serve chilled or slightly warmed.": "Serveer gekoeld of licht verwarmd.",
+
+"cocoa powder": "cacaopoeder",
+
+"Cook shrimp quickly in a pan.": "Bak garnalen kort in een pan.",
+"Serve with rice and soy sauce.": "Serveer met rijst en sojasaus.",
+
+"soy sauce": "sojasaus",
+"shrimp": "garnalen",
+
+"Spread yogurt on tray.": "Spreid yoghurt uit op een schaal.",
+"Freeze until firm and break into pieces.": "Vries in tot stevig en breek in stukken.",
+
+"granola": "granola",
+
+"dry pasta": "droge pasta",
+"light cream cheese": "light roomkaas",
+
+"Cook pasta.": "Kook pasta.",
+"Cook chicken and slice.": "Bak kip en snijd in stukjes.",
+"Mix cream cheese and parmesan into warm pasta.": "Meng roomkaas en parmezaan door warme pasta.",
+"Add spinach and chicken.": "Voeg spinazie en kip toe.",
+
+"Salt and pepper": "Zout en peper",
+
+"Cook chicken and slice.": "Bak kip en snijd in plakjes.",
+"Add all ingredients to wrap.": "Voeg alle ingrediënten toe aan de wrap.",
+"Roll tightly and slice in half.": "Rol stevig op en snijd doormidden.",
+
+"Add ingredients to blender.": "Voeg ingrediënten toe aan de blender.",
+"Blend until frothy.": "Blend tot schuimig.",
+"Serve immediately.": "Serveer direct.",
+
+"turkey meatballs": "kalkoen gehaktballen",
+
+"Cook turkey meatballs.": "Bak kalkoen gehaktballen.",
+"Warm tomato sauce and spinach.": "Verwarm tomatensaus en spinazie.",
+"Combine in a bowl.": "Combineer in een kom.",
+
+"Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.":
+"Gepersonaliseerde dagelijkse voedingsschema’s gebaseerd op jouw doel, geslacht, leeftijd, gewicht, lengte en activiteitsniveau.",
+
+"A structured weekly menu built for consistency, easy prep, and solid nutrition.":
+"Een gestructureerd weekmenu gebouwd voor consistentie, makkelijke voorbereiding en sterke voeding.",
+
+"built for consistency, easy prep, and solid nutrition.":
+"gebouwd voor consistentie, makkelijke voorbereiding en sterke voeding.",
 };
   if (exactMap[text]) return exactMap[text];
 
@@ -399,6 +494,98 @@ function translateMealText(value, language) {
 
 ["Smooth", "Glad"],
 ["smooth", "glad"],
+   ["eggs", "eieren"],
+["egg", "ei"],
+["whites", "eiwitten"],
+
+["whole grain", "volkoren"],
+
+["Toast", "Rooster"],
+["toast", "rooster"],
+
+["Mash", "Prak"],
+["mash", "prak"],
+
+["spread", "smeer"],
+
+["seasoning", "kruiden"],
+
+["until smooth", "tot een glad geheel"],
+
+["non-stick pan", "anti-aanbakpan"],
+
+["medium heat", "middelhoog vuur"],
+
+["Flip", "Draai om"],
+["flip", "draai om"],
+
+["bubbles", "bubbels"],
+
+["warm", "warm"],
+
+["dark chocolate", "pure chocolade"],
+
+["lean", "mager"],
+
+["steak", "steak"],
+
+["peppers", "paprika"],
+["zucchini", "courgette"],
+
+["over rice", "over rijst"],
+
+["vegetables", "groenten"],
+
+["wrap", "wrap"],
+
+["fold tightly", "vouw stevig dicht"],
+
+["yogurt", "yoghurt"],
+
+["corn", "maïs"],
+
+["salsa", "salsa"],
+
+["cocoa", "cacao"],
+
+["chilled", "gekoeld"],
+
+["warmed", "verwarmd"],
+
+["soy sauce", "sojasaus"],
+
+["shrimp", "garnalen"],
+
+["Freeze", "Vries"],
+["freeze", "vries"],
+
+["firm", "stevig"],
+
+["pieces", "stukken"],
+
+["cream cheese", "roomkaas"],
+
+["slice", "snijd"],
+["sliced", "gesneden"],
+
+["Roll", "Rol"],
+["roll", "rol"],
+
+["half", "doormidden"],
+
+["frothy", "schuimig"],
+
+["immediately", "direct"],
+
+["Combine", "Combineer"],
+["combine", "combineer"],
+
+["daily food schedules", "dagelijkse voedingsschema’s"],
+
+["goal", "doel"],
+["weight", "gewicht"],
+["height", "lengte"],
+["activity level", "activiteitsniveau"],
 ];
 
   replacements.forEach(([from, to]) => {
