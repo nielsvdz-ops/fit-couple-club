@@ -134,118 +134,219 @@ function translateMealText(value, language) {
   let text = String(value);
 
   const exactMap = {
-    "Daily Routine": "Dagelijkse routine",
-    "Target Calories": "Doelcalorieën",
-    "Maintenance": "Onderhoud",
-    "Protein": "Eiwitten",
-    "Carbs": "Koolhydraten",
-    "Fats": "Vetten",
-    "Ingredients": "Ingrediënten",
-    "How to make it": "Bereiding",
-
-    Breakfast: "Ontbijt",
-    Lunch: "Lunch",
-    Dinner: "Avondeten",
-    Snack: "Snack",
-    "Pre-workout": "Pre-workout",
-    "Post-workout": "Post-workout",
-
-    "Chicken breast": "Kipfilet",
-    "Turkey breast": "Kalkoenfilet",
-    "Lean minced beef": "Mager rundergehakt",
-    Tuna: "Tonijn",
-    Salmon: "Zalm",
-    Eggs: "Eieren",
-    Oats: "Havermout",
-    Rice: "Rijst",
-    Potatoes: "Aardappelen",
-    Pasta: "Pasta",
-    Banana: "Banaan",
-    Broccoli: "Broccoli",
-    Spinach: "Spinazie",
-    Water: "Water",
-    Coffee: "Koffie",
     "Greek yogurt": "Griekse yoghurt",
+"Low-fat Greek yogurt": "Magere Griekse yoghurt",
+"Skyr yogurt": "Skyr yoghurt",
+"Protein yogurt": "Eiwityoghurt",
 "berries": "bessen",
+"blueberries": "bosbessen",
+"strawberries": "aardbeien",
+"banana": "banaan",
+"bananas": "bananen",
+"apple": "appel",
+"rice cakes": "rijstwafels",
+"oats": "havermout",
+"rice": "rijst",
+"cooked rice": "gekookte rijst",
+"jasmine rice": "jasmijnrijst",
+"basmati rice": "basmatirijst",
+"potatoes": "aardappelen",
+"sweet potato": "zoete aardappel",
+"sweet potatoes": "zoete aardappelen",
+"pasta": "pasta",
+"whole wheat pasta": "volkoren pasta",
+"bread": "brood",
+"whole wheat bread": "volkoren brood",
+"wrap": "wrap",
+"wraps": "wraps",
+
+"chicken": "kip",
+"chicken breast": "kipfilet",
+"turkey": "kalkoen",
+"turkey breast": "kalkoenfilet",
+"lean beef": "mager rundvlees",
+"lean minced beef": "mager rundergehakt",
+"salmon": "zalm",
+"tuna": "tonijn",
+"white fish": "witte vis",
+"shrimp": "garnalen",
+"eggs": "eieren",
+"egg whites": "ei-eiwitten",
+"protein powder": "eiwitpoeder",
+"whey protein": "whey eiwit",
+"whey": "whey",
+"protein shake": "eiwitshake",
+
+"broccoli": "broccoli",
+"spinach": "spinazie",
+"green beans": "groene bonen",
+"asparagus": "asperges",
+"bell pepper": "paprika",
+"bell peppers": "paprika's",
+"tomato": "tomaat",
+"tomatoes": "tomaten",
+"cucumber": "komkommer",
+"onion": "ui",
+"mushrooms": "champignons",
+"mixed vegetables": "gemengde groenten",
+"salad": "salade",
+"avocado": "avocado",
+
 "chia seeds": "chiazaad",
 "peanut butter": "pindakaas",
-"milk": "melk",
-"blender": "blender",
-"smooth": "glad",
-"green beans": "groene bonen",
-"sweet potato": "zoete aardappel",
+"almond butter": "amandelpasta",
+"mixed nuts": "gemengde noten",
 "olive oil": "olijfolie",
-"whey protein": "whey eiwit",
-"avocado": "avocado",
-  };
+"milk": "melk",
+"almond milk": "amandelmelk",
+"water": "water",
+"coffee": "koffie",
+
+"Add all ingredients to a blender.": "Voeg alle ingrediënten toe aan een blender.",
+"Blend until smooth.": "Mix tot een glad geheel.",
+"Serve cold.": "Serveer koud.",
+"Cook chicken with seasoning.": "Bak de kip met kruiden.",
+"Steam broccoli.": "Stoom de broccoli.",
+"Bake salmon until cooked through.": "Bak de zalm gaar.",
+"Roast sweet potato cubes.": "Rooster blokjes zoete aardappel.",
+"Steam green beans.": "Stoom de groene bonen.",
+"Plate together with olive oil.": "Serveer samen met olijfolie.",
+"Add Greek yogurt to a bowl.": "Doe Griekse yoghurt in een kom.",
+"Top with oats and berries.": "Voeg havermout en bessen toe.",
+"Add chia seeds and peanut butter.": "Voeg chiazaad en pindakaas toe.",
 
   if (exactMap[text]) return exactMap[text];
 
-  const replacements = [
-    ["Meal Plan", "Maaltijdplan"],
-    ["meal plan", "maaltijdplan"],
-    ["Daily", "Dagelijkse"],
-    ["daily", "dagelijkse"],
-    ["Weekly", "Wekelijkse"],
-    ["weekly", "wekelijkse"],
-    ["Simple", "Simpel"],
-    ["simple", "simpel"],
-    ["High Protein", "Eiwitrijk"],
-    ["high protein", "eiwitrijk"],
-    ["Fat Loss", "Vetverlies"],
-    ["fat loss", "vetverlies"],
-    ["Build Muscle", "Spieropbouw"],
-    ["build muscle", "spieropbouw"],
-    ["Performance", "Prestatie"],
-    ["performance", "prestatie"],
-    ["Maintenance", "Onderhoud"],
-    ["maintenance", "onderhoud"],
-    ["Breakfast", "Ontbijt"],
-    ["breakfast", "ontbijt"],
-    ["Dinner", "Avondeten"],
-    ["dinner", "avondeten"],
-    ["Snack", "Snack"],
-    ["snack", "snack"],
-    ["Chicken", "Kip"],
-    ["chicken", "kip"],
-    ["Rice", "Rijst"],
-    ["rice", "rijst"],
-    ["Potatoes", "Aardappelen"],
-    ["potatoes", "aardappelen"],
-    ["Protein", "Eiwit"],
-    ["protein", "eiwit"],
-    ["Carbs", "Koolhydraten"],
-    ["carbs", "koolhydraten"],
-    ["Fats", "Vetten"],
-    ["fats", "vetten"],
-    ["Cook", "Kook"],
-["cook", "kook"],
-["Steam", "Stoom"],
-["steam", "stoom"],
-["Roast", "Rooster"],
-["roast", "rooster"],
-["Bake", "Bak"],
-["bake", "bak"],
-["Blend", "Mix"],
-["blend", "mix"],
-["Serve", "Serveer"],
-["serve", "serveer"],
-["cold", "koud"],
-["Add", "Voeg toe"],
-["add", "voeg toe"],
-["until", "totdat"],
-["through", "gaar"],
-["with", "met"],
-["and", "en"],
-["together", "samen"],
-    ["yogurt", "yoghurt"],
-["broccoli", "broccoli"],
-["banana", "banaan"],
-["salmon", "zalm"],
-["sweet potato", "zoete aardappel"],
-["green beans", "groene bonen"],
-["olive oil", "olijfolie"],
-  ];
+ const replacements = [
+  ["Meal Plan", "Maaltijdplan"],
+  ["meal plan", "maaltijdplan"],
+
+  ["Daily", "Dagelijkse"],
+  ["daily", "dagelijkse"],
+
+  ["Weekly", "Wekelijkse"],
+  ["weekly", "wekelijkse"],
+
+  ["Simple", "Simpel"],
+  ["simple", "simpel"],
+
+  ["High Protein", "Eiwitrijk"],
+  ["high protein", "eiwitrijk"],
+
+  ["Fat Loss", "Vetverlies"],
+  ["fat loss", "vetverlies"],
+
+  ["Build Muscle", "Spieropbouw"],
+  ["build muscle", "spieropbouw"],
+
+  ["Lean Muscle", "Lean spieropbouw"],
+  ["lean muscle", "lean spieropbouw"],
+
+  ["Maintenance", "Onderhoud"],
+  ["maintenance", "onderhoud"],
+
+  ["Performance", "Prestatie"],
+  ["performance", "prestatie"],
+
+  ["Breakfast", "Ontbijt"],
+  ["breakfast", "ontbijt"],
+
+  ["Lunch", "Lunch"],
+  ["lunch", "lunch"],
+
+  ["Dinner", "Avondeten"],
+  ["dinner", "avondeten"],
+
+  ["Snack", "Snack"],
+  ["snack", "snack"],
+
+  ["Protein", "Eiwit"],
+  ["protein", "eiwit"],
+
+  ["Carbs", "Koolhydraten"],
+  ["carbs", "koolhydraten"],
+
+  ["Fats", "Vetten"],
+  ["fats", "vetten"],
+
+  ["Calories", "Calorieën"],
+  ["calories", "calorieën"],
+
+  ["Chicken", "Kip"],
+  ["chicken", "kip"],
+
+  ["Turkey", "Kalkoen"],
+  ["turkey", "kalkoen"],
+
+  ["Rice", "Rijst"],
+  ["rice", "rijst"],
+
+  ["Potatoes", "Aardappelen"],
+  ["potatoes", "aardappelen"],
+
+  ["Sweet potato", "Zoete aardappel"],
+  ["sweet potato", "zoete aardappel"],
+
+  ["Salmon", "Zalm"],
+  ["salmon", "zalm"],
+
+  ["Tuna", "Tonijn"],
+  ["tuna", "tonijn"],
+
+  ["Broccoli", "Broccoli"],
+  ["broccoli", "broccoli"],
+
+  ["Banana", "Banaan"],
+  ["banana", "banaan"],
+
+  ["Berries", "Bessen"],
+  ["berries", "bessen"],
+
+  ["Greek yogurt", "Griekse yoghurt"],
+  ["yogurt", "yoghurt"],
+
+  ["Milk", "Melk"],
+  ["milk", "melk"],
+
+  ["Olive oil", "Olijfolie"],
+  ["olive oil", "olijfolie"],
+
+  ["Peanut butter", "Pindakaas"],
+  ["peanut butter", "pindakaas"],
+
+  ["Cook", "Kook"],
+  ["cook", "kook"],
+
+  ["Bake", "Bak"],
+  ["bake", "bak"],
+
+  ["Steam", "Stoom"],
+  ["steam", "stoom"],
+
+  ["Roast", "Rooster"],
+  ["roast", "rooster"],
+
+  ["Blend", "Mix"],
+  ["blend", "mix"],
+
+  ["Serve", "Serveer"],
+  ["serve", "serveer"],
+
+  ["Add", "Voeg toe"],
+  ["add", "voeg toe"],
+
+  ["with", "met"],
+  ["and", "en"],
+  ["until", "totdat"],
+
+  ["cold", "koud"],
+
+  ["smooth", "glad"],
+
+  ["through", "gaar"],
+
+  ["together", "samen"],
+];
 
   replacements.forEach(([from, to]) => {
     text = text.split(from).join(to);
