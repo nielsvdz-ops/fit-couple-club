@@ -109,7 +109,24 @@ export default function DashboardLayout({
     [t.account, "/account"],
   ];
 
+  const subtitleMap = {
+    en: {
+      "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.":
+        "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.",
+      "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.":
+        "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.",
+    },
+    nl: {
+      "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.":
+        "Persoonlijke dagelijkse voedingsschema’s gebaseerd op jouw doel, geslacht, leeftijd, gewicht, lengte en activiteitsniveau.",
+      "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.":
+        "Kies jouw systeemniveau — van voedingsstructuur tot volledige transformatie, Couple Zone accountability, VIP begeleiding en coaching.",
+    },
+  };
+
   const translatedTitle = titleMap[language]?.[title] || title;
+  const translatedSubtitle =
+    subtitleMap[language]?.[subtitle] || subtitle;
 
   return (
     <div style={layout}>
@@ -157,7 +174,7 @@ export default function DashboardLayout({
 
       <main style={main}>
         <h1 style={pageTitle}>{translatedTitle}</h1>
-        {subtitle ? <p style={subtitleStyle}>{subtitle}</p> : null}
+        {translatedSubtitle ? <p style={subtitleStyle}>{translatedSubtitle}</p> : null}
         {children}
       </main>
 
@@ -275,6 +292,7 @@ const subtitleStyle = {
   fontSize: "clamp(16px, 3vw, 20px)",
   lineHeight: 1.7,
   maxWidth: "900px",
+  wordBreak: "break-word",
 };
 
 const mobileTopbar = {
