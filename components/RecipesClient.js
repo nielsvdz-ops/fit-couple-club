@@ -638,8 +638,6 @@ export default function RecipesClient({ membershipType }) {
             </div>
           </div>
         )}
-
-        )}
       </section>
     </div>
   );
