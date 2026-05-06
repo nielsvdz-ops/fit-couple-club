@@ -214,7 +214,7 @@ function translateMealText(value, language) {
 "Add Greek yogurt to a bowl.": "Doe Griekse yoghurt in een kom.",
 "Top with oats and berries.": "Voeg havermout en bessen toe.",
 "Add chia seeds and peanut butter.": "Voeg chiazaad en pindakaas toe.",
-
+};
   if (exactMap[text]) return exactMap[text];
 
  const replacements = [
