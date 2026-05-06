@@ -63,19 +63,21 @@ function calculateBmr({ sex, weightKg, heightCm, age }) {
 }
 
 function getGoalAdjustment(goal) {
-  if (goal.includes("fat") || goal.includes("loss") || goal.includes("shred")) {
+  const clean = String(goal || "").toLowerCase();
+
+  if (clean.includes("fat") || clean.includes("loss")) {
     return goalAdjustments.fat_loss;
   }
 
   if (
-    goal.includes("muscle") ||
-    goal.includes("gain") ||
-    goal.includes("build")
+    clean.includes("muscle") ||
+    clean.includes("gain") ||
+    clean.includes("build")
   ) {
     return goalAdjustments.lean_muscle;
   }
 
-  if (goal.includes("performance")) {
+  if (clean.includes("performance")) {
     return goalAdjustments.performance;
   }
 
@@ -110,38 +112,126 @@ function scaleCalories(value, scale) {
 }
 
 function translateGoalLabel(goal, language) {
-  if (language !== "nl") return goal.label;
+  const label = typeof goal === "string" ? goal : goal?.label;
 
-  const clean = String(goal.label || "").toLowerCase();
+  if (language !== "nl") return label;
 
-  if (clean.includes("fat") || clean.includes("loss") || clean.includes("shred")) {
-    return "Vetverlies";
-  }
+  const clean = String(label || "").toLowerCase();
 
-  if (clean.includes("muscle") || clean.includes("gain") || clean.includes("build")) {
+  if (clean.includes("fat")) return "Vetverlies";
+  if (clean.includes("muscle") || clean.includes("build")) {
     return "Spieropbouw";
   }
+  if (clean.includes("performance")) return "Prestatie";
+  if (clean.includes("maintenance")) return "Onderhoud";
 
-  if (clean.includes("performance")) {
-    return "Prestatie";
-  }
+  return label;
+}
 
-  if (clean.includes("maintenance")) {
-    return "Onderhoud";
-  }
+function translateMealText(value, language) {
+  if (language !== "nl" || !value) return value;
 
-  return goal.label;
+  let text = String(value);
+
+  const exactMap = {
+    "Daily Routine": "Dagelijkse routine",
+    "Target Calories": "Doelcalorieën",
+    "Maintenance": "Onderhoud",
+    "Protein": "Eiwitten",
+    "Carbs": "Koolhydraten",
+    "Fats": "Vetten",
+    "Ingredients": "Ingrediënten",
+    "How to make it": "Bereiding",
+
+    Breakfast: "Ontbijt",
+    Lunch: "Lunch",
+    Dinner: "Avondeten",
+    Snack: "Snack",
+    "Pre-workout": "Pre-workout",
+    "Post-workout": "Post-workout",
+
+    "Chicken breast": "Kipfilet",
+    "Turkey breast": "Kalkoenfilet",
+    "Lean minced beef": "Mager rundergehakt",
+    Tuna: "Tonijn",
+    Salmon: "Zalm",
+    Eggs: "Eieren",
+    Oats: "Havermout",
+    Rice: "Rijst",
+    Potatoes: "Aardappelen",
+    Pasta: "Pasta",
+    Banana: "Banaan",
+    Broccoli: "Broccoli",
+    Spinach: "Spinazie",
+    Water: "Water",
+    Coffee: "Koffie",
+  };
+
+  if (exactMap[text]) return exactMap[text];
+
+  const replacements = [
+    ["Meal Plan", "Maaltijdplan"],
+    ["meal plan", "maaltijdplan"],
+    ["Daily", "Dagelijkse"],
+    ["daily", "dagelijkse"],
+    ["Weekly", "Wekelijkse"],
+    ["weekly", "wekelijkse"],
+    ["Simple", "Simpel"],
+    ["simple", "simpel"],
+    ["High Protein", "Eiwitrijk"],
+    ["high protein", "eiwitrijk"],
+    ["Fat Loss", "Vetverlies"],
+    ["fat loss", "vetverlies"],
+    ["Build Muscle", "Spieropbouw"],
+    ["build muscle", "spieropbouw"],
+    ["Performance", "Prestatie"],
+    ["performance", "prestatie"],
+    ["Maintenance", "Onderhoud"],
+    ["maintenance", "onderhoud"],
+    ["Breakfast", "Ontbijt"],
+    ["breakfast", "ontbijt"],
+    ["Dinner", "Avondeten"],
+    ["dinner", "avondeten"],
+    ["Snack", "Snack"],
+    ["snack", "snack"],
+    ["Chicken", "Kip"],
+    ["chicken", "kip"],
+    ["Rice", "Rijst"],
+    ["rice", "rijst"],
+    ["Potatoes", "Aardappelen"],
+    ["potatoes", "aardappelen"],
+    ["Protein", "Eiwit"],
+    ["protein", "eiwit"],
+    ["Carbs", "Koolhydraten"],
+    ["carbs", "koolhydraten"],
+    ["Fats", "Vetten"],
+    ["fats", "vetten"],
+  ];
+
+  replacements.forEach(([from, to]) => {
+    text = text.split(from).join(to);
+  });
+
+  return text;
+}
+
+function translatePlanTitle(title, language) {
+  return translateMealText(title, language);
+}
+
+function translatePlanDescription(description, language) {
+  return translateMealText(description, language);
 }
 
 export default function RecipesClient({ membershipType }) {
   const { language } = useLanguage();
 
-  const t = {
+  const copy = {
     en: {
       eyebrow: "Personalized Nutrition System",
       heroTitle: "Build your daily meal plan around your body",
       heroText:
-        "Enter your sex, age, weight, height, activity level, and goal. The system calculates your calorie target and adjusts the meal plan so it fits men and women more realistically.",
+        "Enter your sex, age, weight, height, activity level, and goal.",
       sex: "Sex",
       male: "Male",
       female: "Female",
@@ -161,16 +251,13 @@ export default function RecipesClient({ membershipType }) {
       dailyCalories: "Daily Calories",
       ingredients: "Ingredients",
       howTo: "How to make it",
-      lockedTitle: "Recipe access locked",
-      lockedText:
-        "Upgrade your membership to unlock the full recipe library, complete meal plans, and advanced nutrition guidance.",
-      upgrade: "Upgrade Now",
     },
+
     nl: {
       eyebrow: "Persoonlijk Voedingssysteem",
       heroTitle: "Bouw je dagmenu rondom jouw lichaam",
       heroText:
-        "Vul je geslacht, leeftijd, gewicht, lengte, activiteit en doel in. Het systeem berekent je caloriebehoefte en past het maaltijdplan realistischer aan.",
+        "Vul je geslacht, leeftijd, gewicht, lengte, activiteit en doel in.",
       sex: "Geslacht",
       male: "Man",
       female: "Vrouw",
@@ -179,25 +266,23 @@ export default function RecipesClient({ membershipType }) {
       height: "Lengte cm",
       activity: "Activiteit",
       goal: "Doel",
-      dailyRoutine: "Dagelijkse Routine",
-      targetCalories: "Doel Calorieën",
+      dailyRoutine: "Dagelijkse routine",
+      targetCalories: "Doelcalorieën",
       maintenance: "Onderhoud",
       protein: "Eiwitten",
       carbs: "Koolhydraten",
       fats: "Vetten",
       weeklySchedule: "Weekplanning",
-      scaledText: "De porties zijn aangepast naar jouw berekende doel van",
-      dailyCalories: "Dagelijkse Calorieën",
+      scaledText:
+        "De porties zijn aangepast naar jouw berekende doel van",
+      dailyCalories: "Dagelijkse calorieën",
       ingredients: "Ingrediënten",
       howTo: "Bereiding",
-      lockedTitle: "Recepten toegang vergrendeld",
-      lockedText:
-        "Upgrade je membership om de volledige receptenbibliotheek, complete maaltijdplannen en geavanceerde voedingsbegeleiding te ontgrendelen.",
-      upgrade: "Upgrade Nu",
     },
-  }[language];
+  };
 
-  const membership = String(membershipType || "").toLowerCase().trim();
+  const t = copy[language] || copy.en;
+    const membership = String(membershipType || "").toLowerCase().trim();
 
   const hasNutritionAccess =
     membership === "nutrition" ||
@@ -247,12 +332,14 @@ export default function RecipesClient({ membershipType }) {
     });
 
     const maintenanceCalories = bmr * activity.multiplier;
-    const targetCalories = maintenanceCalories + getGoalAdjustment(selectedGoal);
+    const targetCalories =
+      maintenanceCalories + getGoalAdjustment(selectedGoal);
 
     const protein = cleanWeight * 2;
     const fats = cleanWeight * 0.8;
     const proteinCalories = protein * 4;
     const fatCalories = fats * 9;
+
     const carbs = Math.max(
       60,
       (targetCalories - proteinCalories - fatCalories) / 4
@@ -266,17 +353,33 @@ export default function RecipesClient({ membershipType }) {
       carbs: `${Math.round(carbs)}g`,
       fats: `${Math.round(fats)}g`,
     };
-  }, [sex, age, weightKg, heightCm, activityLevel, selectedGoal]);
+  }, [
+    sex,
+    age,
+    weightKg,
+    heightCm,
+    activityLevel,
+    selectedGoal,
+  ]);
 
-  const basePlanCalories = extractNumber(selectedPlan?.targetCalories) || 2000;
-  const scale = personalTargets.targetCalories / basePlanCalories;
+  const basePlanCalories =
+    extractNumber(selectedPlan?.targetCalories) || 2000;
+
+  const scale =
+    personalTargets.targetCalories / basePlanCalories;
 
   return (
     <div style={wrap}>
       <section style={heroCard}>
         <div style={eyebrow}>{t.eyebrow}</div>
-        <h2 style={heroTitle}>{t.heroTitle}</h2>
-        <p style={heroText}>{t.heroText}</p>
+
+        <h2 style={heroTitle}>
+          {t.heroTitle}
+        </h2>
+
+        <p style={heroText}>
+          {t.heroText}
+        </p>
 
         <div style={filterRow}>
           <Field label={t.sex}>
@@ -288,6 +391,7 @@ export default function RecipesClient({ membershipType }) {
               <option style={optionStyle} value="male">
                 {t.male}
               </option>
+
               <option style={optionStyle} value="female">
                 {t.female}
               </option>
@@ -328,8 +432,14 @@ export default function RecipesClient({ membershipType }) {
               style={input}
             >
               {activityOptions.map((item) => (
-                <option key={item.value} style={optionStyle} value={item.value}>
-                  {language === "nl" ? item.nl : item.label}
+                <option
+                  key={item.value}
+                  style={optionStyle}
+                  value={item.value}
+                >
+                  {language === "nl"
+                    ? item.nl
+                    : item.label}
                 </option>
               ))}
             </select>
@@ -346,7 +456,11 @@ export default function RecipesClient({ membershipType }) {
               style={input}
             >
               {MEAL_GOALS.map((goal) => (
-                <option key={goal.value} style={optionStyle} value={goal.value}>
+                <option
+                  key={goal.value}
+                  style={optionStyle}
+                  value={goal.value}
+                >
                   {translateGoalLabel(goal, language)}
                 </option>
               ))}
@@ -363,8 +477,15 @@ export default function RecipesClient({ membershipType }) {
               style={input}
             >
               {visiblePlans.map((plan, index) => (
-                <option key={plan.id} style={optionStyle} value={index}>
-                  {plan.title}
+                <option
+                  key={plan.id}
+                  style={optionStyle}
+                  value={index}
+                >
+                  {translatePlanTitle(
+                    plan.title,
+                    language
+                  )}
                 </option>
               ))}
             </select>
@@ -376,24 +497,43 @@ export default function RecipesClient({ membershipType }) {
             label={t.targetCalories}
             value={`${personalTargets.targetCalories} kcal`}
           />
+
           <InfoCard
             label={t.maintenance}
             value={`${personalTargets.maintenanceCalories} kcal`}
           />
-          <InfoCard label={t.protein} value={personalTargets.protein} />
-          <InfoCard label={t.carbs} value={personalTargets.carbs} />
-          <InfoCard label={t.fats} value={personalTargets.fats} />
+
+          <InfoCard
+            label={t.protein}
+            value={personalTargets.protein}
+          />
+
+          <InfoCard
+            label={t.carbs}
+            value={personalTargets.carbs}
+          />
+
+          <InfoCard
+            label={t.fats}
+            value={personalTargets.fats}
+          />
         </div>
       </section>
-
       <section style={panel}>
         <div style={sectionHead}>
           <div>
             <div style={eyebrow}>{t.weeklySchedule}</div>
-            <h3 style={sectionTitle}>{selectedPlan?.title}</h3>
+
+            <h3 style={sectionTitle}>
+              {translatePlanTitle(selectedPlan?.title, language)}
+            </h3>
+
             <p style={sectionText}>
-              {selectedPlan?.description} {t.scaledText}{" "}
-              {personalTargets.targetCalories} kcal.
+              {translatePlanDescription(
+                selectedPlan?.description,
+                language
+              )}{" "}
+              {t.scaledText} {personalTargets.targetCalories} kcal.
             </p>
           </div>
         </div>
@@ -409,7 +549,9 @@ export default function RecipesClient({ membershipType }) {
                 onClick={() => setSelectedDay(day)}
                 style={{
                   ...dayTab,
-                  background: active ? "white" : "rgba(255,255,255,0.04)",
+                  background: active
+                    ? "white"
+                    : "rgba(255,255,255,0.04)",
                   color: active ? "black" : "white",
                 }}
               >
@@ -426,18 +568,33 @@ export default function RecipesClient({ membershipType }) {
                 label={t.dailyCalories}
                 value={`${personalTargets.targetCalories} kcal`}
               />
-              <SummaryCard label={t.protein} value={personalTargets.protein} />
-              <SummaryCard label={t.carbs} value={personalTargets.carbs} />
-              <SummaryCard label={t.fats} value={personalTargets.fats} />
+
+              <SummaryCard
+                label={t.protein}
+                value={personalTargets.protein}
+              />
+
+              <SummaryCard
+                label={t.carbs}
+                value={personalTargets.carbs}
+              />
+
+              <SummaryCard
+                label={t.fats}
+                value={personalTargets.fats}
+              />
             </div>
 
             <div style={mealGrid}>
               {selectedDayPlan.meals.map((meal) => (
                 <div key={meal.mealName} style={mealCard}>
                   <div style={mealTop}>
-                    <div>
+                    <div style={mealTitleWrap}>
                       <div style={mealTime}>{meal.time}</div>
-                      <h4 style={mealTitle}>{meal.mealName}</h4>
+
+                      <h4 style={mealTitle}>
+                        {translateMealText(meal.mealName, language)}
+                      </h4>
                     </div>
 
                     <div style={calorieBadge}>
@@ -449,9 +606,11 @@ export default function RecipesClient({ membershipType }) {
                     <span>
                       {t.protein}: {scaleMacro(meal.protein, scale)}
                     </span>
+
                     <span>
                       {t.carbs}: {scaleMacro(meal.carbs, scale)}
                     </span>
+
                     <span>
                       {t.fats}: {scaleMacro(meal.fats, scale)}
                     </span>
@@ -459,18 +618,24 @@ export default function RecipesClient({ membershipType }) {
 
                   <div style={detailBlock}>
                     <div style={miniLabel}>{t.ingredients}</div>
+
                     <ul style={bulletList}>
                       {meal.ingredients.map((item) => (
-                        <li key={item}>{item}</li>
+                        <li key={item}>
+                          {translateMealText(item, language)}
+                        </li>
                       ))}
                     </ul>
                   </div>
 
                   <div style={detailBlock}>
                     <div style={miniLabel}>{t.howTo}</div>
+
                     <ol style={orderedList}>
                       {meal.steps.map((step) => (
-                        <li key={step}>{step}</li>
+                        <li key={step}>
+                          {translateMealText(step, language)}
+                        </li>
                       ))}
                     </ol>
                   </div>
@@ -482,11 +647,20 @@ export default function RecipesClient({ membershipType }) {
 
         {!hasNutritionAccess && (
           <div style={lockedBox}>
-            <div style={lockedTitle}>{t.lockedTitle}</div>
-            <p style={lockedText}>{t.lockedText}</p>
+            <div style={lockedTitle}>
+              {language === "nl"
+                ? "Recepten toegang vergrendeld"
+                : "Recipe access locked"}
+            </div>
+
+            <p style={lockedText}>
+              {language === "nl"
+                ? "Upgrade je membership om de volledige receptenbibliotheek en maaltijdplannen te ontgrendelen."
+                : "Upgrade your membership to unlock the full recipe library and meal plans."}
+            </p>
 
             <a href="/billing" style={unlockButton}>
-              {t.upgrade}
+              {language === "nl" ? "Upgrade Nu" : "Upgrade Now"}
             </a>
           </div>
         )}
@@ -521,17 +695,21 @@ function SummaryCard({ label, value }) {
     </div>
   );
 }
-
 const wrap = {
   display: "grid",
   gap: "22px",
+  width: "100%",
+  maxWidth: "100%",
+  overflowX: "hidden",
 };
 
 const heroCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "24px",
+  borderRadius: "clamp(18px, 4vw, 24px)",
   padding: "clamp(18px, 4vw, 28px)",
+  boxSizing: "border-box",
+  minWidth: 0,
 };
 
 const eyebrow = {
@@ -547,12 +725,14 @@ const heroTitle = {
   fontSize: "clamp(28px, 7vw, 42px)",
   fontWeight: "900",
   lineHeight: 1.08,
+  overflowWrap: "anywhere",
 };
 
 const heroText = {
   color: "rgba(255,255,255,0.7)",
   lineHeight: 1.8,
   maxWidth: "850px",
+  fontSize: "clamp(15px, 3.8vw, 16px)",
 };
 
 const filterRow = {
@@ -565,6 +745,7 @@ const filterRow = {
 const fieldWrap = {
   display: "grid",
   gap: "8px",
+  minWidth: 0,
 };
 
 const miniLabel = {
@@ -584,6 +765,7 @@ const input = {
   border: "1px solid rgba(255,255,255,0.12)",
   outline: "none",
   fontSize: "16px",
+  minWidth: 0,
 };
 
 const optionStyle = {
@@ -603,6 +785,7 @@ const infoCard = {
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "16px",
   padding: "16px",
+  minWidth: 0,
 };
 
 const infoLabel = {
@@ -615,13 +798,16 @@ const infoValue = {
   color: "white",
   fontWeight: "900",
   lineHeight: 1.5,
+  overflowWrap: "anywhere",
 };
 
 const panel = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "24px",
+  borderRadius: "clamp(18px, 4vw, 24px)",
   padding: "clamp(18px, 4vw, 24px)",
+  boxSizing: "border-box",
+  minWidth: 0,
 };
 
 const sectionHead = {
@@ -630,6 +816,7 @@ const sectionHead = {
   gap: "16px",
   flexWrap: "wrap",
   marginBottom: "18px",
+  minWidth: 0,
 };
 
 const sectionTitle = {
@@ -637,18 +824,21 @@ const sectionTitle = {
   fontSize: "clamp(24px, 6vw, 32px)",
   fontWeight: "900",
   lineHeight: 1.1,
+  overflowWrap: "anywhere",
 };
 
 const sectionText = {
   color: "rgba(255,255,255,0.68)",
   lineHeight: 1.8,
+  fontSize: "clamp(15px, 3.8vw, 16px)",
 };
 
 const dayTabs = {
   display: "flex",
   gap: "10px",
   overflowX: "auto",
-  paddingBottom: "4px",
+  paddingBottom: "8px",
+  WebkitOverflowScrolling: "touch",
 };
 
 const dayTab = {
@@ -658,8 +848,8 @@ const dayTab = {
   border: "1px solid rgba(255,255,255,0.1)",
   fontWeight: "900",
   cursor: "pointer",
+  fontSize: "14px",
 };
-
 const mealSection = {
   display: "grid",
   gap: "18px",
@@ -668,7 +858,7 @@ const mealSection = {
 
 const summaryGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,160px),1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,150px),1fr))",
   gap: "12px",
 };
 
@@ -677,10 +867,11 @@ const summaryCard = {
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "16px",
   padding: "16px",
+  minWidth: 0,
 };
 
 const summaryValue = {
-  fontSize: "20px",
+  fontSize: "clamp(18px, 4vw, 20px)",
   fontWeight: "900",
 };
 
@@ -694,7 +885,9 @@ const mealCard = {
   background: "rgba(255,255,255,0.03)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "20px",
-  padding: "18px",
+  padding: "clamp(16px, 4vw, 18px)",
+  boxSizing: "border-box",
+  minWidth: 0,
 };
 
 const mealTop = {
@@ -705,6 +898,11 @@ const mealTop = {
   flexWrap: "wrap",
 };
 
+const mealTitleWrap = {
+  minWidth: 0,
+  flex: "1 1 180px",
+};
+
 const mealTime = {
   color: "rgba(255,255,255,0.5)",
   fontSize: "13px",
@@ -713,8 +911,10 @@ const mealTime = {
 
 const mealTitle = {
   margin: 0,
-  fontSize: "22px",
+  fontSize: "clamp(20px, 5vw, 22px)",
   fontWeight: "900",
+  lineHeight: 1.15,
+  overflowWrap: "anywhere",
 };
 
 const calorieBadge = {
@@ -722,6 +922,7 @@ const calorieBadge = {
   borderRadius: "999px",
   background: "rgba(255,255,255,0.08)",
   fontWeight: "900",
+  whiteSpace: "nowrap",
 };
 
 const macroRow = {
@@ -730,6 +931,7 @@ const macroRow = {
   flexWrap: "wrap",
   color: "rgba(255,255,255,0.72)",
   marginTop: "14px",
+  fontSize: "14px",
 };
 
 const detailBlock = {
@@ -740,12 +942,14 @@ const bulletList = {
   paddingLeft: "18px",
   lineHeight: 1.8,
   color: "rgba(255,255,255,0.76)",
+  overflowWrap: "anywhere",
 };
 
 const orderedList = {
   paddingLeft: "18px",
   lineHeight: 1.8,
   color: "rgba(255,255,255,0.76)",
+  overflowWrap: "anywhere",
 };
 
 const lockedBox = {
@@ -756,7 +960,7 @@ const lockedBox = {
 };
 
 const lockedTitle = {
-  fontSize: "24px",
+  fontSize: "clamp(22px, 5vw, 24px)",
   fontWeight: "900",
 };
 
