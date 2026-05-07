@@ -45,22 +45,105 @@ const labels = {
 
 const titleMap = {
   en: {
-    Billing: "Billing",
     Dashboard: "Dashboard",
+    Billing: "Billing",
     Nutrition: "Nutrition",
     Recipes: "Recipes",
+    "Plan Builder": "Plan Builder",
+    Workouts: "Workouts",
+    Programs: "Programs",
+    "Couple Zone": "Couple Zone",
+    Progress: "Progress",
     VIP: "VIP",
     Account: "Account",
+    Settings: "Settings",
   },
   nl: {
-    Billing: "Abonnement",
     Dashboard: "Dashboard",
+    Billing: "Abonnement",
     Nutrition: "Voeding",
     Recipes: "Recepten",
+    "Plan Builder": "Plan Bouwer",
+    Workouts: "Trainingen",
+    Programs: "Programma’s",
+    "Couple Zone": "Couple Zone",
+    Progress: "Progressie",
     VIP: "VIP",
     Account: "Account",
+    Settings: "Instellingen",
   },
 };
+
+const subtitleMap = {
+  en: {
+    "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.":
+      "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.",
+    "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.":
+      "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.",
+    "Build structured training plans based on your goal, focus, and weekly schedule.":
+      "Build structured training plans based on your goal, focus, and weekly schedule.",
+    "Choose your goal, training days, and focus. The system builds your weekly structure.":
+      "Choose your goal, training days, and focus. The system builds your weekly structure.",
+    "Track your training, nutrition, and body progress in one place.":
+      "Track your training, nutrition, and body progress in one place.",
+    "Your personal fitness dashboard.":
+      "Your personal fitness dashboard.",
+  },
+  nl: {
+    "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.":
+      "Kies jouw systeemniveau — van voedingsstructuur tot volledige transformatie, Couple Zone accountability, VIP begeleiding en coaching.",
+    "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.":
+      "Persoonlijke dagelijkse voedingsschema’s gebaseerd op jouw doel, geslacht, leeftijd, gewicht, lengte en activiteitsniveau.",
+    "Build structured training plans based on your goal, focus, and weekly schedule.":
+      "Bouw gestructureerde trainingsschema’s op basis van jouw doel, focus en weekschema.",
+    "Choose your goal, training days, and focus. The system builds your weekly structure.":
+      "Kies je doel, trainingsdagen en focus. Het systeem bouwt jouw weekstructuur.",
+    "Track your training, nutrition, and body progress in one place.":
+      "Volg je training, voeding en lichaamsprogressie op één plek.",
+    "Your personal fitness dashboard.":
+      "Jouw persoonlijke fitness dashboard.",
+  },
+};
+
+const navLabelMap = {
+  en: {
+    Dashboard: "Dashboard",
+    Billing: "Billing",
+    Nutrition: "Nutrition",
+    Recipes: "Recipes",
+    "Plan Builder": "Plan Builder",
+    Workouts: "Workouts",
+    Programs: "Programs",
+    "Couple Zone": "Couple Zone",
+    Progress: "Progress",
+    VIP: "VIP",
+    Account: "Account",
+    Logout: "Logout",
+  },
+  nl: {
+    Dashboard: "Dashboard",
+    Billing: "Abonnement",
+    Nutrition: "Voeding",
+    Recipes: "Recepten",
+    "Plan Builder": "Plan Bouwer",
+    Workouts: "Trainingen",
+    Programs: "Programma’s",
+    "Couple Zone": "Couple Zone",
+    Progress: "Progressie",
+    VIP: "VIP",
+    Account: "Account",
+    Logout: "Uitloggen",
+  },
+};
+
+function translateText(value, language, map) {
+  if (!value) return "";
+  return map?.[language]?.[value] || map?.en?.[value] || value;
+}
+
+function translateNavLabel(label, language) {
+  return navLabelMap?.[language]?.[label] || navLabelMap?.en?.[label] || label;
+}
 
 export default function DashboardLayout({
   title,
@@ -109,26 +192,11 @@ export default function DashboardLayout({
     [t.account, "/account"],
   ];
 
-  const subtitleMap = {
-    en: {
-      "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.":
-        "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.",
-      "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.":
-        "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.",
-    },
-    nl: {
-      "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.":
-        "Persoonlijke dagelijkse voedingsschema’s gebaseerd op jouw doel, geslacht, leeftijd, gewicht, lengte en activiteitsniveau.",
-      "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.":
-        "Kies jouw systeemniveau — van voedingsstructuur tot volledige transformatie, Couple Zone accountability, VIP begeleiding en coaching.",
-    },
-  };
+  const translatedTitle = translateText(title, language, titleMap);
 
-  const translatedTitle = titleMap[language]?.[title] || title;
-  const translatedSubtitle =
-    subtitleMap[language]?.[subtitle] || subtitle;
-
-  return (
+  
+  const translatedSubtitle = translateText(subtitle, language, subtitleMap);
+return (
     <div style={layout}>
       <aside style={sidebar}>
         <SidebarContent
@@ -174,7 +242,7 @@ export default function DashboardLayout({
 
       <main style={main}>
         <h1 style={pageTitle}>{translatedTitle}</h1>
-        {translatedSubtitle ? <p style={subtitleStyle}>{translatedSubtitle}</p> : null}
+        {subtitle ? <p style={subtitleStyle}>{translatedSubtitle}</p> : null}
         {children}
       </main>
 
@@ -273,9 +341,10 @@ const navLink = {
 };
 
 const main = {
-  padding: "28px",
+  padding: "clamp(18px, 4vw, 28px)",
   minWidth: 0,
   paddingBottom: "90px",
+  overflowX: "hidden",
 };
 
 const pageTitle = {
@@ -292,7 +361,7 @@ const subtitleStyle = {
   fontSize: "clamp(16px, 3vw, 20px)",
   lineHeight: 1.7,
   maxWidth: "900px",
-  wordBreak: "break-word",
+  overflowWrap: "anywhere",
 };
 
 const mobileTopbar = {
