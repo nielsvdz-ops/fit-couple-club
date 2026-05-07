@@ -7,7 +7,7 @@ import { getCurrentUserAndProfile } from "../../../lib/getProfile";
 import { canAccessFitnessPages } from "../../../lib/access";
 import { getProgramBySlug, programs } from "../../../lib/programsData";
 import { getExerciseMedia } from "../../../lib/exerciseMedia";
-import { useLanguage } from "../../lib/useLanguage";
+import { useLanguage } from "../../../lib/useLanguage";
 
 
 // GENERIC PAGE TRANSLATIONS V2
