@@ -2,6 +2,194 @@
 
 import { useMemo, useState } from "react";
 import { getExerciseMedia } from "../lib/exerciseMedia";
+import { useLanguage } from "../lib/useLanguage";
+
+
+const workoutCopy = {
+  en: {
+    eyebrow: "Workout library",
+    title: "Training sessions built for real progress",
+    subtitle:
+      "Choose your workout, follow the structure, and train with clear sets, reps, tempo, and rest.",
+    search: "Search workouts",
+    goal: "Goal",
+    focus: "Focus",
+    level: "Level",
+    all: "All",
+    exercises: "Exercises",
+    sets: "Sets",
+    reps: "Reps",
+    rest: "Rest",
+    tempo: "Tempo",
+    notes: "Notes",
+    warmup: "Warm-up",
+    cooldown: "Cooldown",
+    startWorkout: "Start workout",
+    locked: "Locked",
+    upgrade: "Upgrade to unlock",
+    noResults: "No workouts found.",
+  },
+  nl: {
+    eyebrow: "Workout bibliotheek",
+    title: "Trainingen gebouwd voor echte progressie",
+    subtitle:
+      "Kies je workout, volg de structuur en train met duidelijke sets, herhalingen, tempo en rust.",
+    search: "Zoek trainingen",
+    goal: "Doel",
+    focus: "Focus",
+    level: "Niveau",
+    all: "Alles",
+    exercises: "Oefeningen",
+    sets: "Sets",
+    reps: "Herhalingen",
+    rest: "Rust",
+    tempo: "Tempo",
+    notes: "Notities",
+    warmup: "Warming-up",
+    cooldown: "Cooling-down",
+    startWorkout: "Start training",
+    locked: "Vergrendeld",
+    upgrade: "Upgrade om te ontgrendelen",
+    noResults: "Geen trainingen gevonden.",
+  },
+};
+
+function wt(language, key) {
+  return workoutCopy?.[language]?.[key] || workoutCopy.en[key] || key;
+}
+
+function translateWorkoutText(value, language = "en") {
+  if (!value || language !== "nl") return value || "";
+
+  const exactMap = {
+    "Lose Fat": "Vetverlies",
+    "Fat Loss": "Vetverlies",
+    "Build Muscle": "Spieropbouw",
+    "Muscle Gain": "Spieropbouw",
+    "Tone & Shape Body": "Tonen & Vormen",
+    "Maintain Athletic Lifestyle": "Atletische Lifestyle Behouden",
+    "Beginner Body Reset": "Beginner Body Reset",
+    "Booty": "Billen",
+    "Glutes": "Billen",
+    "Abs": "Buikspieren",
+    "Core": "Core",
+    "Legs": "Benen",
+    "Upper Body": "Bovenlichaam",
+    "Lower Body": "Onderlichaam",
+    "Full Body": "Full Body",
+    "Beginner": "Beginner",
+    "Intermediate": "Gemiddeld",
+    "Advanced": "Gevorderd",
+    "Workout": "Training",
+    "Workouts": "Trainingen",
+    "Exercise": "Oefening",
+    "Exercises": "Oefeningen",
+    "Warm-up": "Warming-up",
+    "Cooldown": "Cooling-down",
+    "Rest Day": "Rustdag",
+    "Active Recovery": "Actief herstel",
+  };
+
+  if (exactMap[value]) return exactMap[value];
+
+  const replacements = [
+    ["Workout", "Training"],
+    ["Workouts", "Trainingen"],
+    ["Exercise", "Oefening"],
+    ["Exercises", "Oefeningen"],
+    ["Plan", "Schema"],
+    ["Program", "Programma"],
+    ["Routine", "Routine"],
+    ["Day", "Dag"],
+    ["Week", "Week"],
+    ["Goal", "Doel"],
+    ["Focus", "Focus"],
+    ["Level", "Niveau"],
+    ["Sets", "Sets"],
+    ["Reps", "Herhalingen"],
+    ["Rest", "Rust"],
+    ["Notes", "Notities"],
+    ["Warm-up", "Warming-up"],
+    ["Cooldown", "Cooling-down"],
+    ["Optional", "Optioneel"],
+    ["Recommended", "Aanbevolen"],
+    ["Fat Loss", "Vetverlies"],
+    ["Lose Fat", "Vetverlies"],
+    ["Build Muscle", "Spieropbouw"],
+    ["Muscle Gain", "Spieropbouw"],
+    ["Tone", "Tonen"],
+    ["Shape", "Vormen"],
+    ["Strength", "Kracht"],
+    ["Endurance", "Conditie"],
+    ["Conditioning", "Conditie"],
+    ["Recovery", "Herstel"],
+    ["Mobility", "Mobiliteit"],
+    ["Glutes", "Billen"],
+    ["Glute", "Bil"],
+    ["Booty", "Billen"],
+    ["Chest", "Borst"],
+    ["Back", "Rug"],
+    ["Shoulders", "Schouders"],
+    ["Arms", "Armen"],
+    ["Legs", "Benen"],
+    ["Upper Body", "Bovenlichaam"],
+    ["Lower Body", "Onderlichaam"],
+    ["Full Body", "Full Body"],
+    ["Core", "Core"],
+    ["Controlled", "Gecontroleerd"],
+    ["Slow", "Langzaam"],
+    ["Explosive", "Explosief"],
+    ["Machine", "Machine"],
+    ["Dumbbell", "Dumbbell"],
+    ["Barbell", "Barbell"],
+    ["Cable", "Cable"],
+    ["Bodyweight", "Lichaamsgewicht"],
+    ["Squat", "Squat"],
+    ["Lunge", "Lunge"],
+    ["Press", "Press"],
+    ["Row", "Row"],
+    ["Curl", "Curl"],
+    ["Raise", "Raise"],
+    ["Extension", "Extension"],
+    ["Deadlift", "Deadlift"],
+    ["Hip Thrust", "Hip Thrust"],
+    ["Leg Press", "Leg Press"],
+    ["Bench Press", "Bench Press"],
+    ["Lat Pulldown", "Lat Pulldown"],
+    ["Shoulder Press", "Shoulder Press"],
+    ["Plank", "Plank"],
+  ];
+
+  let output = String(value);
+
+  replacements.forEach(([from, to]) => {
+    output = output.split(from).join(to);
+  });
+
+  return output;
+}
+
+function translateAnyWorkoutValue(value, language = "en") {
+  if (language !== "nl") return value;
+
+  if (typeof value === "string") return translateWorkoutText(value, language);
+
+  if (Array.isArray(value)) {
+    return value.map((item) => translateAnyWorkoutValue(item, language));
+  }
+
+  if (value && typeof value === "object") {
+    const translated = {};
+    Object.entries(value).forEach(([key, entry]) => {
+      translated[key] = translateAnyWorkoutValue(entry, language);
+    });
+    return translated;
+  }
+
+  return value;
+}
+
+
 
 const workoutPrograms = [
   {
@@ -1972,7 +2160,11 @@ const workoutPrograms = [
 ];
 
 export default function WorkoutsClient({ membershipType }) {
-  const membership = String(membershipType || "").toLowerCase();
+  
+  
+  const { language } = useLanguage();
+const { language } = useLanguage();
+const membership = String(membershipType || "").toLowerCase();
   const isStarter = membership === "starter";
   const isPremiumPlus = membership === "premium" || membership === "vip";
 
@@ -2277,7 +2469,7 @@ export default function WorkoutsClient({ membershipType }) {
                           </div>
 
                           <div style={blockCard}>
-                            <div style={miniLabel}>Warm-up</div>
+                            <div style={miniLabel}>{wt(language, "warmup")}</div>
                             <ul style={bulletList}>
                               {day.warmup.map((item) => (
                                 <li key={item}>{item}</li>
@@ -2287,10 +2479,10 @@ export default function WorkoutsClient({ membershipType }) {
 
                           <div style={exerciseGrid}>
                             {day.exercises.map((exercise) => (
-                              <div key={exercise.name} style={exerciseCard}>
+                              <div key={translateWorkoutText(exercise.name, language)} style={exerciseCard}>
                                 <div style={exerciseTop}>
                                   <div style={{ flex: 1 }}>
-                                    <div style={exerciseName}>{exercise.name}</div>
+                                    <div style={exerciseName}>{translateWorkoutText(exercise.name, language)}</div>
                                     <div style={exerciseMeta}>
                                       {exercise.sets} sets · {exercise.reps} · Rest {exercise.rest}
                                     </div>
@@ -2403,7 +2595,7 @@ const heroCard = {
     "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
   border: "1px solid rgba(255,255,255,0.1)",
   borderRadius: "24px",
-  padding: "28px",
+  padding: "clamp(18px, 4vw, 28px)",
 };
 
 const eyebrow = {
@@ -2416,8 +2608,9 @@ const eyebrow = {
 
 const heroTitle = {
   margin: 0,
-  fontSize: "36px",
+  fontSize: "clamp(26px, 5vw, 36px)",
   fontWeight: "900",
+  overflowWrap: "anywhere",
 };
 
 const heroText = {
@@ -2699,6 +2892,7 @@ const exerciseCard = {
   border: "1px solid rgba(255,255,255,0.06)",
   borderRadius: "16px",
   padding: "16px",
+  minWidth: 0,
 };
 
 const exerciseTop = {
@@ -2792,7 +2986,7 @@ const emptyBox = {
   background: "rgba(255,255,255,0.03)",
   border: "1px dashed rgba(255,255,255,0.18)",
   borderRadius: "18px",
-  padding: "24px",
+  padding: "clamp(16px, 4vw, 24px)",
   color: "rgba(255,255,255,0.7)",
   lineHeight: 1.8,
   textAlign: "center",
