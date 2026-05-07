@@ -7,6 +7,51 @@ import UpgradeLockScreen from "../../components/UpgradeLockScreen";
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
 import { canAccessFitnessPages } from "../../lib/access";
 import { programs } from "../../lib/programsData";
+import { useLanguage } from "../../lib/useLanguage";
+
+
+// PAGE TRANSLATIONS V2
+
+const pageTranslations = {
+  en: {
+    title: "Training System",
+    subtitle: "Structured workouts, smart progression, and personalized plans.",
+    continue: "Continue",
+    back: "Back",
+    start: "Start",
+    save: "Save",
+    workouts: "Workouts",
+    programs: "Programs",
+    nutrition: "Nutrition",
+    recipes: "Recipes",
+    progress: "Progress",
+    coupleZone: "Couple Zone",
+  },
+
+  nl: {
+    title: "Trainingssysteem",
+    subtitle: "Gestructureerde workouts, slimme progressie en gepersonaliseerde schema’s.",
+    continue: "Verder",
+    back: "Terug",
+    start: "Start",
+    save: "Opslaan",
+    workouts: "Trainingen",
+    programs: "Programma’s",
+    nutrition: "Voeding",
+    recipes: "Recepten",
+    progress: "Progressie",
+    coupleZone: "Couple Zone",
+  },
+};
+
+function pt(language, key) {
+  return (
+    pageTranslations?.[language]?.[key] ||
+    pageTranslations.en[key] ||
+    key
+  );
+}
+
 
 const categories = [
   "All",
@@ -202,6 +247,8 @@ const heroText = {
 
 const filterRow = {
   display: "flex",
+    overflowWrap: "break-word",
+    wordBreak: "break-word",
   gap: "10px",
   flexWrap: "wrap",
   marginTop: "18px",
