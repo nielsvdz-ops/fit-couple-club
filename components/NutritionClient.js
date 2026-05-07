@@ -155,93 +155,6 @@ const groceryGuide = {
   },
 };
 
-function translateItem(item, language) {
-  if (language !== "nl") return item;
-
-  const map = {
-    "Chicken breast": "Kipfilet",
-    "Turkey breast": "Kalkoenfilet",
-    "Lean minced beef": "Mager rundergehakt",
-    "Tuna in water": "Tonijn in water",
-    "White fish": "Witte vis",
-    Eggs: "Eieren",
-    "Egg whites": "Ei-eiwitten",
-    "Low-fat quark": "Magere kwark",
-    "Natural skyr": "Naturel skyr",
-    "Cottage cheese": "Hüttenkäse",
-    "Protein powder": "Eiwitpoeder",
-    Tofu: "Tofu",
-    Tempeh: "Tempeh",
-    Salmon: "Zalm",
-
-    Oats: "Havermout",
-    Rice: "Rijst",
-    "Brown rice": "Zilvervliesrijst",
-    Potatoes: "Aardappelen",
-    "Sweet potatoes": "Zoete aardappelen",
-    "Whole-wheat wraps": "Volkoren wraps",
-    "Whole-grain bread": "Volkoren brood",
-    Pasta: "Pasta",
-    Bananas: "Bananen",
-    Beans: "Bonen",
-    Lentils: "Linzen",
-    "Low-sugar muesli": "Muesli met weinig suiker",
-    "Breakfast cereal around hard training": "Ontbijtgranen rondom zware training",
-
-    "Olive oil": "Olijfolie",
-    Avocado: "Avocado",
-    "100% peanut butter": "100% pindakaas",
-    "Mixed nuts": "Gemengde noten",
-    Almonds: "Amandelen",
-    Cashews: "Cashewnoten",
-    "Whole eggs": "Hele eieren",
-
-    Broccoli: "Broccoli",
-    Spinach: "Spinazie",
-    Cucumber: "Komkommer",
-    Tomatoes: "Tomaten",
-    "Bell peppers": "Paprika",
-    Carrots: "Wortelen",
-    Zucchini: "Courgette",
-    Mushrooms: "Champignons",
-    "Frozen vegetables": "Diepvriesgroenten",
-    "Stir-fry vegetables": "Wokgroenten",
-    "Mixed salad": "Gemengde salade",
-    "Cauliflower rice": "Bloemkoolrijst",
-
-    Water: "Water",
-    "Sparkling water": "Bruiswater",
-    Coffee: "Koffie",
-    Tea: "Thee",
-    "Zero-sugar soft drinks": "Zero frisdrank",
-    "Sugar-free electrolytes": "Suikervrije elektrolyten",
-    "Electrolytes for training or hot days": "Elektrolyten voor training of warme dagen",
-    "Protein shake": "Eiwitshake",
-    "Semi-skimmed milk": "Halfvolle melk",
-    "Coconut water occasionally": "Af en toe kokoswater",
-
-    "Liquid calories": "Vloeibare calorieën",
-    "Large portions of nuts without measuring": "Grote porties noten zonder afwegen",
-    "Cream sauces and high-calorie dressings": "Roomsaus en calorierijke dressings",
-    "Fried snacks": "Gefrituurde snacks",
-    "Sugary coffee drinks": "Zoete koffiedrankjes",
-    "Bulking only with junk food": "Bulken met alleen junkfood",
-    "Too little protein at breakfast": "Te weinig eiwit bij het ontbijt",
-    "Too few carbs around training": "Te weinig koolhydraten rondom training",
-    "Too many sugary drinks": "Te veel suikerhoudende drankjes",
-    "Training hard while under-eating": "Hard trainen terwijl je te weinig eet",
-    "Too little salt when sweating a lot": "Te weinig zout wanneer je veel zweet",
-    "Very low-carb days before hard sessions": "Zeer weinig koolhydraten voor zware trainingen",
-    "Alcohol close to performance days": "Alcohol vlak voor prestatiegerichte dagen",
-    "Random snacking without structure": "Random snacken zonder structuur",
-    "Skipping protein": "Eiwitten overslaan",
-    "Drinking too many calories": "Te veel calorieën drinken",
-    "Weekend eating that erases weekday consistency": "Weekendeten dat je weekconsistentie wegvaagt",
-  };
-
-  return map[item] || item;
-}
-
 function calculateBmr({ sex, weightKg, heightCm, age }) {
   if (sex === "male") return 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
   return 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
@@ -333,7 +246,7 @@ function getPersonTargets({ sex, age, weightKg, heightCm, activityLevel, selecte
   };
 }
 
-function buildWeeklyGroceryAmounts({ peopleTargets, goalKey, language }) {
+function buildWeeklyGroceryAmounts({ peopleTargets, goalKey }) {
   const totalProteinGrams = peopleTargets.reduce((sum, person) => sum + person.proteinGrams, 0);
   const totalCarbsGrams = peopleTargets.reduce((sum, person) => sum + person.carbsGrams, 0);
   const totalFatsGrams = peopleTargets.reduce((sum, person) => sum + person.fatsGrams, 0);
@@ -353,17 +266,6 @@ function buildWeeklyGroceryAmounts({ peopleTargets, goalKey, language }) {
     goalKey === "Build Muscle" || goalKey === "Performance"
       ? peopleTargets.length * 2.5
       : peopleTargets.length * 1.5;
-
-  if (language === "nl") {
-    return {
-      proteinFood: `${roundDecimal(proteinKg * 0.85)}–${roundDecimal(proteinKg * 1.25)}kg magere eiwitbronnen/week`,
-      carbFood: `${roundDecimal(carbKg * 0.6)}–${roundDecimal(carbKg * 0.95)}kg koolhydraatbronnen/week`,
-      fatFood: `${roundDecimal(fatKg * 0.35)}–${roundDecimal(fatKg * 0.55)}kg vetbronnen/week`,
-      vegetables: `${roundDecimal(vegetableKg)}kg groenten/week`,
-      fruit: `${roundDecimal(fruitKg)}kg fruit/week`,
-      water: `${roundDecimal(totalWaterLiters * 7)}L water/week`,
-    };
-  }
 
   return {
     proteinFood: `${roundDecimal(proteinKg * 0.85)}–${roundDecimal(proteinKg * 1.25)}kg lean protein/week`,
@@ -389,7 +291,7 @@ function rotateArray(items, seed) {
   return items.slice(offset).concat(items.slice(0, offset));
 }
 
-function getSmartProducts({ category, selectedSupermarket, goalKey, refreshKey, count, language }) {
+function getSmartProducts({ category, selectedSupermarket, goalKey, refreshKey, count }) {
   const products = productDatabase[category] || [];
 
   const exact = products.filter(
@@ -404,9 +306,7 @@ function getSmartProducts({ category, selectedSupermarket, goalKey, refreshKey, 
     new Map([...exact, ...fallback].map((product) => [product.name, product])).values()
   );
 
-  return rotateArray(combined, refreshKey)
-    .slice(0, count)
-    .map((item) => translateItem(item.name, language));
+  return rotateArray(combined, refreshKey).slice(0, count).map((item) => item.name);
 }
 
 function generateWeeklyShoppingList({
@@ -417,7 +317,6 @@ function generateWeeklyShoppingList({
   refreshKey,
   quickMode,
   labels,
-  language,
 }) {
   const counts = quickMode
     ? { protein: 3, carbs: 2, fats: 2, vegetables: 3, drinks: 2 }
@@ -428,21 +327,21 @@ function generateWeeklyShoppingList({
       category: labels.protein,
       items: [
         weeklyAmounts.proteinFood,
-        ...getSmartProducts({ category: "protein", selectedSupermarket, goalKey, refreshKey, count: counts.protein, language }),
+        ...getSmartProducts({ category: "protein", selectedSupermarket, goalKey, refreshKey, count: counts.protein }),
       ],
     },
     {
       category: labels.carbs,
       items: [
         weeklyAmounts.carbFood,
-        ...getSmartProducts({ category: "carbs", selectedSupermarket, goalKey, refreshKey: refreshKey + 1, count: counts.carbs, language }),
+        ...getSmartProducts({ category: "carbs", selectedSupermarket, goalKey, refreshKey: refreshKey + 1, count: counts.carbs }),
       ],
     },
     {
       category: labels.fats,
       items: [
         weeklyAmounts.fatFood,
-        ...getSmartProducts({ category: "fats", selectedSupermarket, goalKey, refreshKey: refreshKey + 2, count: counts.fats, language }),
+        ...getSmartProducts({ category: "fats", selectedSupermarket, goalKey, refreshKey: refreshKey + 2, count: counts.fats }),
       ],
     },
     {
@@ -450,25 +349,25 @@ function generateWeeklyShoppingList({
       items: [
         weeklyAmounts.vegetables,
         weeklyAmounts.fruit,
-        ...getSmartProducts({ category: "vegetables", selectedSupermarket, goalKey, refreshKey: refreshKey + 3, count: counts.vegetables, language }),
+        ...getSmartProducts({ category: "vegetables", selectedSupermarket, goalKey, refreshKey: refreshKey + 3, count: counts.vegetables }),
       ],
     },
     {
       category: labels.drinks,
       items: [
         weeklyAmounts.water,
-        ...getSmartProducts({ category: "drinks", selectedSupermarket, goalKey, refreshKey: refreshKey + 4, count: counts.drinks, language }),
+        ...getSmartProducts({ category: "drinks", selectedSupermarket, goalKey, refreshKey: refreshKey + 4, count: counts.drinks }),
         peopleCount > 1 ? labels.electrolytesCouple : labels.electrolytesSingle,
       ],
     },
   ];
 }
 
-function getGuideItems(category, goalKey, language) {
+function getGuideItems(category, goalKey) {
   return productDatabase[category]
     .filter((item) => productFitsGoal(item, goalKey))
     .slice(0, 10)
-    .map((item) => translateItem(item.name, language));
+    .map((item) => item.name);
 }
 
 export default function NutritionClient({ membershipType }) {
@@ -476,14 +375,6 @@ export default function NutritionClient({ membershipType }) {
 
   const t = {
     en: {
-      rule1Title: "Every main meal",
-      rule1Text: "Add a protein source first, then build carbs and fats around the goal.",
-      rule2Title: "Quick shopping mode",
-      rule2Text: "Use quick mode when you want a smaller list with fewer products and less decision fatigue.",
-      rule3Title: "For fat loss",
-      rule3Text: "Use lean protein, high-volume vegetables, water, zero drinks, and controlled portions of fats.",
-      rule4Title: "For muscle gain",
-      rule4Text: "Add rice, oats, bread, pasta, potatoes, bananas, and extra protein around training.",
       command: "Nutrition Command Center",
       heroTitle: "Smart supermarket grocery generator",
       heroText:
@@ -516,8 +407,6 @@ export default function NutritionClient({ membershipType }) {
       basedOn: "Based on",
       bothProfiles: "both profiles",
       yourProfile: "your profile",
-      andThe: "and the",
-      and: "and",
       andGoal: "goal",
       aimFor: "aim for around",
       refresh: "Generate different list",
@@ -545,14 +434,6 @@ export default function NutritionClient({ membershipType }) {
       electrolytesSingle: "Electrolytes if needed",
     },
     nl: {
-      rule1Title: "Elke hoofdmaaltijd",
-      rule1Text: "Begin met een eiwitbron en bouw daarna koolhydraten en vetten eromheen afhankelijk van je doel.",
-      rule2Title: "Snelle boodschappen mode",
-      rule2Text: "Gebruik quick mode voor een kortere lijst met minder producten en minder keuzestress.",
-      rule3Title: "Voor vetverlies",
-      rule3Text: "Gebruik magere eiwitten, veel groenten, water, zero drankjes en gecontroleerde vetporties.",
-      rule4Title: "Voor spieropbouw",
-      rule4Text: "Voeg rijst, havermout, brood, pasta, aardappelen, bananen en extra eiwitten toe rondom training.",
       command: "Voeding Command Center",
       heroTitle: "Slimme supermarkt boodschappen generator",
       heroText:
@@ -585,8 +466,6 @@ export default function NutritionClient({ membershipType }) {
       basedOn: "Gebaseerd op",
       bothProfiles: "beide profielen",
       yourProfile: "jouw profiel",
-      andThe: "en het",
-      and: "en",
       andGoal: "doel",
       aimFor: "richt je op ongeveer",
       refresh: "Genereer andere lijst",
@@ -613,7 +492,7 @@ export default function NutritionClient({ membershipType }) {
       electrolytesCouple: "Elektrolyten voor training of warme dagen",
       electrolytesSingle: "Elektrolyten indien nodig",
     },
-  }[language] || {};
+  }[language];
 
   const membership = String(membershipType || "").toLowerCase().trim();
 
@@ -687,8 +566,8 @@ export default function NutritionClient({ membershipType }) {
   }, [peopleTargets]);
 
   const weeklyAmounts = useMemo(
-    () => buildWeeklyGroceryAmounts({ peopleTargets, goalKey, language }),
-    [peopleTargets, goalKey, language]
+    () => buildWeeklyGroceryAmounts({ peopleTargets, goalKey }),
+    [peopleTargets, goalKey]
   );
 
   const weeklyShoppingList = useMemo(
@@ -701,9 +580,8 @@ export default function NutritionClient({ membershipType }) {
         refreshKey,
         quickMode,
         labels: t,
-        language,
       }),
-    [weeklyAmounts, peopleTargets.length, goalKey, selectedSupermarket, refreshKey, quickMode, t, language]
+    [weeklyAmounts, peopleTargets.length, goalKey, selectedSupermarket, refreshKey, quickMode, t]
   );
 
   return (
@@ -797,10 +675,10 @@ export default function NutritionClient({ membershipType }) {
           </h3>
 
           <p style={muted}>
-            {t.basedOn} {coupleMode ? t.bothProfiles : t.yourProfile} {t.andThe}{" "}
+            {t.basedOn} {coupleMode ? t.bothProfiles : t.yourProfile} and the{" "}
             <strong>{formatGoalLabel(goalKey, language)}</strong> {t.andGoal}, {t.aimFor}{" "}
             <strong>{weeklyAmounts.proteinFood}</strong>, <strong>{weeklyAmounts.vegetables}</strong>,{" "}
-            <strong>{weeklyAmounts.fruit}</strong>, {t.and} <strong>{weeklyAmounts.water}</strong>.
+            <strong>{weeklyAmounts.fruit}</strong>, and <strong>{weeklyAmounts.water}</strong>.
           </p>
 
           <button type="button" onClick={() => setRefreshKey((value) => value + 1)} style={refreshButton}>
@@ -833,10 +711,10 @@ export default function NutritionClient({ membershipType }) {
         </div>
 
         <div style={categoryGrid}>
-          <FoodCategory title={t.protein} items={getGuideItems("protein", goalKey, language)} />
-          <FoodCategory title={t.carbs} items={getGuideItems("carbs", goalKey, language)} />
-          <FoodCategory title={t.fats} items={getGuideItems("fats", goalKey, language)} />
-          <FoodCategory title={t.vegetablesFruit} items={getGuideItems("vegetables", goalKey, language)} />
+          <FoodCategory title={t.protein} items={getGuideItems("protein", goalKey)} />
+          <FoodCategory title={t.carbs} items={getGuideItems("carbs", goalKey)} />
+          <FoodCategory title={t.fats} items={getGuideItems("fats", goalKey)} />
+          <FoodCategory title={t.vegetablesFruit} items={getGuideItems("vegetables", goalKey)} />
         </div>
       </section>
 
@@ -849,7 +727,7 @@ export default function NutritionClient({ membershipType }) {
             {coupleMode ? t.combined : t.you}. {t.drinkNote}
           </p>
           <ul style={list}>
-            {getGuideItems("drinks", goalKey, language).map((item) => (
+            {getGuideItems("drinks", goalKey).map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
@@ -860,7 +738,7 @@ export default function NutritionClient({ membershipType }) {
           <h3 style={sectionTitleSmall}>{t.blockers}</h3>
           <ul style={list}>
             {guide.avoid.map((item) => (
-              <li key={item}>{translateItem(item, language)}</li>
+              <li key={item}>{item}</li>
             ))}
           </ul>
         </div>
@@ -871,10 +749,10 @@ export default function NutritionClient({ membershipType }) {
         <h3 style={sectionTitle}>{t.rules}</h3>
 
         <div style={rulesGrid}>
-          <RuleCard title={t.rule1Title} text={t.rule1Text} />
-          <RuleCard title={t.rule2Title} text={t.rule2Text} />
-          <RuleCard title={t.rule3Title} text={t.rule3Text} />
-          <RuleCard title={t.rule4Title} text={t.rule4Text} />
+          <RuleCard title="Every main meal" text="Add a protein source first, then build carbs and fats around the goal." />
+          <RuleCard title="Quick shopping mode" text="Use quick mode when you want a smaller list with fewer products and less decision fatigue." />
+          <RuleCard title="For fat loss" text="Use lean protein, high-volume vegetables, water, zero drinks, and controlled portions of fats." />
+          <RuleCard title="For muscle gain" text="Add rice, oats, bread, pasta, potatoes, bananas, and extra protein around training." />
         </div>
       </section>
 
@@ -1283,3 +1161,11 @@ const unlockButton = {
   fontWeight: "900",
   textDecoration: "none",
 };
+
+const mobileCardGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+  gap: "18px",
+  width: "100%",
+};
+
