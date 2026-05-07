@@ -2,66 +2,241 @@
 
 import { useMemo, useState } from "react";
 import { getExerciseMedia } from "../lib/exerciseMedia";
+import { useLanguage } from "../lib/useLanguage";
 
 
-// WORKOUT TRANSLATION HELPERS V2
+// WORKOUT CONTENT TRANSLATIONS V3
+// Handles workout page UI text, filter labels, cards, plan names, levels and old access badges.
 
-const workoutTranslationMap = {
+const workoutPageText = {
+  en: {
+    pageTitle: "Workouts",
+    pageSubtitle:
+      "Exclusive training systems with coaching, premium structure, and guided exercise execution.",
+    libraryEyebrow: "Exclusive Training Library",
+    libraryTitle: "Build your training around the result you want",
+    libraryText:
+      "This workout library is built like a private coaching system. Choose the body area you want to focus on, filter by training style, weekly frequency, goal, and level, then open the variation that fits your current target.",
+    bodyFocus: "Body Focus",
+    trainingStyle: "Training Style",
+    weeklyFrequency: "Weekly Frequency",
+    goal: "Goal",
+    experienceLevel: "Experience Level",
+    allStyles: "All Styles",
+    anyFrequency: "Any Frequency",
+    allGoals: "All Goals",
+    allLevels: "All Levels",
+    plansVisible: "plans visible",
+    openVariation:
+      "Open a variation below to see session goals, warm-ups, exercises, cues, mistakes, substitutes, and finishers.",
+  },
   nl: {
-    "Starter": "Full Access",
-    "Premium": "Full Access",
-    "Moderate Intensity": "Gemiddelde Intensiteit",
-    "High Intensity": "Hoge Intensiteit",
-    "Low Intensity": "Lage Intensiteit",
-    "Beginner": "Beginner",
-    "Intermediate": "Gemiddeld",
-    "Advanced": "Gevorderd",
-    "days / week": "dagen / week",
-
-    "Glute Foundation": "Bil Fundament",
-    "Curves & Control": "Curves & Controle",
-    "Glutes + Hamstrings": "Billen + Hamstrings",
-    "Lift & Shape": "Lift & Shape",
-    "Elite Glute Density": "Elite Bil Dichtheid",
-    "Heavy Glute Strength": "Zware Bil Kracht",
-    "Glute Volume Phase": "Bil Volume Fase",
-    "Glute Lift Premium": "Bil Lift Full Access",
-
-    "Upper Body": "Bovenlichaam",
-    "Lower Body": "Onderlichaam",
-    "Full Body": "Full Body",
-    "Abs": "Buikspieren",
-    "Booty": "Billen",
-    "Legs": "Benen",
-  }
+    pageTitle: "Trainingen",
+    pageSubtitle:
+      "Exclusieve trainingssystemen met coaching, premium structuur en duidelijke uitvoering van oefeningen.",
+    libraryEyebrow: "Exclusieve Trainingsbibliotheek",
+    libraryTitle: "Bouw je training rond het resultaat dat jij wilt",
+    libraryText:
+      "Deze workout bibliotheek werkt als een privé coachingsysteem. Kies het lichaamsdeel waarop je wilt focussen, filter op trainingsstijl, trainingsfrequentie, doel en niveau, en open de variant die past bij jouw huidige doel.",
+    bodyFocus: "Lichaamsfocus",
+    trainingStyle: "Trainingsstijl",
+    weeklyFrequency: "Wekelijkse frequentie",
+    goal: "Doel",
+    experienceLevel: "Ervaringsniveau",
+    allStyles: "Alle stijlen",
+    anyFrequency: "Elke frequentie",
+    allGoals: "Alle doelen",
+    allLevels: "Alle niveaus",
+    plansVisible: "schema’s zichtbaar",
+    openVariation:
+      "Open een variant hieronder om sessiedoelen, warming-up, oefeningen, cues, fouten, alternatieven en finishers te zien.",
+  },
 };
 
-function translateWorkoutText(text, language = "en") {
-  if (!text || language !== "nl") return text;
+function wp(language, key) {
+  return workoutPageText?.[language]?.[key] || workoutPageText.en[key] || key;
+}
 
-  const exact = workoutTranslationMap.nl[text];
-  if (exact) return exact;
+const workoutExactNl = {
+  "Full Access": "Full Access",
+  "Full Access": "Full Access",
+  "Full Access": "Full Access",
+  "Nutrition": "Voeding",
+  "VIP": "VIP",
+  "Coaching": "Coaching",
+
+  "Workouts": "Trainingen",
+  "Exclusive training systems with coaching, premium structure, and guided exercise execution.":
+    "Exclusieve trainingssystemen met coaching, premium structuur en duidelijke uitvoering van oefeningen.",
+  "Exclusive Training Library": "Exclusieve Trainingsbibliotheek",
+  "Build your training around the result you want":
+    "Bouw je training rond het resultaat dat jij wilt",
+
+  "Body Focus": "Lichaamsfocus",
+  "Training Style": "Trainingsstijl",
+  "Weekly Frequency": "Wekelijkse frequentie",
+  "Goal": "Doel",
+  "Experience Level": "Ervaringsniveau",
+
+  "All Styles": "Alle stijlen",
+  "Any Frequency": "Elke frequentie",
+  "All Goals": "Alle doelen",
+  "All Levels": "Alle niveaus",
+
+  "Glutes": "Billen",
+  "Booty": "Billen",
+  "Upper Body": "Bovenlichaam",
+  "Legs": "Benen",
+  "Core": "Core",
+  "Full Body": "Full Body",
+
+  "Booty Builder": "Billen Builder",
+  "Shape, grow, and strengthen the glutes with a structured lower-body emphasis.":
+    "Vorm, bouw en versterk de billen met een gestructureerde lower-body focus.",
+
+  "Glute Foundation": "Bil Fundament",
+  "Curves & Control": "Curves & Controle",
+  "Glutes + Hamstrings": "Billen + Hamstrings",
+  "Lift & Shape": "Lift & Shape",
+  "Elite Glute Density": "Elite Bil Dichtheid",
+  "Heavy Glute Strength": "Zware Bil Kracht",
+  "Glute Volume Phase": "Bil Volume Fase",
+  "Glute Lift Premium": "Bil Lift Full Access",
+
+  "Moderate Intensity": "Gemiddelde Intensiteit",
+  "High Intensity": "Hoge Intensiteit",
+  "Low Intensity": "Lage Intensiteit",
+  "Beginner": "Beginner",
+  "Intermediate": "Gemiddeld",
+  "Advanced": "Gevorderd",
+
+  "Lose Fat": "Vetverlies",
+  "Fat Loss": "Vetverlies",
+  "Build Muscle": "Spieropbouw",
+  "Muscle Gain": "Spieropbouw",
+  "Tone & Shape Body": "Tonen & Vormen",
+  "Maintain Athletic Lifestyle": "Atletische Lifestyle Behouden",
+  "Beginner Body Reset": "Beginner Body Reset",
+
+  "2 days / week": "2 dagen / week",
+  "3 days / week": "3 dagen / week",
+  "4 days / week": "4 dagen / week",
+  "5 days / week": "5 dagen / week",
+  "6 days / week": "6 dagen / week",
+  "7 days / week": "7 dagen / week",
+};
+
+function normalizeWorkoutAccess(value = "full_access") {
+  const clean = String(value || "").toLowerCase().trim();
+
+  if (
+    clean === "starter" ||
+    clean === "premium" ||
+    clean === "fitness" ||
+    clean === "workouts" ||
+    clean === "full access" ||
+    clean === "full-access" ||
+    clean === "full_access"
+  ) {
+    return "full_access";
+  }
+
+  if (clean === "nutrition") return "nutrition";
+  if (clean === "vip") return "vip";
+  if (clean === "coaching") return "coaching";
+
+  return "full_access";
+}
+
+function getWorkoutAccessLabel(value = "full_access", language = "en") {
+  const normalized = normalizeWorkoutAccess(value);
+
+  const labels = {
+    en: {
+      nutrition: "Nutrition",
+      full_access: "Full Access",
+      vip: "VIP",
+      coaching: "Coaching",
+    },
+    nl: {
+      nutrition: "Voeding",
+      full_access: "Full Access",
+      vip: "VIP",
+      coaching: "Coaching",
+    },
+  };
+
+  return labels?.[language]?.[normalized] || labels.en.full_access;
+}
+
+function translateWorkoutText(text, language = "en") {
+  if (!text) return "";
+  if (language !== "nl") {
+    if (text === "Full Access" || text === "Full Access") return "Full Access";
+    return text;
+  }
+
+  if (workoutExactNl[text]) return workoutExactNl[text];
 
   let output = String(text);
 
   const replacements = [
-    ["Starter", "Full Access"],
-    ["Premium", "Full Access"],
+    ["Full Access", "Full Access"],
+    ["Full Access", "Full Access"],
     ["Workout", "Training"],
     ["Workouts", "Trainingen"],
-    ["Strength", "Kracht"],
-    ["Volume", "Volume"],
-    ["Intensity", "Intensiteit"],
-    ["Recovery", "Herstel"],
-    ["Conditioning", "Conditie"],
-    ["Core", "Core"],
+    ["Training Library", "Trainingsbibliotheek"],
+    ["Exclusive", "Exclusieve"],
+    ["Body Focus", "Lichaamsfocus"],
+    ["Training Style", "Trainingsstijl"],
+    ["Weekly Frequency", "Wekelijkse frequentie"],
+    ["Experience Level", "Ervaringsniveau"],
+    ["All Styles", "Alle stijlen"],
+    ["Any Frequency", "Elke frequentie"],
+    ["All Goals", "Alle doelen"],
+    ["All Levels", "Alle niveaus"],
+    ["Goal", "Doel"],
+    ["Plans", "Schema’s"],
+    ["plans visible", "schema’s zichtbaar"],
+
+    ["Glutes", "Billen"],
+    ["Glute", "Bil"],
+    ["Booty", "Billen"],
     ["Upper Body", "Bovenlichaam"],
     ["Lower Body", "Onderlichaam"],
-    ["Glutes", "Billen"],
-    ["Booty", "Billen"],
-    ["Abs", "Buikspieren"],
     ["Legs", "Benen"],
+    ["Abs", "Buikspieren"],
+    ["Core", "Core"],
+    ["Full Body", "Full Body"],
+
+    ["Foundation", "Fundament"],
+    ["Curves", "Curves"],
+    ["Control", "Controle"],
+    ["Volume Phase", "Volume Fase"],
+    ["Strength", "Kracht"],
+    ["Density", "Dichtheid"],
+    ["Lift", "Lift"],
+    ["Shape", "Shape"],
+
+    ["Moderate Intensity", "Gemiddelde Intensiteit"],
+    ["High Intensity", "Hoge Intensiteit"],
+    ["Low Intensity", "Lage Intensiteit"],
+    ["Intermediate", "Gemiddeld"],
+    ["Advanced", "Gevorderd"],
+    ["Beginner", "Beginner"],
+
+    ["Lose Fat", "Vetverlies"],
+    ["Fat Loss", "Vetverlies"],
+    ["Build Muscle", "Spieropbouw"],
+    ["Muscle Gain", "Spieropbouw"],
+    ["Tone & Shape Body", "Tonen & Vormen"],
+    ["Maintain Athletic Lifestyle", "Atletische Lifestyle Behouden"],
+    ["Beginner Body Reset", "Beginner Body Reset"],
+
     ["days / week", "dagen / week"],
+    ["day / week", "dag / week"],
+    ["Open a variation below to see session goals, warm-ups, exercises, cues, mistakes, substitutes, and finishers.",
+      "Open een variant hieronder om sessiedoelen, warming-up, oefeningen, cues, fouten, alternatieven en finishers te zien."],
   ];
 
   replacements.forEach(([from, to]) => {
@@ -69,6 +244,41 @@ function translateWorkoutText(text, language = "en") {
   });
 
   return output;
+}
+
+function normalizeWorkoutCard(program = {}) {
+  const access =
+    program.access ||
+    program.tier ||
+    program.membership ||
+    program.requiredPlan ||
+    "full_access";
+
+  return {
+    ...program,
+    access: normalizeWorkoutAccess(access),
+    tier: normalizeWorkoutAccess(access),
+    membership: normalizeWorkoutAccess(access),
+    requiredPlan: normalizeWorkoutAccess(access),
+  };
+}
+
+function getWorkoutCardDisplay(program = {}, language = "en") {
+  const normalized = normalizeWorkoutCard(program);
+
+  return {
+    ...normalized,
+    title: translateWorkoutText(normalized.title || normalized.name || "", language),
+    accessLabel: getWorkoutAccessLabel(normalized.access, language),
+    intensityLabel: translateWorkoutText(normalized.intensity || normalized.difficulty || "", language),
+    levelLabel: translateWorkoutText(normalized.level || normalized.experience || "", language),
+    daysLabel: translateWorkoutText(
+      normalized.daysPerWeek
+        ? `${normalized.daysPerWeek} days / week`
+        : normalized.frequency || normalized.days || "",
+      language
+    ),
+  };
 }
 
 
@@ -84,7 +294,7 @@ const workoutPrograms = [
     variations: [
       {
         name: "Glute Foundation",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -182,7 +392,7 @@ const workoutPrograms = [
       },
       {
         name: "Curves & Control",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -238,7 +448,7 @@ const workoutPrograms = [
       },
       {
         name: "Glutes + Hamstrings",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -294,7 +504,7 @@ const workoutPrograms = [
       },
       {
         name: "Lift & Shape",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -340,7 +550,7 @@ const workoutPrograms = [
       },
       {
         name: "Elite Glute Density",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "strength",
@@ -438,7 +648,7 @@ const workoutPrograms = [
       },
       {
         name: "Heavy Glute Strength",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -484,7 +694,7 @@ const workoutPrograms = [
       },
       {
         name: "Glute Volume Phase",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "shape",
@@ -540,7 +750,7 @@ const workoutPrograms = [
       },
       {
         name: "Glute Lift Premium",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -598,7 +808,7 @@ const workoutPrograms = [
     variations: [
       {
         name: "Push & Pull Foundation",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -676,7 +886,7 @@ const workoutPrograms = [
       },
       {
         name: "Sculpt & Tighten",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -754,7 +964,7 @@ const workoutPrograms = [
       },
       {
         name: "Upper Beginner Reset",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "athletic",
@@ -800,7 +1010,7 @@ const workoutPrograms = [
       },
       {
         name: "Upper Lean Look",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -846,7 +1056,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Upper Definition",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -944,7 +1154,7 @@ const workoutPrograms = [
       },
       {
         name: "Upper Strength Builder",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -990,7 +1200,7 @@ const workoutPrograms = [
       },
       {
         name: "Back-Focused Upper",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "athletic",
@@ -1046,7 +1256,7 @@ const workoutPrograms = [
       },
       {
         name: "Shoulders & Shape",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -1104,7 +1314,7 @@ const workoutPrograms = [
     variations: [
       {
         name: "Leg Base",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "strength",
@@ -1150,7 +1360,7 @@ const workoutPrograms = [
       },
       {
         name: "Leg Volume",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -1192,7 +1402,7 @@ const workoutPrograms = [
       },
       {
         name: "Athletic Legs",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "athletic",
@@ -1238,7 +1448,7 @@ const workoutPrograms = [
       },
       {
         name: "Leg Shape Builder",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -1284,7 +1494,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Leg Density",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -1340,7 +1550,7 @@ const workoutPrograms = [
       },
       {
         name: "Quad Focus Premium",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -1386,7 +1596,7 @@ const workoutPrograms = [
       },
       {
         name: "Posterior Chain Premium",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -1432,7 +1642,7 @@ const workoutPrograms = [
       },
       {
         name: "Lower Strength Peak",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "strength",
@@ -1490,7 +1700,7 @@ const workoutPrograms = [
     variations: [
       {
         name: "Core Foundation",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "athletic",
@@ -1532,7 +1742,7 @@ const workoutPrograms = [
       },
       {
         name: "Waist Tightening",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -1564,7 +1774,7 @@ const workoutPrograms = [
       },
       {
         name: "Athletic Core Reset",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "athletic",
@@ -1596,7 +1806,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Core Density",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "athletic",
@@ -1638,7 +1848,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Athletic Midline",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "athletic",
@@ -1682,7 +1892,7 @@ const workoutPrograms = [
     variations: [
       {
         name: "Full Body Foundation",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "athletic",
@@ -1734,7 +1944,7 @@ const workoutPrograms = [
       },
       {
         name: "Full Body Lean",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -1776,7 +1986,7 @@ const workoutPrograms = [
       },
       {
         name: "Full Body Strength",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "strength",
@@ -1818,7 +2028,7 @@ const workoutPrograms = [
       },
       {
         name: "Full Body Reset Plus",
-        tier: "Starter",
+        tier: "Full Access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "athletic",
@@ -1860,7 +2070,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Full Body Athletic",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "athletic",
@@ -1912,7 +2122,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Full Body Muscle",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -1954,7 +2164,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Full Body Strength",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -1996,7 +2206,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Full Body Recomp",
-        tier: "Premium",
+        tier: "Full Access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "shape",
@@ -2041,7 +2251,9 @@ const workoutPrograms = [
 ];
 
 export default function WorkoutsClient({ membershipType }) {
-  const membership = String(membershipType || "").toLowerCase();
+  
+  const { language } = useLanguage();
+const membership = String(membershipType || "").toLowerCase();
   const isStarter = membership === "starter";
   const isPremiumPlus = membership === "premium" || membership === "vip";
 
@@ -2134,8 +2346,8 @@ export default function WorkoutsClient({ membershipType }) {
   return (
     <div style={{ display: "grid", gap: "26px" }}>
       <section style={heroCard}>
-        <div style={eyebrow}>Exclusive Training Library</div>
-        <h2 style={heroTitle}>Build your training around the result you want</h2>
+        <div style={eyebrow}>{wp(language, "libraryEyebrow")}</div>
+        <h2 style={heroTitle}>{wp(language, "libraryTitle")}</h2>
         <p style={heroText}>
           This workout library is built like a private coaching system. Choose the
           body area you want to focus on, filter by training style, weekly
@@ -2145,7 +2357,7 @@ export default function WorkoutsClient({ membershipType }) {
 
         <div style={topFilterBlock}>
           <div style={filterGroup}>
-            <div style={miniLabel}>Body Focus</div>
+            <div style={miniLabel}>{wp(language, "bodyFocus")}</div>
             <div style={filterTabs}>
               {bodyFocusOptions.map((item) => (
                 <button
@@ -2171,7 +2383,7 @@ export default function WorkoutsClient({ membershipType }) {
 
           <div style={secondaryFilters}>
             <div style={selectWrap}>
-              <div style={miniLabel}>Training Style</div>
+              <div style={miniLabel}>{wp(language, "trainingStyle")}</div>
               <div style={selectShell}>
                 <select
                   value={selectedStyle}
@@ -2184,7 +2396,7 @@ export default function WorkoutsClient({ membershipType }) {
                       value={option.value}
                       style={selectOptionStyle}
                     >
-                      {option.label}
+                      {translateWorkoutText(option.label, language)}
                     </option>
                   ))}
                 </select>
@@ -2193,7 +2405,7 @@ export default function WorkoutsClient({ membershipType }) {
             </div>
 
             <div style={selectWrap}>
-              <div style={miniLabel}>Weekly Frequency</div>
+              <div style={miniLabel}>{wp(language, "weeklyFrequency")}</div>
               <div style={selectShell}>
                 <select
                   value={selectedFrequency}
@@ -2206,7 +2418,7 @@ export default function WorkoutsClient({ membershipType }) {
                       value={option.value}
                       style={selectOptionStyle}
                     >
-                      {option.label}
+                      {translateWorkoutText(option.label, language)}
                     </option>
                   ))}
                 </select>
@@ -2215,7 +2427,7 @@ export default function WorkoutsClient({ membershipType }) {
             </div>
 
             <div style={selectWrap}>
-              <div style={miniLabel}>Goal</div>
+              <div style={miniLabel}>{wp(language, "goal")}</div>
               <div style={selectShell}>
                 <select
                   value={selectedGoal}
@@ -2228,7 +2440,7 @@ export default function WorkoutsClient({ membershipType }) {
                       value={option.value}
                       style={selectOptionStyle}
                     >
-                      {option.label}
+                      {translateWorkoutText(option.label, language)}
                     </option>
                   ))}
                 </select>
@@ -2237,7 +2449,7 @@ export default function WorkoutsClient({ membershipType }) {
             </div>
 
             <div style={selectWrap}>
-              <div style={miniLabel}>Experience Level</div>
+              <div style={miniLabel}>{wp(language, "experienceLevel")}</div>
               <div style={selectShell}>
                 <select
                   value={selectedLevel}
@@ -2250,7 +2462,7 @@ export default function WorkoutsClient({ membershipType }) {
                       value={option.value}
                       style={selectOptionStyle}
                     >
-                      {option.label}
+                      {translateWorkoutText(option.label, language)}
                     </option>
                   ))}
                 </select>
@@ -2328,7 +2540,7 @@ export default function WorkoutsClient({ membershipType }) {
                       <div style={overviewCard}>
                         <div style={miniLabel}>Access</div>
                         <div style={overviewText}>
-                          {variation.tier === "Starter"
+                          {variation.tier === "Full Access"
                             ? "Included in Starter and above"
                             : "Unlocked in Premium and VIP"}
                         </div>
@@ -2399,7 +2611,7 @@ export default function WorkoutsClient({ membershipType }) {
                                     <div style={detailText}>{exercise.substitute}</div>
                                   </div>
 
-                                  {(isPremiumPlus || variation.tier !== "Starter") && (
+                                  {(isPremiumPlus || variation.tier !== "Full Access") && (
                                     <div style={detailItem}>
                                       <div style={detailLabel}>Progression</div>
                                       <div style={detailText}>
@@ -2472,7 +2684,9 @@ const heroCard = {
     "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
   border: "1px solid rgba(255,255,255,0.1)",
   borderRadius: "24px",
-  padding: "28px",
+  padding: "clamp(18px, 4vw, 28px)",
+  minWidth: 0,
+  overflowWrap: "break-word",
 };
 
 const eyebrow = {
@@ -2485,7 +2699,7 @@ const eyebrow = {
 
 const heroTitle = {
   margin: 0,
-  fontSize: "36px",
+  fontSize: "clamp(26px, 5vw, 36px)",
   fontWeight: "900",
 };
 
@@ -2523,7 +2737,7 @@ const filterButton = {
 
 const secondaryFilters = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
   gap: "16px",
 };
 
@@ -2667,7 +2881,7 @@ const variationExpanded = {
 
 const variationOverviewGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
   gap: "12px",
 };
 
@@ -2833,7 +3047,7 @@ const missingMediaBox = {
 
 const detailGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
   gap: "12px",
 };
 
