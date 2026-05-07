@@ -2162,7 +2162,6 @@ const workoutPrograms = [
 export default function WorkoutsClient({ membershipType }) {
   
   
-  const { language } = useLanguage();
 const { language } = useLanguage();
 const membership = String(membershipType || "").toLowerCase();
   const isStarter = membership === "starter";
