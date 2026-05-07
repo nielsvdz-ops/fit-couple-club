@@ -5,7 +5,6 @@ import ManageSubscriptionButton from "./ManageSubscriptionButton";
 import CheckoutButton from "./CheckoutButton";
 import { useLanguage } from "../lib/useLanguage";
 
-
 const billingTranslations = {
   en: {
     current: "Current Membership",
@@ -15,7 +14,11 @@ const billingTranslations = {
     manage: "Manage Subscription",
     mostChosen: "🔥 Most chosen",
     month: "/mo",
-    yearlyHint: "Secure checkout via Stripe. You can manage or cancel your subscription anytime.",
+    secure:
+      "Secure checkout via Stripe. You can manage or cancel your subscription anytime.",
+    successTitle: "Payment successful",
+    successText:
+      "Your payment was completed. If your access does not update immediately, refresh the page in a few seconds.",
 
     heroTitle: "Choose the system that fits your transformation.",
     heroText:
@@ -70,7 +73,11 @@ const billingTranslations = {
     manage: "Abonnement beheren",
     mostChosen: "🔥 Meest gekozen",
     month: "/maand",
-    yearlyHint: "Veilig afrekenen via Stripe. Je kunt je abonnement altijd beheren of annuleren.",
+    secure:
+      "Veilig afrekenen via Stripe. Je kunt je abonnement altijd beheren of annuleren.",
+    successTitle: "Betaling succesvol",
+    successText:
+      "Je betaling is voltooid. Als je toegang niet meteen verandert, vernieuw de pagina na een paar seconden.",
 
     heroTitle: "Kies het systeem dat past bij jouw transformatie.",
     heroText:
@@ -122,76 +129,25 @@ function bt(language, key) {
   return billingTranslations?.[language]?.[key] || billingTranslations.en[key] || key;
 }
 
-function translateBillingText(value, language = "en") {
-  if (!value || language !== "nl") return value || "";
+function normalizeMembership(value) {
+  const clean = String(value || "free").toLowerCase().trim();
 
-  const exactMap = {
-    "Nutrition": "Voeding",
-    "Full Access": "Full Access",
-    "VIP": "VIP",
-    "Coaching": "Coaching",
-    "/mo": "/maand",
-    "Most chosen": "Meest gekozen",
-    "Current Membership": "Huidig Membership",
-    "Status": "Status",
-    "Active": "Actief",
-    "Inactive": "Niet actief",
-    "Manage Subscription": "Abonnement beheren",
-    "Start Nutrition": "Start Voeding",
-    "Unlock Full Access": "Ontgrendel Full Access",
-    "Go VIP": "Ga VIP",
-    "Start Coaching": "Start Coaching",
-    "Everything in Nutrition": "Alles van Voeding",
-    "Full workout system": "Volledig workout systeem",
-    "Programs": "Programma’s",
-    "Progress tracking": "Progressie tracking",
-    "Couple Zone": "Couple Zone",
-    "Coaching calls": "Coaching calls",
-    "Accountability": "Accountability",
-    "Priority support": "Prioriteit support",
-    "Weekly 1-on-1": "Wekelijkse 1-op-1",
-    "Fully custom plan": "Volledig custom plan",
-    "Direct support": "Direct support",
-  };
+  if (clean === "full access" || clean === "full-access") return "full_access";
+  if (clean === "starter" || clean === "premium") return "full_access";
+  if (clean === "premium_plus" || clean === "premium-plus") return "vip";
 
-  if (exactMap[value]) return exactMap[value];
-
-  let output = String(value);
-
-  const replacements = [
-    ["Nutrition", "Voeding"],
-    ["Everything in Nutrition", "Alles van Voeding"],
-    ["Full workout system", "Volledig workout systeem"],
-    ["Programs", "Programma’s"],
-    ["Progress tracking", "Progressie tracking"],
-    ["Most chosen", "Meest gekozen"],
-    ["Current Membership", "Huidig Membership"],
-    ["Manage Subscription", "Abonnement beheren"],
-    ["Active", "Actief"],
-    ["Inactive", "Niet actief"],
-    ["body goals", "lichaamsdoelen"],
-    ["daily routines", "dagelijkse routines"],
-    ["Weekly recipes", "Wekelijkse recepten"],
-    ["Smart grocery generator", "Slimme boodschappen generator"],
-    ["Works for 1 or 2 people", "Werkt voor 1 of 2 personen"],
-    ["Never overthink food again.", "Nooit meer nadenken over eten."],
-    ["Complete transformation system.", "Compleet transformatie systeem."],
-    ["VIP spots taken", "VIP plekken bezet"],
-    ["spots free", "plekken vrij"],
-    ["/mo", "/maand"],
-  ];
-
-  replacements.forEach(([from, to]) => {
-    output = output.split(from).join(to);
-  });
-
-  return output;
+  return clean;
 }
 
+function isCurrentPlan(membershipType, planKey, isActive) {
+  if (!isActive) return false;
 
+  const membership = normalizeMembership(membershipType);
 
+  return membership === planKey;
+}
 
-function getBillingPlanCopy(language = "en") {
+function getPlans(language) {
   return [
     {
       key: "nutrition",
@@ -201,6 +157,8 @@ function getBillingPlanCopy(language = "en") {
       features: bt(language, "nutritionFeatures"),
       text: bt(language, "nutritionText"),
       button: bt(language, "nutritionButton"),
+      cardStyle: card,
+      priceIdEnv: "STRIPE_PRICE_NUTRITION",
     },
     {
       key: "full_access",
@@ -211,6 +169,8 @@ function getBillingPlanCopy(language = "en") {
       features: bt(language, "fullAccessFeatures"),
       text: bt(language, "fullAccessText"),
       button: bt(language, "fullAccessButton"),
+      cardStyle: highlightCard,
+      priceIdEnv: "STRIPE_PRICE_FULL_ACCESS",
     },
     {
       key: "vip",
@@ -220,6 +180,8 @@ function getBillingPlanCopy(language = "en") {
       features: bt(language, "vipFeatures"),
       scarcity: bt(language, "vipScarcity"),
       button: bt(language, "vipButton"),
+      cardStyle: vipCard,
+      priceIdEnv: "STRIPE_PRICE_VIP",
     },
     {
       key: "coaching",
@@ -229,6 +191,8 @@ function getBillingPlanCopy(language = "en") {
       features: bt(language, "coachingFeatures"),
       scarcity: bt(language, "coachingScarcity"),
       button: bt(language, "coachingButton"),
+      cardStyle: coachingCard,
+      priceIdEnv: "STRIPE_PRICE_COACHING",
     },
   ];
 }
@@ -240,22 +204,125 @@ export default function BillingClient({
   hasCustomer,
 }) {
   const searchParams = useSearchParams();
+  const success = searchParams?.get("success") === "1";
+  const { language } = useLanguage();
+
+  const membership = normalizeMembership(membershipType);
+  const plans = getPlans(language);
+
+  return (
+    <div style={pageWrap}>
+      {success && (
+        <section style={successCard}>
+          <div style={eyebrow}>{bt(language, "successTitle")}</div>
+          <p style={text}>{bt(language, "successText")}</p>
+        </section>
+      )}
+
+      <section style={statusCard}>
+        <div>
+          <div style={eyebrow}>{bt(language, "current")}</div>
+          <h2 style={title}>
+            {membership === "free"
+              ? "Free"
+              : plans.find((plan) => plan.key === membership)?.name || membership}
+          </h2>
+        </div>
+
+        <div style={statusRow}>
+          <span style={statusPill(isActive)}>
+            {bt(language, "status")}:{" "}
+            {isActive ? bt(language, "active") : bt(language, "inactive")}
+          </span>
+
+          {hasCustomer && (
+            <ManageSubscriptionButton label={bt(language, "manage")} />
+          )}
+        </div>
+      </section>
+
+      <section style={heroUpsellCard}>
+        <div style={eyebrow}>Fit Couple Club</div>
+        <h1 style={heroTitle}>{bt(language, "heroTitle")}</h1>
+        <p style={text}>{bt(language, "heroText")}</p>
+      </section>
+
+      <section style={grid}>
+        {plans.map((plan) => {
+          const current = isCurrentPlan(membership, plan.key, isActive);
+
+          return (
+            <article key={plan.key} style={plan.cardStyle}>
+              {plan.badge && <div style={bestValue}>{plan.badge}</div>}
+              {current && <div style={currentBadge}>Current</div>}
+
+              <div>
+                <h3 style={cardTitle}>{plan.name}</h3>
+
+                <div style={priceRow}>
+                  <span style={price}>{plan.price}</span>
+                  <span style={month}>{plan.month}</span>
+                </div>
+
+                <ul style={featureList}>
+                  {plan.features.map((feature) => (
+                    <li key={feature}>{feature}</li>
+                  ))}
+                </ul>
+
+                {plan.scarcity && (
+                  <div style={scarcityText}>{plan.scarcity}</div>
+                )}
+
+                {plan.text && <p style={planText}>{plan.text}</p>}
+              </div>
+
+              {current ? (
+                <button type="button" disabled style={disabledBtn}>
+                  {language === "nl" ? "Huidig plan" : "Current plan"}
+                </button>
+              ) : (
+                <CheckoutButton
+                  userEmail={userEmail}
+                  membershipType={plan.key}
+                  label={plan.button}
+                  priceIdEnv={plan.priceIdEnv}
+                />
+              )}
+            </article>
+          );
+        })}
+      </section>
+
+      <p style={trust}>{bt(language, "secure")}</p>
+    </div>
+  );
+}
 
 const pageWrap = {
   display: "grid",
   gap: "22px",
-  maxWidth: "1160px",
+  width: "100%",
+  maxWidth: "1320px",
+  margin: "0 auto",
+  overflowX: "hidden",
 };
 
 const statusCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "22px",
-  padding: "clamp(16px, 4vw, 24px)",
+  padding: "clamp(18px, 4vw, 24px)",
   display: "grid",
   gap: "14px",
-  overflowWrap: "break-word",
   minWidth: 0,
+};
+
+const successCard = {
+  background: "rgba(34,197,94,0.10)",
+  border: "1px solid rgba(34,197,94,0.25)",
+  borderRadius: "22px",
+  padding: "clamp(18px, 4vw, 24px)",
 };
 
 const heroUpsellCard = {
@@ -264,7 +331,6 @@ const heroUpsellCard = {
   border: "1px solid rgba(250,204,21,0.22)",
   borderRadius: "22px",
   padding: "clamp(18px, 4vw, 26px)",
-  overflowWrap: "break-word",
   minWidth: 0,
 };
 
@@ -287,12 +353,31 @@ const heroTitle = {
   fontSize: "clamp(28px, 4vw, 40px)",
   fontWeight: "900",
   lineHeight: 1.08,
+  overflowWrap: "break-word",
 };
 
 const text = {
   color: "rgba(255,255,255,0.72)",
   lineHeight: 1.8,
 };
+
+const statusRow = {
+  display: "flex",
+  gap: "12px",
+  flexWrap: "wrap",
+  alignItems: "center",
+  justifyContent: "space-between",
+};
+
+const statusPill = (active) => ({
+  display: "inline-flex",
+  width: "fit-content",
+  padding: "8px 12px",
+  borderRadius: "999px",
+  background: active ? "rgba(34,197,94,0.16)" : "rgba(255,255,255,0.08)",
+  color: active ? "#86efac" : "rgba(255,255,255,0.72)",
+  fontWeight: "800",
+});
 
 const grid = {
   display: "grid",
@@ -301,61 +386,41 @@ const grid = {
   alignItems: "stretch",
 };
 
-const card = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
+const basePlanCard = {
   borderRadius: "20px",
-  padding: "22px",
+  padding: "clamp(18px, 4vw, 22px)",
   minHeight: "520px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
   position: "relative",
-  overflowWrap: "break-word",
   minWidth: 0,
+  overflowWrap: "break-word",
+};
+
+const card = {
+  ...basePlanCard,
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.08)",
 };
 
 const highlightCard = {
+  ...basePlanCard,
   background: "rgba(250,204,21,0.08)",
   border: "1px solid rgba(250,204,21,0.45)",
-  borderRadius: "20px",
-  padding: "22px",
-  minHeight: "520px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  position: "relative",
-  overflowWrap: "break-word",
-  minWidth: 0,
 };
 
 const vipCard = {
+  ...basePlanCard,
   background: "rgba(96,165,250,0.08)",
   border: "1px solid rgba(96,165,250,0.28)",
-  borderRadius: "20px",
-  padding: "22px",
-  minHeight: "520px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  position: "relative",
-  overflowWrap: "break-word",
-  minWidth: 0,
 };
 
 const coachingCard = {
+  ...basePlanCard,
   background:
     "linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.04))",
   border: "1px solid rgba(255,255,255,0.22)",
-  borderRadius: "20px",
-  padding: "22px",
-  minHeight: "520px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  position: "relative",
-  overflowWrap: "break-word",
-  minWidth: 0,
 };
 
 const bestValue = {
@@ -383,46 +448,50 @@ const currentBadge = {
 };
 
 const cardTitle = {
-  fontSize: "24px",
+  fontSize: "clamp(24px, 4vw, 32px)",
   fontWeight: "900",
-  marginBottom: "8px",
+  margin: "0 0 18px",
+  lineHeight: 1.1,
 };
 
-const planTag = {
-  display: "inline-block",
-  marginBottom: "14px",
-  padding: "6px 10px",
-  borderRadius: "999px",
-  background: "rgba(255,255,255,0.07)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  color: "rgba(255,255,255,0.72)",
-  fontSize: "12px",
+const priceRow = {
+  display: "flex",
+  alignItems: "flex-end",
+  gap: "4px",
+  marginBottom: "24px",
+  flexWrap: "wrap",
+};
+
+const price = {
+  fontSize: "clamp(42px, 7vw, 54px)",
+  fontWeight: "950",
+  lineHeight: 0.95,
+};
+
+const month = {
+  color: "rgba(255,255,255,0.7)",
   fontWeight: "800",
+  marginBottom: "6px",
 };
 
-const scarcityBox = {
-  marginTop: "18px",
+const featureList = {
+  margin: 0,
+  paddingLeft: "20px",
+  color: "rgba(255,255,255,0.72)",
+  lineHeight: 1.75,
+  fontSize: "16px",
 };
 
 const scarcityText = {
-  fontSize: "13px",
-  marginBottom: "6px",
+  marginTop: "18px",
   color: "#facc15",
-  fontWeight: "800",
+  fontWeight: "900",
 };
 
-const vipScarcityText = {
-  fontSize: "13px",
-  marginBottom: "6px",
-  color: "#60a5fa",
-  fontWeight: "800",
-};
-
-const progressBar = {
-  height: "7px",
-  background: "rgba(255,255,255,0.1)",
-  borderRadius: "10px",
-  overflow: "hidden",
+const planText = {
+  marginTop: "26px",
+  color: "rgba(255,255,255,0.72)",
+  lineHeight: 1.7,
 };
 
 const disabledBtn = {
@@ -439,18 +508,5 @@ const trust = {
   textAlign: "center",
   color: "rgba(255,255,255,0.58)",
   lineHeight: 1.7,
+  paddingBottom: "40px",
 };
-
-  const success = searchParams?.get("success") === "1";
-
-  const { language } = useLanguage();
-
-  const membership = String(membershipType || "free").toLowerCase().trim();
-
-  const copy = {
-    en: {
-      current: "Current Membership",
-      status: "Status",
-      active: "Active",
-    }
-
