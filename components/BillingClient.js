@@ -5,6 +5,234 @@ import ManageSubscriptionButton from "./ManageSubscriptionButton";
 import CheckoutButton from "./CheckoutButton";
 import { useLanguage } from "../lib/useLanguage";
 
+
+const billingTranslations = {
+  en: {
+    current: "Current Membership",
+    status: "Status",
+    active: "Active",
+    inactive: "Inactive",
+    manage: "Manage Subscription",
+    mostChosen: "🔥 Most chosen",
+    month: "/mo",
+    yearlyHint: "Secure checkout via Stripe. You can manage or cancel your subscription anytime.",
+
+    heroTitle: "Choose the system that fits your transformation.",
+    heroText:
+      "Start with nutrition structure or unlock the full fitness system with workouts, programs, progress tracking, Couple Zone, VIP guidance, and coaching.",
+
+    nutritionName: "Nutrition",
+    nutritionFeatures: [
+      "✓ 5 body goals",
+      "✓ 150 daily routines",
+      "✓ Weekly recipes",
+      "✓ Smart grocery generator",
+      "✓ Works for 1 or 2 people",
+    ],
+    nutritionText: "Never overthink food again.",
+    nutritionButton: "Start Nutrition",
+
+    fullAccessName: "Full Access",
+    fullAccessFeatures: [
+      "✓ Everything in Nutrition",
+      "✓ Full workout system",
+      "✓ Programs",
+      "✓ Progress tracking",
+      "✓ Couple Zone",
+    ],
+    fullAccessText: "Complete transformation system.",
+    fullAccessButton: "Unlock Full Access",
+
+    vipName: "VIP",
+    vipFeatures: [
+      "✓ Coaching calls",
+      "✓ Accountability",
+      "✓ Priority support",
+    ],
+    vipScarcity: "14/90 VIP spots taken",
+    vipButton: "Go VIP",
+
+    coachingName: "Coaching",
+    coachingFeatures: [
+      "✓ Weekly 1-on-1",
+      "✓ Fully custom plan",
+      "✓ Direct support",
+    ],
+    coachingScarcity: "2/12 spots free",
+    coachingButton: "Start Coaching",
+  },
+
+  nl: {
+    current: "Huidig Membership",
+    status: "Status",
+    active: "Actief",
+    inactive: "Niet actief",
+    manage: "Abonnement beheren",
+    mostChosen: "🔥 Meest gekozen",
+    month: "/maand",
+    yearlyHint: "Veilig afrekenen via Stripe. Je kunt je abonnement altijd beheren of annuleren.",
+
+    heroTitle: "Kies het systeem dat past bij jouw transformatie.",
+    heroText:
+      "Start met voedingsstructuur of ontgrendel het volledige fitnesssysteem met workouts, programma’s, progressie tracking, Couple Zone, VIP begeleiding en coaching.",
+
+    nutritionName: "Voeding",
+    nutritionFeatures: [
+      "✓ 5 lichaamsdoelen",
+      "✓ 150 dagelijkse routines",
+      "✓ Wekelijkse recepten",
+      "✓ Slimme boodschappen generator",
+      "✓ Werkt voor 1 of 2 personen",
+    ],
+    nutritionText: "Nooit meer nadenken over eten.",
+    nutritionButton: "Start Voeding",
+
+    fullAccessName: "Full Access",
+    fullAccessFeatures: [
+      "✓ Alles van Voeding",
+      "✓ Volledig workout systeem",
+      "✓ Programma’s",
+      "✓ Progressie tracking",
+      "✓ Couple Zone",
+    ],
+    fullAccessText: "Compleet transformatie systeem.",
+    fullAccessButton: "Ontgrendel Full Access",
+
+    vipName: "VIP",
+    vipFeatures: [
+      "✓ Coaching calls",
+      "✓ Accountability",
+      "✓ Prioriteit support",
+    ],
+    vipScarcity: "14/90 VIP plekken bezet",
+    vipButton: "Ga VIP",
+
+    coachingName: "Coaching",
+    coachingFeatures: [
+      "✓ Wekelijkse 1-op-1",
+      "✓ Volledig custom plan",
+      "✓ Direct support",
+    ],
+    coachingScarcity: "2/12 plekken vrij",
+    coachingButton: "Start Coaching",
+  },
+};
+
+function bt(language, key) {
+  return billingTranslations?.[language]?.[key] || billingTranslations.en[key] || key;
+}
+
+function translateBillingText(value, language = "en") {
+  if (!value || language !== "nl") return value || "";
+
+  const exactMap = {
+    "Nutrition": "Voeding",
+    "Full Access": "Full Access",
+    "VIP": "VIP",
+    "Coaching": "Coaching",
+    "/mo": "/maand",
+    "Most chosen": "Meest gekozen",
+    "Current Membership": "Huidig Membership",
+    "Status": "Status",
+    "Active": "Actief",
+    "Inactive": "Niet actief",
+    "Manage Subscription": "Abonnement beheren",
+    "Start Nutrition": "Start Voeding",
+    "Unlock Full Access": "Ontgrendel Full Access",
+    "Go VIP": "Ga VIP",
+    "Start Coaching": "Start Coaching",
+    "Everything in Nutrition": "Alles van Voeding",
+    "Full workout system": "Volledig workout systeem",
+    "Programs": "Programma’s",
+    "Progress tracking": "Progressie tracking",
+    "Couple Zone": "Couple Zone",
+    "Coaching calls": "Coaching calls",
+    "Accountability": "Accountability",
+    "Priority support": "Prioriteit support",
+    "Weekly 1-on-1": "Wekelijkse 1-op-1",
+    "Fully custom plan": "Volledig custom plan",
+    "Direct support": "Direct support",
+  };
+
+  if (exactMap[value]) return exactMap[value];
+
+  let output = String(value);
+
+  const replacements = [
+    ["Nutrition", "Voeding"],
+    ["Everything in Nutrition", "Alles van Voeding"],
+    ["Full workout system", "Volledig workout systeem"],
+    ["Programs", "Programma’s"],
+    ["Progress tracking", "Progressie tracking"],
+    ["Most chosen", "Meest gekozen"],
+    ["Current Membership", "Huidig Membership"],
+    ["Manage Subscription", "Abonnement beheren"],
+    ["Active", "Actief"],
+    ["Inactive", "Niet actief"],
+    ["body goals", "lichaamsdoelen"],
+    ["daily routines", "dagelijkse routines"],
+    ["Weekly recipes", "Wekelijkse recepten"],
+    ["Smart grocery generator", "Slimme boodschappen generator"],
+    ["Works for 1 or 2 people", "Werkt voor 1 of 2 personen"],
+    ["Never overthink food again.", "Nooit meer nadenken over eten."],
+    ["Complete transformation system.", "Compleet transformatie systeem."],
+    ["VIP spots taken", "VIP plekken bezet"],
+    ["spots free", "plekken vrij"],
+    ["/mo", "/maand"],
+  ];
+
+  replacements.forEach(([from, to]) => {
+    output = output.split(from).join(to);
+  });
+
+  return output;
+}
+
+
+
+
+function getBillingPlanCopy(language = "en") {
+  return [
+    {
+      key: "nutrition",
+      name: bt(language, "nutritionName"),
+      price: "€19.99",
+      month: bt(language, "month"),
+      features: bt(language, "nutritionFeatures"),
+      text: bt(language, "nutritionText"),
+      button: bt(language, "nutritionButton"),
+    },
+    {
+      key: "full_access",
+      name: bt(language, "fullAccessName"),
+      price: "€34.99",
+      month: bt(language, "month"),
+      badge: bt(language, "mostChosen"),
+      features: bt(language, "fullAccessFeatures"),
+      text: bt(language, "fullAccessText"),
+      button: bt(language, "fullAccessButton"),
+    },
+    {
+      key: "vip",
+      name: bt(language, "vipName"),
+      price: "€90",
+      month: bt(language, "month"),
+      features: bt(language, "vipFeatures"),
+      scarcity: bt(language, "vipScarcity"),
+      button: bt(language, "vipButton"),
+    },
+    {
+      key: "coaching",
+      name: bt(language, "coachingName"),
+      price: "€340",
+      month: bt(language, "month"),
+      features: bt(language, "coachingFeatures"),
+      scarcity: bt(language, "coachingScarcity"),
+      button: bt(language, "coachingButton"),
+    },
+  ];
+}
+
 export default function BillingClient({
   userEmail,
   membershipType,
@@ -12,504 +240,216 @@ export default function BillingClient({
   hasCustomer,
 }) {
   const searchParams = useSearchParams();
-  const success = searchParams?.get("success") === "1";
-  const { language } = useLanguage();
-
-  const membership = String(membershipType || "free").toLowerCase().trim();
-
-  const t =
-    {
-      en: {
-        successTitle: "Payment successful",
-        successText:
-          "Your membership is being updated. Refresh your dashboard if it does not show immediately.",
-        current: "Current Membership",
-        status: "Status",
-        active: "Active",
-        inactive: "Inactive",
-        email: "Email",
-        billingEyebrow: "Couple Transformation System",
-        title1: "Stop starting over.",
-        title2: "Build a system that actually works.",
-        subtitle:
-          "This is not another fitness app. You get a complete structure for training, food, groceries, and couple accountability — so you never have to think “what should we do today?” again.",
-        why: "💡 Why couples fail",
-        whyText:
-          "Most couples do not fail because of discipline. They fail because there is no shared plan, food decisions happen too late, and one person often carries the motivation alone.",
-        highlight: "This system fixes all of that.",
-        noSharedPlan: "No shared plan",
-        foodLate: "Food decisions happen too late",
-        oneMotivated: "One person is motivated, the other is not",
-        noStructure: "No structure means no consistency",
-        startNutrition: "Start Nutrition",
-        unlock: "Unlock Full System",
-        vipButton: "Go VIP",
-        coachingButton: "Start Coaching",
-        mostPopular: "🔥 Most Popular",
-        currentPlan: "Current Plan",
-        nutritionDesc: "You never have to think about food again.",
-        fullDesc: "Complete transformation system.",
-        vipScarcity: "14/90 VIP spots taken",
-        coachingScarcity: "2/12 spots left",
-        trust:
-          "Secure checkout powered by Stripe. You can manage or cancel your subscription anytime.",
-      },
-      nl: {
-        successTitle: "Betaling succesvol",
-        successText:
-          "Je membership wordt bijgewerkt. Refresh je dashboard als het niet direct zichtbaar is.",
-        current: "Huidig Membership",
-        status: "Status",
-        active: "Actief",
-        inactive: "Niet actief",
-        email: "E-mail",
-        billingEyebrow: "Couple Transformatie Systeem",
-        title1: "Stop met opnieuw beginnen.",
-        title2: "Bouw een systeem dat werkt.",
-        subtitle:
-          "Dit is geen standaard fitness app. Je krijgt een compleet systeem voor training, voeding, boodschappen en accountability.",
-        why: "💡 Waarom koppels falen",
-        whyText:
-          "De meeste koppels falen niet door discipline, maar door gebrek aan structuur en planning.",
-        highlight: "Dit systeem lost dat op.",
-        noSharedPlan: "Geen gezamenlijk plan",
-        foodLate: "Voedingskeuzes worden te laat gemaakt",
-        oneMotivated: "De één is gemotiveerd, de ander niet",
-        noStructure: "Geen structuur betekent geen consistentie",
-        startNutrition: "Start Nutrition",
-        unlock: "Ontgrendel Full Access",
-        vipButton: "Ga VIP",
-        coachingButton: "Start Coaching",
-        mostPopular: "🔥 Meest gekozen",
-        currentPlan: "Huidig Plan",
-        nutritionDesc: "Je hoeft nooit meer na te denken over eten.",
-        fullDesc: "Compleet transformatie systeem.",
-        vipScarcity: "14/90 VIP plekken bezet",
-        coachingScarcity: "2/12 plekken vrij",
-        trust:
-          "Veilig afrekenen via Stripe. Je kunt je abonnement altijd beheren of annuleren.",
-      },
-    }[language] || {};
-
-  return (
-    <div style={pageWrap}>
-      {success && (
-        <div style={successCard}>
-          <h2 style={heroTitle}>{t.successTitle}</h2>
-          <p style={text}>{t.successText}</p>
-        </div>
-      )}
-
-      <div style={statusCard}>
-        <div>
-          <div style={eyebrow}>{t.current}</div>
-          <h2 style={statusTitle}>
-            {membership === "free" ? "Free" : membership.replace("_", " ")}
-          </h2>
-        </div>
-
-        <p style={text}>
-          {t.email}: <strong>{userEmail}</strong>
-          <br />
-          {t.status}: <strong>{isActive ? t.active : t.inactive}</strong>
-        </p>
-
-        {hasCustomer && <ManageSubscriptionButton />}
-      </div>
-
-      <div style={container}>
-        <div style={header}>
-          <div style={eyebrow}>{t.billingEyebrow}</div>
-
-          <h1 style={title}>
-            {t.title1}
-            <br />
-            {t.title2}
-          </h1>
-
-          <p style={subtitle}>{t.subtitle}</p>
-        </div>
-
-        <div style={hook}>
-          <div style={hookTitle}>{t.why}</div>
-          <p style={hookText}>{t.whyText}</p>
-
-          <ul style={list}>
-            <li>{t.noSharedPlan}</li>
-            <li>{t.foodLate}</li>
-            <li>{t.oneMotivated}</li>
-            <li>{t.noStructure}</li>
-          </ul>
-
-          <p style={hookHighlight}>{t.highlight}</p>
-        </div>
-
-        <div style={grid}>
-          <section style={membership === "nutrition" ? currentCard : card}>
-            {membership === "nutrition" && (
-              <div style={currentBadge}>{t.currentPlan}</div>
-            )}
-
-            <div>
-              <h2 style={planTitle}>Nutrition</h2>
-              <div style={price}>
-                €19.99<span style={priceSmall}>/mo</span>
-              </div>
-
-              <ul style={list}>
-                <li>✔ 5 body goals</li>
-                <li>✔ 150 daily routines</li>
-                <li>✔ Weekly recipes</li>
-                <li>✔ Smart grocery generator</li>
-                <li>✔ Works for 1 or 2 people</li>
-              </ul>
-
-              <p style={desc}>{t.nutritionDesc}</p>
-            </div>
-
-            {membership === "nutrition" ? (
-              <div style={disabledBtn}>{t.currentPlan}</div>
-            ) : (
-              <CheckoutButton plan="nutrition" label={t.startNutrition} />
-            )}
-          </section>
-
-          <section
-            style={
-              membership === "full_access"
-                ? { ...card, ...featured, ...currentFeatured }
-                : { ...card, ...featured }
-            }
-          >
-            <div style={badge}>{t.mostPopular}</div>
-
-            {membership === "full_access" && (
-              <div style={currentBadge}>{t.currentPlan}</div>
-            )}
-
-            <div>
-              <h2 style={planTitle}>Full Access</h2>
-              <div style={price}>
-                €34.99<span style={priceSmall}>/mo</span>
-              </div>
-
-              <ul style={list}>
-                <li>✔ Everything in Nutrition</li>
-                <li>✔ Full workout system</li>
-                <li>✔ Programs</li>
-                <li>✔ Progress tracking</li>
-                <li>✔ Couple Zone</li>
-              </ul>
-
-              <p style={desc}>{t.fullDesc}</p>
-            </div>
-
-            {membership === "full_access" ? (
-              <div style={disabledBtn}>{t.currentPlan}</div>
-            ) : (
-              <CheckoutButton plan="full_access" label={t.unlock} featured />
-            )}
-          </section>
-
-          <section style={membership === "vip" ? currentVipCard : vipCard}>
-            {membership === "vip" && (
-              <div style={currentBadge}>{t.currentPlan}</div>
-            )}
-
-            <div>
-              <h2 style={planTitle}>VIP</h2>
-              <div style={price}>
-                €90<span style={priceSmall}>/mo</span>
-              </div>
-
-              <ul style={list}>
-                <li>✔ Coaching calls</li>
-                <li>✔ Accountability</li>
-                <li>✔ Priority support</li>
-              </ul>
-
-              <div style={scarcity}>{t.vipScarcity}</div>
-            </div>
-
-            {membership === "vip" ? (
-              <div style={disabledBtn}>{t.currentPlan}</div>
-            ) : (
-              <CheckoutButton plan="vip" label={t.vipButton} />
-            )}
-          </section>
-
-          <section
-            style={membership === "coaching" ? currentCoachingCard : coachingCard}
-          >
-            {membership === "coaching" && (
-              <div style={currentBadge}>{t.currentPlan}</div>
-            )}
-
-            <div>
-              <h2 style={planTitle}>Coaching</h2>
-              <div style={price}>
-                €340<span style={priceSmall}>/mo</span>
-              </div>
-
-              <ul style={list}>
-                <li>✔ Weekly 1-on-1</li>
-                <li>✔ Fully custom plan</li>
-                <li>✔ Direct support</li>
-              </ul>
-
-              <div style={scarcity}>{t.coachingScarcity}</div>
-            </div>
-
-            {membership === "coaching" ? (
-              <div style={disabledBtn}>{t.currentPlan}</div>
-            ) : (
-              <CheckoutButton plan="coaching" label={t.coachingButton} />
-            )}
-          </section>
-        </div>
-
-        <p style={trust}>{t.trust}</p>
-      </div>
-    </div>
-  );
-}
 
 const pageWrap = {
   display: "grid",
   gap: "22px",
-  width: "100%",
   maxWidth: "1160px",
-  overflowX: "hidden",
-};
-
-const successCard = {
-  background:
-    "linear-gradient(135deg, rgba(34,197,94,0.14), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(34,197,94,0.25)",
-  borderRadius: "22px",
-  padding: "clamp(20px, 4vw, 26px)",
 };
 
 const statusCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "22px",
-  padding: "clamp(20px, 4vw, 24px)",
+  padding: "clamp(16px, 4vw, 24px)",
   display: "grid",
   gap: "14px",
+  overflowWrap: "break-word",
+  minWidth: 0,
 };
 
-const container = {
-  width: "100%",
-  display: "grid",
-  gap: "clamp(26px, 5vw, 40px)",
-};
-
-const header = {
-  textAlign: "center",
+const heroUpsellCard = {
+  background:
+    "linear-gradient(135deg, rgba(250,204,21,0.10), rgba(255,255,255,0.04))",
+  border: "1px solid rgba(250,204,21,0.22)",
+  borderRadius: "22px",
+  padding: "clamp(18px, 4vw, 26px)",
+  overflowWrap: "break-word",
+  minWidth: 0,
 };
 
 const eyebrow = {
   fontSize: "12px",
   textTransform: "uppercase",
-  letterSpacing: "0.18em",
-  color: "rgba(255,255,255,0.5)",
-  marginBottom: "10px",
+  letterSpacing: "0.16em",
+  color: "rgba(255,255,255,0.45)",
+  marginBottom: "8px",
 };
 
 const title = {
-  fontSize: "clamp(36px, 8vw, 56px)",
-  lineHeight: 1.05,
-  fontWeight: "900",
-  letterSpacing: "-0.04em",
-  margin: "0 0 18px",
-};
-
-const statusTitle = {
   margin: 0,
-  fontSize: "clamp(26px, 6vw, 34px)",
-  fontWeight: "900",
-  textTransform: "capitalize",
+  fontSize: "clamp(24px, 4vw, 30px)",
+  fontWeight: "800",
 };
 
 const heroTitle = {
-  margin: "0 0 10px",
-  fontSize: "clamp(26px, 6vw, 38px)",
+  margin: "0 0 10px 0",
+  fontSize: "clamp(28px, 4vw, 40px)",
   fontWeight: "900",
   lineHeight: 1.08,
-};
-
-const subtitle = {
-  color: "rgba(255,255,255,0.72)",
-  lineHeight: 1.8,
-  maxWidth: "760px",
-  margin: "0 auto",
-  fontSize: "clamp(15px, 3.8vw, 17px)",
 };
 
 const text = {
   color: "rgba(255,255,255,0.72)",
   lineHeight: 1.8,
-  fontSize: "clamp(15px, 3.8vw, 16px)",
-};
-
-const hook = {
-  background: "rgba(255,255,255,0.04)",
-  padding: "clamp(20px, 4vw, 26px)",
-  borderRadius: "22px",
-  border: "1px solid rgba(255,255,255,0.08)",
-};
-
-const hookTitle = {
-  fontSize: "clamp(20px, 5vw, 24px)",
-  fontWeight: "900",
-  marginBottom: "10px",
-};
-
-const hookText = {
-  color: "rgba(255,255,255,0.72)",
-  lineHeight: 1.8,
-};
-
-const hookHighlight = {
-  marginTop: "14px",
-  fontWeight: "900",
-  color: "#facc15",
 };
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))",
-  gap: "20px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+  gap: "18px",
   alignItems: "stretch",
 };
 
 const card = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "22px",
-  padding: "clamp(20px, 4vw, 24px)",
-  minHeight: "clamp(390px, 70vw, 500px)",
+  borderRadius: "20px",
+  padding: "22px",
+  minHeight: "520px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
   position: "relative",
+  overflowWrap: "break-word",
+  minWidth: 0,
 };
 
-const currentCard = {
-  ...card,
-  border: "1px solid rgba(34,197,94,0.45)",
-  background: "rgba(34,197,94,0.08)",
-};
-
-const featured = {
-  border: "1px solid rgba(250,204,21,0.5)",
+const highlightCard = {
   background: "rgba(250,204,21,0.08)",
-};
-
-const currentFeatured = {
-  border: "1px solid rgba(34,197,94,0.55)",
+  border: "1px solid rgba(250,204,21,0.45)",
+  borderRadius: "20px",
+  padding: "22px",
+  minHeight: "520px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  position: "relative",
+  overflowWrap: "break-word",
+  minWidth: 0,
 };
 
 const vipCard = {
-  ...card,
-  border: "1px solid rgba(96,165,250,0.28)",
   background: "rgba(96,165,250,0.08)",
-};
-
-const currentVipCard = {
-  ...vipCard,
-  border: "1px solid rgba(34,197,94,0.55)",
+  border: "1px solid rgba(96,165,250,0.28)",
+  borderRadius: "20px",
+  padding: "22px",
+  minHeight: "520px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  position: "relative",
+  overflowWrap: "break-word",
+  minWidth: 0,
 };
 
 const coachingCard = {
-  ...card,
-  border: "1px solid rgba(255,255,255,0.22)",
   background:
     "linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.04))",
+  border: "1px solid rgba(255,255,255,0.22)",
+  borderRadius: "20px",
+  padding: "22px",
+  minHeight: "520px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  position: "relative",
+  overflowWrap: "break-word",
+  minWidth: 0,
 };
 
-const currentCoachingCard = {
-  ...coachingCard,
-  border: "1px solid rgba(34,197,94,0.55)",
-};
-
-const badge = {
+const bestValue = {
   position: "absolute",
   top: "-10px",
-  right: "14px",
+  right: "10px",
   background: "#facc15",
   color: "black",
-  padding: "6px 10px",
-  borderRadius: "8px",
   fontSize: "12px",
-  fontWeight: "900",
+  fontWeight: "800",
+  padding: "5px 10px",
+  borderRadius: "8px",
 };
 
 const currentBadge = {
   position: "absolute",
   top: "-10px",
-  left: "14px",
+  left: "10px",
   background: "#16a34a",
   color: "white",
-  padding: "6px 10px",
-  borderRadius: "8px",
   fontSize: "11px",
   fontWeight: "900",
+  padding: "5px 9px",
+  borderRadius: "8px",
 };
 
-const planTitle = {
-  fontSize: "clamp(22px, 5vw, 26px)",
+const cardTitle = {
+  fontSize: "24px",
   fontWeight: "900",
-  margin: "0 0 10px",
+  marginBottom: "8px",
 };
 
-const price = {
-  fontSize: "clamp(30px, 7vw, 38px)",
-  fontWeight: "900",
-  marginBottom: "16px",
-};
-
-const priceSmall = {
-  fontSize: "15px",
-  opacity: 0.7,
-};
-
-const list = {
-  marginTop: "14px",
+const planTag = {
+  display: "inline-block",
   marginBottom: "14px",
-  paddingLeft: "20px",
-  color: "rgba(255,255,255,0.76)",
-  lineHeight: 1.9,
-  fontSize: "clamp(14px, 3.6vw, 15px)",
+  padding: "6px 10px",
+  borderRadius: "999px",
+  background: "rgba(255,255,255,0.07)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  color: "rgba(255,255,255,0.72)",
+  fontSize: "12px",
+  fontWeight: "800",
 };
 
-const desc = {
-  color: "rgba(255,255,255,0.7)",
-  lineHeight: 1.7,
+const scarcityBox = {
+  marginTop: "18px",
 };
 
-const scarcity = {
-  marginTop: "14px",
+const scarcityText = {
   fontSize: "13px",
-  fontWeight: "900",
+  marginBottom: "6px",
   color: "#facc15",
+  fontWeight: "800",
+};
+
+const vipScarcityText = {
+  fontSize: "13px",
+  marginBottom: "6px",
+  color: "#60a5fa",
+  fontWeight: "800",
+};
+
+const progressBar = {
+  height: "7px",
+  background: "rgba(255,255,255,0.1)",
+  borderRadius: "10px",
+  overflow: "hidden",
 };
 
 const disabledBtn = {
-  marginTop: "22px",
+  marginTop: "24px",
   padding: "14px 18px",
   borderRadius: "12px",
   border: "1px solid rgba(255,255,255,0.12)",
   background: "rgba(255,255,255,0.08)",
   color: "rgba(255,255,255,0.55)",
   fontWeight: "900",
-  textAlign: "center",
 };
 
 const trust = {
   textAlign: "center",
   color: "rgba(255,255,255,0.58)",
   lineHeight: 1.7,
-  fontSize: "14px",
 };
+
+  const success = searchParams?.get("success") === "1";
+
+  const { language } = useLanguage();
+
+  const membership = String(membershipType || "free").toLowerCase().trim();
+
+  const copy = {
+    en: {
+      current: "Current Membership",
+      status: "Status",
+      active: "Active",
+
