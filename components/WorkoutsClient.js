@@ -2,165 +2,67 @@
 
 import { useMemo, useState } from "react";
 import { getExerciseMedia } from "../lib/exerciseMedia";
-import { useLanguage } from "../lib/useLanguage";
 
 
-const workoutCopy = {
-  en: {
-    eyebrow: "Workout library",
-    title: "Training sessions built for real progress",
-    subtitle:
-      "Choose your workout, follow the structure, and train with clear sets, reps, tempo, and rest.",
-    search: "Search workouts",
-    goal: "Goal",
-    focus: "Focus",
-    level: "Level",
-    all: "All",
-    exercises: "Exercises",
-    sets: "Sets",
-    reps: "Reps",
-    rest: "Rest",
-    tempo: "Tempo",
-    notes: "Notes",
-    warmup: "Warm-up",
-    cooldown: "Cooldown",
-    startWorkout: "Start workout",
-    locked: "Locked",
-    upgrade: "Upgrade to unlock",
-    noResults: "No workouts found.",
-  },
+// WORKOUT TRANSLATION HELPERS V2
+
+const workoutTranslationMap = {
   nl: {
-    eyebrow: "Workout bibliotheek",
-    title: "Trainingen gebouwd voor echte progressie",
-    subtitle:
-      "Kies je workout, volg de structuur en train met duidelijke sets, herhalingen, tempo en rust.",
-    search: "Zoek trainingen",
-    goal: "Doel",
-    focus: "Focus",
-    level: "Niveau",
-    all: "Alles",
-    exercises: "Oefeningen",
-    sets: "Sets",
-    reps: "Herhalingen",
-    rest: "Rust",
-    tempo: "Tempo",
-    notes: "Notities",
-    warmup: "Warming-up",
-    cooldown: "Cooling-down",
-    startWorkout: "Start training",
-    locked: "Vergrendeld",
-    upgrade: "Upgrade om te ontgrendelen",
-    noResults: "Geen trainingen gevonden.",
-  },
-};
-
-function wt(language, key) {
-  return workoutCopy?.[language]?.[key] || workoutCopy.en[key] || key;
-}
-
-function translateWorkoutText(value, language = "en") {
-  if (!value || language !== "nl") return value || "";
-
-  const exactMap = {
-    "Lose Fat": "Vetverlies",
-    "Fat Loss": "Vetverlies",
-    "Build Muscle": "Spieropbouw",
-    "Muscle Gain": "Spieropbouw",
-    "Tone & Shape Body": "Tonen & Vormen",
-    "Maintain Athletic Lifestyle": "Atletische Lifestyle Behouden",
-    "Beginner Body Reset": "Beginner Body Reset",
-    "Booty": "Billen",
-    "Glutes": "Billen",
-    "Abs": "Buikspieren",
-    "Core": "Core",
-    "Legs": "Benen",
-    "Upper Body": "Bovenlichaam",
-    "Lower Body": "Onderlichaam",
-    "Full Body": "Full Body",
+    "Starter": "Full Access",
+    "Premium": "Full Access",
+    "Moderate Intensity": "Gemiddelde Intensiteit",
+    "High Intensity": "Hoge Intensiteit",
+    "Low Intensity": "Lage Intensiteit",
     "Beginner": "Beginner",
     "Intermediate": "Gemiddeld",
     "Advanced": "Gevorderd",
-    "Workout": "Training",
-    "Workouts": "Trainingen",
-    "Exercise": "Oefening",
-    "Exercises": "Oefeningen",
-    "Warm-up": "Warming-up",
-    "Cooldown": "Cooling-down",
-    "Rest Day": "Rustdag",
-    "Active Recovery": "Actief herstel",
-  };
+    "days / week": "dagen / week",
 
-  if (exactMap[value]) return exactMap[value];
+    "Glute Foundation": "Bil Fundament",
+    "Curves & Control": "Curves & Controle",
+    "Glutes + Hamstrings": "Billen + Hamstrings",
+    "Lift & Shape": "Lift & Shape",
+    "Elite Glute Density": "Elite Bil Dichtheid",
+    "Heavy Glute Strength": "Zware Bil Kracht",
+    "Glute Volume Phase": "Bil Volume Fase",
+    "Glute Lift Premium": "Bil Lift Full Access",
+
+    "Upper Body": "Bovenlichaam",
+    "Lower Body": "Onderlichaam",
+    "Full Body": "Full Body",
+    "Abs": "Buikspieren",
+    "Booty": "Billen",
+    "Legs": "Benen",
+  }
+};
+
+function translateWorkoutText(text, language = "en") {
+  if (!text || language !== "nl") return text;
+
+  const exact = workoutTranslationMap.nl[text];
+  if (exact) return exact;
+
+  let output = String(text);
 
   const replacements = [
+    ["Starter", "Full Access"],
+    ["Premium", "Full Access"],
     ["Workout", "Training"],
     ["Workouts", "Trainingen"],
-    ["Exercise", "Oefening"],
-    ["Exercises", "Oefeningen"],
-    ["Plan", "Schema"],
-    ["Program", "Programma"],
-    ["Routine", "Routine"],
-    ["Day", "Dag"],
-    ["Week", "Week"],
-    ["Goal", "Doel"],
-    ["Focus", "Focus"],
-    ["Level", "Niveau"],
-    ["Sets", "Sets"],
-    ["Reps", "Herhalingen"],
-    ["Rest", "Rust"],
-    ["Notes", "Notities"],
-    ["Warm-up", "Warming-up"],
-    ["Cooldown", "Cooling-down"],
-    ["Optional", "Optioneel"],
-    ["Recommended", "Aanbevolen"],
-    ["Fat Loss", "Vetverlies"],
-    ["Lose Fat", "Vetverlies"],
-    ["Build Muscle", "Spieropbouw"],
-    ["Muscle Gain", "Spieropbouw"],
-    ["Tone", "Tonen"],
-    ["Shape", "Vormen"],
     ["Strength", "Kracht"],
-    ["Endurance", "Conditie"],
-    ["Conditioning", "Conditie"],
+    ["Volume", "Volume"],
+    ["Intensity", "Intensiteit"],
     ["Recovery", "Herstel"],
-    ["Mobility", "Mobiliteit"],
-    ["Glutes", "Billen"],
-    ["Glute", "Bil"],
-    ["Booty", "Billen"],
-    ["Chest", "Borst"],
-    ["Back", "Rug"],
-    ["Shoulders", "Schouders"],
-    ["Arms", "Armen"],
-    ["Legs", "Benen"],
+    ["Conditioning", "Conditie"],
+    ["Core", "Core"],
     ["Upper Body", "Bovenlichaam"],
     ["Lower Body", "Onderlichaam"],
-    ["Full Body", "Full Body"],
-    ["Core", "Core"],
-    ["Controlled", "Gecontroleerd"],
-    ["Slow", "Langzaam"],
-    ["Explosive", "Explosief"],
-    ["Machine", "Machine"],
-    ["Dumbbell", "Dumbbell"],
-    ["Barbell", "Barbell"],
-    ["Cable", "Cable"],
-    ["Bodyweight", "Lichaamsgewicht"],
-    ["Squat", "Squat"],
-    ["Lunge", "Lunge"],
-    ["Press", "Press"],
-    ["Row", "Row"],
-    ["Curl", "Curl"],
-    ["Raise", "Raise"],
-    ["Extension", "Extension"],
-    ["Deadlift", "Deadlift"],
-    ["Hip Thrust", "Hip Thrust"],
-    ["Leg Press", "Leg Press"],
-    ["Bench Press", "Bench Press"],
-    ["Lat Pulldown", "Lat Pulldown"],
-    ["Shoulder Press", "Shoulder Press"],
-    ["Plank", "Plank"],
+    ["Glutes", "Billen"],
+    ["Booty", "Billen"],
+    ["Abs", "Buikspieren"],
+    ["Legs", "Benen"],
+    ["days / week", "dagen / week"],
   ];
-
-  let output = String(value);
 
   replacements.forEach(([from, to]) => {
     output = output.split(from).join(to);
@@ -168,27 +70,6 @@ function translateWorkoutText(value, language = "en") {
 
   return output;
 }
-
-function translateAnyWorkoutValue(value, language = "en") {
-  if (language !== "nl") return value;
-
-  if (typeof value === "string") return translateWorkoutText(value, language);
-
-  if (Array.isArray(value)) {
-    return value.map((item) => translateAnyWorkoutValue(item, language));
-  }
-
-  if (value && typeof value === "object") {
-    const translated = {};
-    Object.entries(value).forEach(([key, entry]) => {
-      translated[key] = translateAnyWorkoutValue(entry, language);
-    });
-    return translated;
-  }
-
-  return value;
-}
-
 
 
 const workoutPrograms = [
@@ -2160,10 +2041,7 @@ const workoutPrograms = [
 ];
 
 export default function WorkoutsClient({ membershipType }) {
-  
-  
-const { language } = useLanguage();
-const membership = String(membershipType || "").toLowerCase();
+  const membership = String(membershipType || "").toLowerCase();
   const isStarter = membership === "starter";
   const isPremiumPlus = membership === "premium" || membership === "vip";
 
@@ -2468,7 +2346,7 @@ const membership = String(membershipType || "").toLowerCase();
                           </div>
 
                           <div style={blockCard}>
-                            <div style={miniLabel}>{wt(language, "warmup")}</div>
+                            <div style={miniLabel}>Warm-up</div>
                             <ul style={bulletList}>
                               {day.warmup.map((item) => (
                                 <li key={item}>{item}</li>
@@ -2478,10 +2356,10 @@ const membership = String(membershipType || "").toLowerCase();
 
                           <div style={exerciseGrid}>
                             {day.exercises.map((exercise) => (
-                              <div key={translateWorkoutText(exercise.name, language)} style={exerciseCard}>
+                              <div key={exercise.name} style={exerciseCard}>
                                 <div style={exerciseTop}>
                                   <div style={{ flex: 1 }}>
-                                    <div style={exerciseName}>{translateWorkoutText(exercise.name, language)}</div>
+                                    <div style={exerciseName}>{exercise.name}</div>
                                     <div style={exerciseMeta}>
                                       {exercise.sets} sets · {exercise.reps} · Rest {exercise.rest}
                                     </div>
@@ -2594,7 +2472,7 @@ const heroCard = {
     "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
   border: "1px solid rgba(255,255,255,0.1)",
   borderRadius: "24px",
-  padding: "clamp(18px, 4vw, 28px)",
+  padding: "28px",
 };
 
 const eyebrow = {
@@ -2607,9 +2485,8 @@ const eyebrow = {
 
 const heroTitle = {
   margin: 0,
-  fontSize: "clamp(26px, 5vw, 36px)",
+  fontSize: "36px",
   fontWeight: "900",
-  overflowWrap: "anywhere",
 };
 
 const heroText = {
@@ -2646,7 +2523,7 @@ const filterButton = {
 
 const secondaryFilters = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
   gap: "16px",
 };
 
@@ -2790,7 +2667,7 @@ const variationExpanded = {
 
 const variationOverviewGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
   gap: "12px",
 };
 
@@ -2891,7 +2768,6 @@ const exerciseCard = {
   border: "1px solid rgba(255,255,255,0.06)",
   borderRadius: "16px",
   padding: "16px",
-  minWidth: 0,
 };
 
 const exerciseTop = {
@@ -2957,7 +2833,7 @@ const missingMediaBox = {
 
 const detailGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
   gap: "12px",
 };
 
@@ -2985,7 +2861,7 @@ const emptyBox = {
   background: "rgba(255,255,255,0.03)",
   border: "1px dashed rgba(255,255,255,0.18)",
   borderRadius: "18px",
-  padding: "clamp(16px, 4vw, 24px)",
+  padding: "24px",
   color: "rgba(255,255,255,0.7)",
   lineHeight: 1.8,
   textAlign: "center",
