@@ -7,6 +7,34 @@ import { getCurrentUserAndProfile } from "../../../lib/getProfile";
 import { canAccessFitnessPages } from "../../../lib/access";
 import { getProgramBySlug, programs } from "../../../lib/programsData";
 import { getExerciseMedia } from "../../../lib/exerciseMedia";
+import { useLanguage } from "../../lib/useLanguage";
+
+
+// GENERIC PAGE TRANSLATIONS V2
+
+const pageText = {
+  en: {
+    title: "Fit Couple Club",
+    subtitle: "Structured fitness, nutrition, and transformation systems.",
+    continue: "Continue",
+    back: "Back",
+    save: "Save",
+    start: "Start",
+  },
+  nl: {
+    title: "Fit Couple Club",
+    subtitle: "Gestructureerde fitness-, voedings- en transformatiesystemen.",
+    continue: "Verder",
+    back: "Terug",
+    save: "Opslaan",
+    start: "Start",
+  },
+};
+
+function tr(language, key) {
+  return pageText?.[language]?.[key] || pageText.en[key] || key;
+}
+
 
 export async function generateStaticParams() {
   return programs.map((program) => ({
@@ -356,6 +384,8 @@ const heroCard = {
 
 const heroTop = {
   display: "flex",
+    overflowWrap: "break-word",
+    wordBreak: "break-word",
   gap: "10px",
   flexWrap: "wrap",
   marginBottom: "14px",
@@ -419,7 +449,7 @@ const heroGifPlaceholder = {
   color: "rgba(255,255,255,0.58)",
   fontWeight: "700",
   textAlign: "center",
-  padding: "24px",
+  padding: "clamp(16px, 4vw, 24px)",
 };
 
 const metaGrid = {
@@ -452,7 +482,7 @@ const metaValue = {
 
 const twoColGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
   gap: "22px",
 };
 
@@ -460,7 +490,7 @@ const sectionCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "22px",
-  padding: "24px",
+  padding: "clamp(16px, 4vw, 24px)",
 };
 
 const sectionEyebrow = {
