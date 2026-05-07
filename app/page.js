@@ -241,8 +241,8 @@ export default function Home() {
         "Couple Zone is een premium accountability systeem voor koppels die samen willen trainen, eten, boodschappen doen en consistent blijven zonder druk of discussies.",
       coupleText2:
         "Score je week, track geschiedenis, vind het zwakste gebied en krijg persoonlijk advies zodat je precies weet wat je moet verbeteren.",
-      mini1: "Zwakste-punt detectie",
-      mini2: "Couple boodschappenplanning",
+      mini1: "Zwakke punten",
+      mini2: "Samen boodschappen",
       mini3: "Persoonlijk advies",
       membership: "Membership Plannen",
       membershipTitle: "Kies het niveau support dat je nodig hebt.",
@@ -933,7 +933,7 @@ const bestValue = {
 };
 
 const pricingTitle = {
-  fontSize: "28px",
+  fontSize: "clamp(22px, 2vw, 32px)",
   margin: "0 0 10px",
   fontWeight: "900",
 };
@@ -993,6 +993,8 @@ const footer = {
 const footerLinks = {
   display: "flex",
   justifyContent: "center",
+        overflowWrap: "break-word",
+        wordBreak: "break-word",
   gap: "18px",
   flexWrap: "wrap",
   marginTop: "14px",
