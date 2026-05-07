@@ -452,4 +452,5 @@ const trust = {
       current: "Current Membership",
       status: "Status",
       active: "Active",
+    }
 
