@@ -1,57 +1,69 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import DashboardLayout from "../../components/DashboardLayout";
 import UpgradeLockScreen from "../../components/UpgradeLockScreen";
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
 import { canAccessFitnessPages } from "../../lib/access";
-import { programs } from "../../lib/programsData";
-import { useLanguage } from "../../lib/useLanguage";
+import {
+  programs,
+  translateProgramText,
+} from "../../lib/programsData";
 
-
-// PAGE TRANSLATIONS V2
-
-const pageTranslations = {
+const copy = {
   en: {
-    title: "Training System",
-    subtitle: "Structured workouts, smart progression, and personalized plans.",
-    continue: "Continue",
-    back: "Back",
-    start: "Start",
-    save: "Save",
-    workouts: "Workouts",
-    programs: "Programs",
-    nutrition: "Nutrition",
-    recipes: "Recipes",
-    progress: "Progress",
-    coupleZone: "Couple Zone",
+    pageTitle: "Programs",
+    pageSubtitle:
+      "Structured programs with clear goals, weekly planning, training splits, and practical guidance.",
+    unlockTitle: "Unlock programs",
+    unlockText: "Programs are included with Full Access.",
+    upgradeButton: "Upgrade to Full Access",
+    library: "Program Library",
+    heroTitle: "Choose a program that fits your real goal",
+    heroText:
+      "Compare each program by duration, level, equipment, weekly structure, and what it is best for before you start.",
+    available: "Programs available",
+    weeks: "Weeks per program",
+    days: "Training days weekly",
+    duration: "Duration",
+    schedule: "Schedule",
+    equipment: "Equipment",
+    idealFor: "Ideal for",
+    expect: "What to expect",
+    inside: "Inside the program",
+    split: "Training split",
+    progression: "Weekly progression",
+    startProgram: "Start Program",
+    save: "Save for Later",
   },
-
   nl: {
-    title: "Trainingssysteem",
-    subtitle: "Gestructureerde workouts, slimme progressie en gepersonaliseerde schema’s.",
-    continue: "Verder",
-    back: "Terug",
-    start: "Start",
-    save: "Opslaan",
-    workouts: "Trainingen",
-    programs: "Programma’s",
-    nutrition: "Voeding",
-    recipes: "Recepten",
-    progress: "Progressie",
-    coupleZone: "Couple Zone",
+    pageTitle: "Programma’s",
+    pageSubtitle:
+      "Gestructureerde programma’s met duidelijke doelen, weekplanning, trainingsindeling en praktische begeleiding.",
+    unlockTitle: "Ontgrendel programma’s",
+    unlockText: "Programma’s zijn inbegrepen bij Full Access.",
+    upgradeButton: "Upgrade naar Full Access",
+    library: "Programma Bibliotheek",
+    heroTitle: "Kies een programma dat past bij jouw echte doel",
+    heroText:
+      "Vergelijk elk programma op duur, niveau, materiaal, weekstructuur en waar het het beste voor is voordat je start.",
+    available: "Programma’s beschikbaar",
+    weeks: "Weken per programma",
+    days: "Trainingsdagen per week",
+    duration: "Duur",
+    schedule: "Schema",
+    equipment: "Materiaal",
+    idealFor: "Ideaal voor",
+    expect: "Wat je kunt verwachten",
+    inside: "In het programma",
+    split: "Trainingsindeling",
+    progression: "Weekelijkse progressie",
+    startProgram: "Start Programma",
+    save: "Bewaar voor later",
   },
 };
-
-function pt(language, key) {
-  return (
-    pageTranslations?.[language]?.[key] ||
-    pageTranslations.en[key] ||
-    key
-  );
-}
-
 
 const categories = [
   "All",
@@ -66,23 +78,42 @@ const categories = [
   "Starter",
 ];
 
+function getLanguage() {
+  const cookieStore = cookies();
+
+  const saved =
+    cookieStore.get("language")?.value ||
+    cookieStore.get("fitcouple_language")?.value ||
+    cookieStore.get("NEXT_LOCALE")?.value ||
+    "en";
+
+  return saved === "nl" ? "nl" : "en";
+}
+
+function tr(value, language) {
+  return translateProgramText(value || "", language);
+}
+
 export default async function ProgramsPage() {
   const { user, profile } = await getCurrentUserAndProfile();
 
   if (!user) redirect("/login");
 
+  const language = getLanguage();
+  const t = copy[language];
+
   if (!canAccessFitnessPages(profile)) {
     return (
       <DashboardLayout
-        title="Programs"
-        subtitle="Structured transformation programs with clear goals, training splits, weekly structure, and real use-case guidance."
+        title={t.pageTitle}
+        subtitle={t.pageSubtitle}
         membershipType={profile?.membership_type}
       >
         <UpgradeLockScreen
-          title="Unlock programs"
-          text="Programs are included with Full Access and above."
+          title={t.unlockTitle}
+          text={t.unlockText}
           requiredPlan="Full Access"
-          buttonLabel="Upgrade to Full Access"
+          buttonLabel={t.upgradeButton}
         />
       </DashboardLayout>
     );
@@ -90,24 +121,22 @@ export default async function ProgramsPage() {
 
   return (
     <DashboardLayout
-      title="Programs"
-      subtitle="Structured transformation programs with clear goals, training splits, weekly structure, and real use-case guidance."
+      title={t.pageTitle}
+      subtitle={t.pageSubtitle}
       membershipType={profile?.membership_type}
     >
       <div style={pageWrap}>
         <section style={heroCard}>
-          <div style={eyebrow}>Program Library</div>
-          <h2 style={heroTitle}>Choose a program that matches your real goal</h2>
-          <p style={heroText}>
-            These programs are built to feel practical and usable, not vague.
-            Members can compare duration, difficulty, equipment needs, training
-            split, weekly structure, and expected outcome before starting.
-          </p>
+          <div style={eyebrow}>{t.library}</div>
+
+          <h2 style={heroTitle}>{t.heroTitle}</h2>
+
+          <p style={heroText}>{t.heroText}</p>
 
           <div style={filterRow}>
             {categories.map((category) => (
               <div key={category} style={filterPill}>
-                {category}
+                {tr(category, language)}
               </div>
             ))}
           </div>
@@ -116,15 +145,17 @@ export default async function ProgramsPage() {
         <section style={statsGrid}>
           <div style={statCard}>
             <div style={statNumber}>{programs.length}</div>
-            <div style={statLabel}>Programs available</div>
+            <div style={statLabel}>{t.available}</div>
           </div>
+
           <div style={statCard}>
             <div style={statNumber}>4–8</div>
-            <div style={statLabel}>Weeks per program</div>
+            <div style={statLabel}>{t.weeks}</div>
           </div>
+
           <div style={statCard}>
             <div style={statNumber}>3–5</div>
-            <div style={statLabel}>Training days weekly</div>
+            <div style={statLabel}>{t.days}</div>
           </div>
         </section>
 
@@ -132,64 +163,71 @@ export default async function ProgramsPage() {
           {programs.map((program) => (
             <article key={program.slug} style={card}>
               <div style={cardTop}>
-                <div style={categoryBadge}>{program.category}</div>
-                <div style={levelBadge}>{program.level}</div>
+                <div style={categoryBadge}>
+                  {tr(program.category, language)}
+                </div>
+
+                <div style={levelBadge}>
+                  {tr(program.level, language)}
+                </div>
               </div>
 
-              <h3 style={cardTitle}>{program.title}</h3>
-              <p style={cardGoal}>{program.goal}</p>
+              <h3 style={cardTitle}>{tr(program.title, language)}</h3>
+
+              <p style={cardGoal}>{tr(program.goal, language)}</p>
 
               <div style={metaGrid}>
                 <div style={metaItem}>
-                  <div style={metaLabel}>Duration</div>
-                  <div style={metaValue}>{program.duration}</div>
+                  <div style={metaLabel}>{t.duration}</div>
+                  <div style={metaValue}>{tr(program.duration, language)}</div>
                 </div>
 
                 <div style={metaItem}>
-                  <div style={metaLabel}>Schedule</div>
-                  <div style={metaValue}>{program.schedule}</div>
+                  <div style={metaLabel}>{t.schedule}</div>
+                  <div style={metaValue}>{tr(program.schedule, language)}</div>
                 </div>
 
                 <div style={metaItem}>
-                  <div style={metaLabel}>Equipment</div>
-                  <div style={metaValue}>{program.equipment}</div>
+                  <div style={metaLabel}>{t.equipment}</div>
+                  <div style={metaValue}>{tr(program.equipment, language)}</div>
                 </div>
 
                 <div style={metaItem}>
-                  <div style={metaLabel}>Ideal for</div>
-                  <div style={metaValue}>{program.idealFor}</div>
+                  <div style={metaLabel}>{t.idealFor}</div>
+                  <div style={metaValue}>{tr(program.idealFor, language)}</div>
                 </div>
               </div>
 
               <div style={sectionBlock}>
-                <div style={sectionLabel}>What to expect</div>
-                <p style={cardText}>{program.result}</p>
+                <div style={sectionLabel}>{t.expect}</div>
+                <p style={cardText}>{tr(program.result, language)}</p>
               </div>
 
               <div style={sectionBlock}>
-                <div style={sectionLabel}>Inside the program</div>
+                <div style={sectionLabel}>{t.inside}</div>
                 <ul style={list}>
                   {program.includes.map((item) => (
-                    <li key={item}>{item}</li>
+                    <li key={item}>{tr(item, language)}</li>
                   ))}
                 </ul>
               </div>
 
               <div style={sectionBlock}>
-                <div style={sectionLabel}>Training split</div>
+                <div style={sectionLabel}>{t.split}</div>
                 <ul style={list}>
                   {program.trainingSplit.map((item) => (
-                    <li key={item}>{item}</li>
+                    <li key={item}>{tr(item, language)}</li>
                   ))}
                 </ul>
               </div>
 
               <div style={sectionBlock}>
-                <div style={sectionLabel}>Weekly progression</div>
+                <div style={sectionLabel}>{t.progression}</div>
                 <ul style={list}>
                   {program.weeklyPlan.map((block) => (
                     <li key={`${program.slug}-${block.week}`}>
-                      <strong>{block.week}</strong> — {block.focus}
+                      <strong>{tr(block.week, language)}</strong> —{" "}
+                      {tr(block.focus, language)}
                     </li>
                   ))}
                 </ul>
@@ -197,10 +235,12 @@ export default async function ProgramsPage() {
 
               <div style={ctaRow}>
                 <Link href={`/programs/${program.slug}`} style={primaryButton}>
-                  Start Program
+                  {t.startProgram}
                 </Link>
 
-                <button style={secondaryButton}>Save for Later</button>
+                <button type="button" style={secondaryButton}>
+                  {t.save}
+                </button>
               </div>
             </article>
           ))}
@@ -234,7 +274,7 @@ const eyebrow = {
 const heroTitle = {
   margin: 0,
   fontSize: "clamp(28px, 4vw, 42px)",
-  fontWeight: "800",
+  fontWeight: "900",
   lineHeight: 1.08,
 };
 
@@ -247,11 +287,11 @@ const heroText = {
 
 const filterRow = {
   display: "flex",
-    overflowWrap: "break-word",
-    wordBreak: "break-word",
   gap: "10px",
   flexWrap: "wrap",
   marginTop: "18px",
+  overflowWrap: "break-word",
+  wordBreak: "break-word",
 };
 
 const filterPill = {
@@ -259,7 +299,7 @@ const filterPill = {
   borderRadius: "999px",
   border: "1px solid rgba(255,255,255,0.1)",
   background: "rgba(255,255,255,0.04)",
-  fontWeight: "700",
+  fontWeight: "800",
   fontSize: "14px",
 };
 
@@ -278,7 +318,7 @@ const statCard = {
 
 const statNumber = {
   fontSize: "34px",
-  fontWeight: "800",
+  fontWeight: "900",
   marginBottom: "6px",
 };
 
@@ -289,7 +329,7 @@ const statLabel = {
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(380px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%, 340px),1fr))",
   gap: "18px",
 };
 
@@ -300,6 +340,8 @@ const card = {
   padding: "22px",
   display: "grid",
   gap: "16px",
+  minWidth: 0,
+  overflowWrap: "break-word",
 };
 
 const cardTop = {
@@ -315,7 +357,7 @@ const categoryBadge = {
   borderRadius: "999px",
   padding: "8px 12px",
   fontSize: "12px",
-  fontWeight: "800",
+  fontWeight: "900",
   textTransform: "uppercase",
   letterSpacing: "0.08em",
 };
@@ -326,12 +368,12 @@ const levelBadge = {
   borderRadius: "999px",
   padding: "8px 12px",
   fontSize: "12px",
-  fontWeight: "700",
+  fontWeight: "800",
 };
 
 const cardTitle = {
   fontSize: "28px",
-  fontWeight: "800",
+  fontWeight: "900",
   margin: 0,
   lineHeight: 1.1,
 };
@@ -340,7 +382,7 @@ const cardGoal = {
   color: "rgba(255,255,255,0.85)",
   lineHeight: 1.7,
   margin: 0,
-  fontWeight: "600",
+  fontWeight: "700",
 };
 
 const metaGrid = {
@@ -406,7 +448,7 @@ const primaryButton = {
   border: "none",
   borderRadius: "14px",
   padding: "12px 16px",
-  fontWeight: "800",
+  fontWeight: "900",
   cursor: "pointer",
   background: "white",
   color: "#111",
@@ -418,7 +460,7 @@ const primaryButton = {
 const secondaryButton = {
   borderRadius: "14px",
   padding: "12px 16px",
-  fontWeight: "800",
+  fontWeight: "900",
   cursor: "pointer",
   border: "1px solid rgba(255,255,255,0.12)",
   background: "rgba(255,255,255,0.03)",
