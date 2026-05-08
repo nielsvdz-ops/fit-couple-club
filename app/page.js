@@ -47,17 +47,6 @@ export default function Home() {
   const { language } = useLanguage();
   const [loaded, setLoaded] = useState(false);
 
-  const [vipCounter, setVipCounter] = useState({
-    vip: {
-      label: "14/90 VIP spots taken",
-      isSoldOut: false,
-    },
-    coaching: {
-      label: "2/12 coaching spots taken",
-      isSoldOut: false,
-    },
-  });
-
   const t = {
     en: {
       badge: "Fitness, nutrition, groceries & couple accountability",
@@ -93,7 +82,7 @@ export default function Home() {
         [
           "04",
           "Upgrade support",
-          "Choose VIP or Coaching when you want personal guidance and accountability.",
+          "Book a Coaching Call when you want personal guidance and accountability.",
         ],
       ],
       about: "About Us",
@@ -118,9 +107,9 @@ export default function Home() {
       membership: "Membership Plans",
       membershipTitle: "Choose the level of support you need.",
       membershipIntro:
-        "Start with nutrition, unlock the full transformation system, or get guided with VIP and personal coaching.",
+        "Start with Nutrition, unlock the full transformation system with Full Access, or book a separate coaching call when you want personal guidance.",
       digitalDelivery:
-        "All content and services are delivered digitally through a secure member dashboard after purchase, including structured workout programs, nutrition plans, and optional coaching and support services.",
+        "All content and services are delivered digitally through a secure member dashboard after purchase, including structured workout programs, nutrition plans, and optional one-time coaching call support.",
       bestValue: "🔥 Best Value",
       soldOut: "Sold Out",
       footer:
@@ -131,14 +120,49 @@ export default function Home() {
       pricingPlans: [
         {
           name: "Nutrition",
-          price: "€19.99/mo",
+          price: "€19.99",
           points: [
             "5 body goals",
             "150 daily nutrition routines",
             "Weekly recipes & structure",
             "Smart grocery generator",
             "Couple grocery mode",
+            "Access to Coaching section",
           ],
+          cta: "Get Nutrition",
+          featured: false,
+        },
+        {
+          name: "Full Access",
+          price: "€29.99",
+          points: [
+            "Everything in Nutrition",
+            "Full workout system",
+            "Step-by-step programs",
+            "Exercise GIF guidance",
+            "Progress tracking",
+            "Couple Zone system",
+            "Access to Coaching section",
+          ],
+          cta: "Unlock Full Access",
+          featured: true,
+        },
+        {
+          name: "Coaching Call",
+          price: "€60",
+          points: [
+            "1-on-1 coaching call",
+            "Training & nutrition review",
+            "Personalized advice",
+            "Progress analysis",
+            "Direct support session",
+            "Book & reschedule inside dashboard",
+          ],
+          cta: "Book Coaching Call",
+          featured: false,
+          type: "coaching",
+        },
+      ],
           cta: "Start Nutrition",
           featured: false,
         },
@@ -222,7 +246,7 @@ export default function Home() {
         [
           "04",
           "Upgrade support",
-          "Kies VIP of Coaching wanneer je persoonlijke begeleiding en accountability wilt.",
+          "Boek een Coaching Call wanneer je persoonlijke begeleiding en accountability wilt.",
         ],
       ],
       about: "Over Ons",
@@ -247,9 +271,9 @@ export default function Home() {
       membership: "Membership Plannen",
       membershipTitle: "Kies het niveau support dat je nodig hebt.",
       membershipIntro:
-        "Start met voeding, ontgrendel het volledige transformatiesysteem of krijg begeleiding met VIP en personal coaching.",
+        "Start met Nutrition, ontgrendel het volledige transformatiesysteem met Full Access of boek een losse coaching call wanneer je persoonlijke begeleiding wilt.",
       digitalDelivery:
-        "Alle content en services worden digitaal geleverd via een beveiligd member dashboard na aankoop, inclusief workout programma’s, voedingsplannen en optionele coaching en support.",
+        "Alle content en services worden digitaal geleverd via een beveiligd member dashboard na aankoop, inclusief workout programma’s, voedingsplannen en optionele eenmalige coaching call support.",
       bestValue: "🔥 Beste Keuze",
       soldOut: "Uitverkocht",
       footer:
@@ -260,14 +284,49 @@ export default function Home() {
       pricingPlans: [
         {
           name: "Nutrition",
-          price: "€19.99/mo",
+          price: "€19.99",
           points: [
             "5 lichaamsdoelen",
             "150 dagelijkse voedingsroutines",
             "Wekelijkse recepten & structuur",
             "Slimme boodschappen generator",
             "Couple grocery mode",
+            "Toegang tot Coaching sectie",
           ],
+          cta: "Koop Nutrition",
+          featured: false,
+        },
+        {
+          name: "Full Access",
+          price: "€29.99",
+          points: [
+            "Alles in Nutrition",
+            "Volledig workout systeem",
+            "Stap-voor-stap programma’s",
+            "Exercise GIF begeleiding",
+            "Progressie tracking",
+            "Couple Zone systeem",
+            "Toegang tot Coaching sectie",
+          ],
+          cta: "Ontgrendel Full Access",
+          featured: true,
+        },
+        {
+          name: "Coaching Call",
+          price: "€60",
+          points: [
+            "1-op-1 coaching call",
+            "Training & voeding analyse",
+            "Persoonlijk advies",
+            "Progressie analyse",
+            "Directe support sessie",
+            "Boeken & verplaatsen in dashboard",
+          ],
+          cta: "Boek Coaching Call",
+          featured: false,
+          type: "coaching",
+        },
+      ],
           cta: "Start Nutrition",
           featured: false,
         },
@@ -322,45 +381,9 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 100);
 
-    async function loadVipCounter() {
-      try {
-        const response = await fetch("/api/vip-counter", {
-          cache: "no-store",
-        });
-
-        const data = await response.json();
-        setVipCounter(data);
-      } catch (error) {
-        console.error("Failed to load VIP counter:", error);
-      }
-    }
-
-    loadVipCounter();
-
     return () => clearTimeout(timer);
   }, []);
-
-  const pricingPlans = t.pricingPlans.map((plan) => {
-    if (plan.type === "vip") {
-      return {
-        ...plan,
-        cta: vipCounter.vip.isSoldOut ? t.soldOut : plan.cta,
-        scarcity: vipCounter.vip.label,
-        disabled: vipCounter.vip.isSoldOut,
-      };
-    }
-
-    if (plan.type === "coaching") {
-      return {
-        ...plan,
-        cta: vipCounter.coaching.isSoldOut ? t.soldOut : plan.cta,
-        scarcity: vipCounter.coaching.label,
-        disabled: vipCounter.coaching.isSoldOut,
-      };
-    }
-
-    return plan;
-  });
+  const pricingPlans = t.pricingPlans;
 
   return (
     <main style={main}>
@@ -563,7 +586,7 @@ export default function Home() {
               </div>
 
               <a
-                href={plan.disabled ? "#pricing" : "/signup"}
+                href={plan.type === "coaching" ? "/login" : "/signup"}
                 style={{
                   ...pricingButton,
                   ...(plan.featured ? pricingButtonFeatured : {}),
@@ -904,7 +927,7 @@ const pricingCard = {
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "26px",
   padding: "30px",
-  minHeight: "510px",
+  minHeight: "480px",
   position: "relative",
   display: "flex",
   flexDirection: "column",
