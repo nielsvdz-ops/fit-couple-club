@@ -3,11 +3,12 @@ export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import DashboardLayout from "../../components/DashboardLayout";
 import DashboardCard from "../../components/DashboardCard";
+import CheckoutButton from "../../components/CheckoutButton";
 
 import {
   canAccessNutritionPages,
   canAccessFitnessPages,
-  canAccessVipPage,
+  canAccessCoachingPage,
 } from "../../lib/access";
 
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
@@ -27,12 +28,17 @@ export default async function DashboardPage() {
   }
 
   const membershipType = profile?.membership_type || "free";
-  const isVip = canAccessVipPage(profile);
+
+  const isNutrition =
+    String(membershipType).toLowerCase() === "nutrition";
+
+  const hasFitness =
+    canAccessFitnessPages(profile);
 
   return (
     <DashboardLayout
       title="Dashboard"
-      subtitle="Your transformation system, workouts, nutrition, progress tracking, and Couple Zone tools."
+      subtitle="Your transformation system, workouts, nutrition, progress tracking, and coaching tools."
       membershipType={membershipType}
     >
       <div style={wrap}>
@@ -42,7 +48,10 @@ export default async function DashboardPage() {
               <div style={eyebrow}>Fit Couple Club</div>
 
               <h2 style={heroTitle}>
-                Welcome back{user?.email ? `, ${user.email.split("@")[0]}` : ""}
+                Welcome back
+                {user?.email
+                  ? `, ${user.email.split("@")[0]}`
+                  : ""}
               </h2>
 
               <p style={heroText}>
@@ -52,7 +61,7 @@ export default async function DashboardPage() {
               </p>
             </div>
 
-            <div style={membershipPill(isVip)}>
+            <div style={membershipPill(hasFitness)}>
               {String(membershipType)
                 .replace("_", " ")
                 .toUpperCase()}
@@ -77,24 +86,57 @@ export default async function DashboardPage() {
             <div style={statCard}>
               <div style={statLabel}>Nutrition Access</div>
               <div style={statValue}>
-                {canAccessNutritionPages(profile) ? "Unlocked" : "Locked"}
+                {canAccessNutritionPages(profile)
+                  ? "Unlocked"
+                  : "Locked"}
               </div>
             </div>
 
             <div style={statCard}>
               <div style={statLabel}>Fitness Access</div>
               <div style={statValue}>
-                {canAccessFitnessPages(profile) ? "Unlocked" : "Locked"}
+                {hasFitness
+                  ? "Unlocked"
+                  : "Locked"}
               </div>
             </div>
           </div>
         </section>
 
+        {isNutrition && (
+          <section style={upgradeCard}>
+            <div>
+              <div style={eyebrow}>Upgrade</div>
+
+              <h3 style={upgradeTitle}>
+                Unlock Full Access for only €10
+              </h3>
+
+              <p style={upgradeText}>
+                You already own Nutrition.
+                Upgrade once and unlock workouts,
+                programs, plan builder, Couple Zone,
+                progress tracking, and the full fitness platform.
+              </p>
+            </div>
+
+            <div style={upgradeButtonWrap}>
+              <CheckoutButton
+                plan="upgrade_full_access"
+                label="Upgrade for €10"
+                variant="yellow"
+              />
+            </div>
+          </section>
+        )}
+
         <section style={section}>
           <div style={sectionHeader}>
             <div>
               <div style={eyebrow}>Main Systems</div>
-              <h3 style={sectionTitle}>Transformation Hub</h3>
+              <h3 style={sectionTitle}>
+                Transformation Hub
+              </h3>
             </div>
           </div>
 
@@ -111,43 +153,45 @@ export default async function DashboardPage() {
               href="/recipes"
             />
 
-            <DashboardCard
-              title="Workouts"
-              description="Structured gym workouts with progression systems."
-              href="/workouts"
-            />
+            {hasFitness && (
+              <>
+                <DashboardCard
+                  title="Workouts"
+                  description="Structured gym workouts with progression systems."
+                  href="/workouts"
+                />
 
-            <DashboardCard
-              title="Programs"
-              description="Transformation programs based on your goal and experience."
-              href="/programs"
-            />
+                <DashboardCard
+                  title="Programs"
+                  description="Transformation programs based on your goal and experience."
+                  href="/programs"
+                />
 
-            <DashboardCard
-              title="Plan Builder"
-              description="Generate your personalized training and nutrition system."
-              href="/plan-builder"
-            />
+                <DashboardCard
+                  title="Plan Builder"
+                  description="Generate your personalized training and nutrition system."
+                  href="/plan-builder"
+                />
 
-            <DashboardCard
-              title="Progress"
-              description="Track weight, body stats, consistency, and progression."
-              href="/progress"
-            />
+                <DashboardCard
+                  title="Progress"
+                  description="Track weight, body stats, consistency, and progression."
+                  href="/progress"
+                />
 
-            <DashboardCard
-              title="Couple Zone"
-              description="Train together, shop together, and stay accountable together."
-              href="/couple-zone"
-            />
-
-            {isVip && (
-              <DashboardCard
-                title="VIP"
-                description="Private coaching, accountability, and premium guidance."
-                href="/vip"
-              />
+                <DashboardCard
+                  title="Couple Zone"
+                  description="Train together, shop together, and stay accountable together."
+                  href="/couple-zone"
+                />
+              </>
             )}
+
+            <DashboardCard
+              title="Coaching"
+              description="Book coaching calls, schedule sessions, and get direct guidance."
+              href="/coaching"
+            />
           </div>
         </section>
 
@@ -155,7 +199,9 @@ export default async function DashboardPage() {
           <div style={tipsCard}>
             <div style={eyebrow}>Quick Tips</div>
 
-            <h3 style={miniTitle}>Stay consistent</h3>
+            <h3 style={miniTitle}>
+              Stay consistent
+            </h3>
 
             <ul style={tipsList}>
               <li>Track your meals daily</li>
@@ -169,7 +215,9 @@ export default async function DashboardPage() {
           <div style={activityCard}>
             <div style={eyebrow}>System Access</div>
 
-            <h3 style={miniTitle}>Unlocked features</h3>
+            <h3 style={miniTitle}>
+              Unlocked features
+            </h3>
 
             <div style={featureList}>
               <div style={featureItem(
@@ -179,7 +227,7 @@ export default async function DashboardPage() {
               </div>
 
               <div style={featureItem(
-                canAccessFitnessPages(profile)
+                hasFitness
               )}>
                 Workout System
               </div>
@@ -192,8 +240,10 @@ export default async function DashboardPage() {
                 Grocery Generator
               </div>
 
-              <div style={featureItem(isVip)}>
-                VIP Coaching
+              <div style={featureItem(
+                canAccessCoachingPage(profile)
+              )}>
+                Coaching Access
               </div>
             </div>
           </div>
@@ -252,13 +302,13 @@ const heroText = {
   fontSize: "clamp(15px, 2vw, 18px)",
 };
 
-const membershipPill = (vip) => ({
+const membershipPill = (full) => ({
   padding: "12px 18px",
   borderRadius: "999px",
-  background: vip
+  background: full
     ? "rgba(250,204,21,0.18)"
     : "rgba(255,255,255,0.08)",
-  border: vip
+  border: full
     ? "1px solid rgba(250,204,21,0.35)"
     : "1px solid rgba(255,255,255,0.10)",
   fontWeight: "900",
@@ -291,6 +341,33 @@ const statLabel = {
 const statValue = {
   fontSize: "22px",
   fontWeight: "800",
+};
+
+const upgradeCard = {
+  background:
+    "linear-gradient(135deg, rgba(250,204,21,0.12), rgba(255,255,255,0.05))",
+  border: "1px solid rgba(250,204,21,0.28)",
+  borderRadius: "24px",
+  padding: "26px",
+  display: "grid",
+  gap: "20px",
+};
+
+const upgradeTitle = {
+  margin: 0,
+  fontSize: "34px",
+  fontWeight: "900",
+};
+
+const upgradeText = {
+  marginTop: "12px",
+  color: "rgba(255,255,255,0.74)",
+  lineHeight: 1.8,
+  maxWidth: "900px",
+};
+
+const upgradeButtonWrap = {
+  maxWidth: "320px",
 };
 
 const section = {
