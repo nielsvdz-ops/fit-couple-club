@@ -14,7 +14,7 @@ const labels = {
     programs: "Programs",
     coupleZone: "Couple Zone",
     progress: "Progress",
-    vip: "VIP",
+    coaching: "Coaching",
     billing: "Billing",
     account: "Account",
     member: "Member",
@@ -23,6 +23,7 @@ const labels = {
     close: "Close",
     menu: "Menu",
   },
+
   nl: {
     dashboard: "Dashboard",
     nutrition: "Voeding",
@@ -32,12 +33,12 @@ const labels = {
     programs: "Programma’s",
     coupleZone: "Couple Zone",
     progress: "Progressie",
-    vip: "VIP",
+    coaching: "Coaching",
     billing: "Abonnement",
     account: "Account",
     member: "Lid",
     free: "Gratis",
-    upgrade: "Upgraden",
+    upgrade: "Upgrade",
     close: "Sluiten",
     menu: "Menu",
   },
@@ -54,10 +55,10 @@ const titleMap = {
     Programs: "Programs",
     "Couple Zone": "Couple Zone",
     Progress: "Progress",
-    VIP: "VIP",
+    Coaching: "Coaching",
     Account: "Account",
-    Settings: "Settings",
   },
+
   nl: {
     Dashboard: "Dashboard",
     Billing: "Abonnement",
@@ -68,81 +69,14 @@ const titleMap = {
     Programs: "Programma’s",
     "Couple Zone": "Couple Zone",
     Progress: "Progressie",
-    VIP: "VIP",
+    Coaching: "Coaching",
     Account: "Account",
-    Settings: "Instellingen",
-  },
-};
-
-const subtitleMap = {
-  en: {
-    "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.":
-      "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.",
-    "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.":
-      "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.",
-    "Build structured training plans based on your goal, focus, and weekly schedule.":
-      "Build structured training plans based on your goal, focus, and weekly schedule.",
-    "Choose your goal, training days, and focus. The system builds your weekly structure.":
-      "Choose your goal, training days, and focus. The system builds your weekly structure.",
-    "Track your training, nutrition, and body progress in one place.":
-      "Track your training, nutrition, and body progress in one place.",
-    "Your personal fitness dashboard.":
-      "Your personal fitness dashboard.",
-  },
-  nl: {
-    "Choose your system level — from nutrition structure to full transformation, Couple Zone accountability, VIP guidance, and coaching.":
-      "Kies jouw systeemniveau — van voedingsstructuur tot volledige transformatie, Couple Zone accountability, VIP begeleiding en coaching.",
-    "Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level.":
-      "Persoonlijke dagelijkse voedingsschema’s gebaseerd op jouw doel, geslacht, leeftijd, gewicht, lengte en activiteitsniveau.",
-    "Build structured training plans based on your goal, focus, and weekly schedule.":
-      "Bouw gestructureerde trainingsschema’s op basis van jouw doel, focus en weekschema.",
-    "Choose your goal, training days, and focus. The system builds your weekly structure.":
-      "Kies je doel, trainingsdagen en focus. Het systeem bouwt jouw weekstructuur.",
-    "Track your training, nutrition, and body progress in one place.":
-      "Volg je training, voeding en lichaamsprogressie op één plek.",
-    "Your personal fitness dashboard.":
-      "Jouw persoonlijke fitness dashboard.",
-  },
-};
-
-const navLabelMap = {
-  en: {
-    Dashboard: "Dashboard",
-    Billing: "Billing",
-    Nutrition: "Nutrition",
-    Recipes: "Recipes",
-    "Plan Builder": "Plan Builder",
-    Workouts: "Workouts",
-    Programs: "Programs",
-    "Couple Zone": "Couple Zone",
-    Progress: "Progress",
-    VIP: "VIP",
-    Account: "Account",
-    Logout: "Logout",
-  },
-  nl: {
-    Dashboard: "Dashboard",
-    Billing: "Abonnement",
-    Nutrition: "Voeding",
-    Recipes: "Recepten",
-    "Plan Builder": "Plan Bouwer",
-    Workouts: "Trainingen",
-    Programs: "Programma’s",
-    "Couple Zone": "Couple Zone",
-    Progress: "Progressie",
-    VIP: "VIP",
-    Account: "Account",
-    Logout: "Uitloggen",
   },
 };
 
 function translateText(value, language, map) {
   if (!value) return "";
   return map?.[language]?.[value] || map?.en?.[value] || value;
-}
-
-function translateNavLabel(label, language) {
-  return navLabelMap?.[language]?.[label] || navLabelMap?.en?.[label] || label;
 }
 
 export default function DashboardLayout({
@@ -152,32 +86,36 @@ export default function DashboardLayout({
   membershipType,
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+
   const { language } = useLanguage();
+
   const t = labels[language] || labels.en;
 
-  const membership = String(membershipType || "").toLowerCase().trim();
+  const membership = String(membershipType || "")
+    .toLowerCase()
+    .trim();
 
   const canAccessNutrition =
     membership === "nutrition" ||
-    membership === "full_access" ||
-    membership === "vip" ||
-    membership === "coaching";
+    membership === "full_access";
 
   const canAccessFitness =
-    membership === "full_access" ||
-    membership === "vip" ||
-    membership === "coaching";
+    membership === "full_access";
 
-  const canAccessVip = membership === "vip" || membership === "coaching";
+  const canAccessCoaching =
+    membership === "nutrition" ||
+    membership === "full_access";
 
   const navItems = [
     [t.dashboard, "/dashboard"],
+
     ...(canAccessNutrition
       ? [
           [t.nutrition, "/nutrition"],
           [t.recipes, "/recipes"],
         ]
       : []),
+
     ...(canAccessFitness
       ? [
           [t.planBuilder, "/plan-builder"],
@@ -187,16 +125,22 @@ export default function DashboardLayout({
           [t.progress, "/progress"],
         ]
       : []),
-    ...(canAccessVip ? [[t.vip, "/vip"]] : []),
+
+    ...(canAccessCoaching
+      ? [[t.coaching, "/coaching"]]
+      : []),
+
     [t.billing, "/billing"],
     [t.account, "/account"],
   ];
 
-  const translatedTitle = translateText(title, language, titleMap);
+  const translatedTitle = translateText(
+    title,
+    language,
+    titleMap
+  );
 
-  
-  const translatedSubtitle = translateText(subtitle, language, subtitleMap);
-return (
+  return (
     <div style={layout}>
       <aside style={sidebar}>
         <SidebarContent
@@ -215,7 +159,10 @@ return (
           ☰ {t.menu}
         </button>
 
-        <div style={mobileBrand}>Fit Couple Club</div>
+        <div style={mobileBrand}>
+          Fit Couple Club
+        </div>
+
         <LanguageToggle />
       </div>
 
@@ -241,33 +188,64 @@ return (
       )}
 
       <main style={main}>
-        <h1 style={pageTitle}>{translatedTitle}</h1>
-        {subtitle ? <p style={subtitleStyle}>{translatedSubtitle}</p> : null}
+        <h1 style={pageTitle}>
+          {translatedTitle}
+        </h1>
+
+        {subtitle ? (
+          <p style={subtitleStyle}>
+            {subtitle}
+          </p>
+        ) : null}
+
         {children}
       </main>
 
       <nav style={bottomNav}>
-        <a href="/dashboard" style={bottomLink}>{t.dashboard}</a>
-        <a href="/billing" style={bottomLink}>{t.upgrade}</a>
-        <a href="/account" style={bottomLink}>{t.account}</a>
+        <a href="/dashboard" style={bottomLink}>
+          {t.dashboard}
+        </a>
+
+        <a href="/billing" style={bottomLink}>
+          {t.upgrade}
+        </a>
+
+        <a href="/account" style={bottomLink}>
+          {t.account}
+        </a>
       </nav>
     </div>
   );
 }
 
-function SidebarContent({ navItems, membership, t, onNavigate }) {
+function SidebarContent({
+  navItems,
+  membership,
+  t,
+  onNavigate,
+}) {
   return (
     <>
-      <div style={brand}>Fit Couple Club</div>
+      <div style={brand}>
+        Fit Couple Club
+      </div>
 
       <div style={topRow}>
-        <div style={memberTag}>{formatMembershipLabel(membership, t)}</div>
+        <div style={memberTag}>
+          {formatMembershipLabel(membership, t)}
+        </div>
+
         <LanguageToggle />
       </div>
 
       <div style={nav}>
         {navItems.map(([label, href]) => (
-          <a key={`${label}-${href}`} href={href} style={navLink} onClick={onNavigate}>
+          <a
+            key={`${label}-${href}`}
+            href={href}
+            style={navLink}
+            onClick={onNavigate}
+          >
             {label}
           </a>
         ))}
@@ -277,11 +255,15 @@ function SidebarContent({ navItems, membership, t, onNavigate }) {
 }
 
 function formatMembershipLabel(membership, t) {
-  if (membership === "nutrition") return "Nutrition";
-  if (membership === "full_access") return "Full Access";
-  if (membership === "vip") return "VIP";
-  if (membership === "coaching") return "Coaching";
-  if (membership === "free") return t.free;
+  if (membership === "nutrition")
+    return "Nutrition";
+
+  if (membership === "full_access")
+    return "Full Access";
+
+  if (membership === "free")
+    return t.free;
+
   return t.member;
 }
 
@@ -294,7 +276,8 @@ const layout = {
 };
 
 const sidebar = {
-  borderRight: "1px solid rgba(255,255,255,0.08)",
+  borderRight:
+    "1px solid rgba(255,255,255,0.08)",
   padding: "24px 18px",
   position: "sticky",
   top: 0,
@@ -320,7 +303,8 @@ const memberTag = {
   padding: "8px 12px",
   borderRadius: "999px",
   background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  border:
+    "1px solid rgba(255,255,255,0.1)",
   fontWeight: "800",
 };
 
@@ -336,7 +320,8 @@ const navLink = {
   padding: "15px 16px",
   borderRadius: "16px",
   background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.06)",
+  border:
+    "1px solid rgba(255,255,255,0.06)",
   fontWeight: "800",
 };
 
@@ -361,7 +346,6 @@ const subtitleStyle = {
   fontSize: "clamp(16px, 3vw, 20px)",
   lineHeight: 1.7,
   maxWidth: "900px",
-  overflowWrap: "anywhere",
 };
 
 const mobileTopbar = {
@@ -370,7 +354,8 @@ const mobileTopbar = {
   top: 0,
   zIndex: 40,
   background: "rgba(6,6,6,0.96)",
-  borderBottom: "1px solid rgba(255,255,255,0.08)",
+  borderBottom:
+    "1px solid rgba(255,255,255,0.08)",
   padding: "12px",
   alignItems: "center",
   justifyContent: "space-between",
@@ -380,7 +365,8 @@ const mobileTopbar = {
 const mobileMenuButton = {
   background: "rgba(255,255,255,0.08)",
   color: "white",
-  border: "1px solid rgba(255,255,255,0.12)",
+  border:
+    "1px solid rgba(255,255,255,0.12)",
   borderRadius: "12px",
   padding: "10px 12px",
   fontWeight: "900",
@@ -402,7 +388,8 @@ const mobilePanel = {
   width: "min(86vw, 340px)",
   height: "100vh",
   background: "#080808",
-  borderRight: "1px solid rgba(255,255,255,0.1)",
+  borderRight:
+    "1px solid rgba(255,255,255,0.1)",
   padding: "18px",
   overflowY: "auto",
 };
@@ -412,7 +399,8 @@ const closeButton = {
   marginBottom: "18px",
   padding: "12px",
   borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.12)",
+  border:
+    "1px solid rgba(255,255,255,0.12)",
   background: "rgba(255,255,255,0.08)",
   color: "white",
   fontWeight: "900",
@@ -427,7 +415,8 @@ const bottomNav = {
   zIndex: 60,
   background: "rgba(10,10,10,0.92)",
   backdropFilter: "blur(14px)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  border:
+    "1px solid rgba(255,255,255,0.1)",
   borderRadius: "18px",
   padding: "8px",
   gridTemplateColumns: "repeat(3,1fr)",
@@ -447,24 +436,36 @@ const bottomLink = {
 
 if (typeof window !== "undefined") {
   const style = document.createElement("style");
+
   style.innerHTML = `
     @media (max-width: 860px) {
-      body { overflow-x: hidden; }
+      body {
+        overflow-x: hidden;
+      }
+
       div[style*="grid-template-columns: 280px 1fr"] {
         display: block !important;
       }
+
       aside {
         display: none !important;
       }
+
       main {
         padding: 18px 14px 96px !important;
       }
-      input, select, textarea, button {
+
+      input,
+      select,
+      textarea,
+      button {
         font-size: 16px !important;
       }
+
       section {
         max-width: 100% !important;
       }
+
       [style*="grid-template-columns"] {
         grid-template-columns: 1fr !important;
       }
@@ -474,13 +475,18 @@ if (typeof window !== "undefined") {
       div[style*="position: sticky"][style*="top: 0"][style*="z-index: 40"] {
         display: flex !important;
       }
+
       nav[style*="position: fixed"] {
         display: grid !important;
       }
     }
   `;
 
-  if (!document.getElementById("fit-dashboard-mobile-css")) {
+  if (
+    !document.getElementById(
+      "fit-dashboard-mobile-css"
+    )
+  ) {
     style.id = "fit-dashboard-mobile-css";
     document.head.appendChild(style);
   }
