@@ -30,7 +30,7 @@ export default function UpgradeLockScreen({
       requiredPlan: "Vereist plan",
       unlock: "✔ Direct toegang ontgrendelen",
       keepAccount: "✔ Behoud je huidige account",
-      billing: "✔ Upgrade in één stap via abonnement",
+      billing: "✔ Unlock instantly with a one-time purchase",
       button: "Bekijk Upgrade Opties",
       back: "Terug naar Dashboard",
     },
