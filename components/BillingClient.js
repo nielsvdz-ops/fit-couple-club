@@ -1,7 +1,6 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import ManageSubscriptionButton from "./ManageSubscriptionButton";
 import CheckoutButton from "./CheckoutButton";
 import { useLanguage } from "../lib/useLanguage";
 
@@ -11,18 +10,17 @@ const billingTranslations = {
     status: "Status",
     active: "Active",
     inactive: "Inactive",
-    manage: "Manage Subscription",
-    mostChosen: "🔥 Most chosen",
-    month: "/mo",
+    mostChosen: "🔥 Best value",
+    oneTime: "one-time",
     secure:
-      "Secure checkout via Stripe. You can manage or cancel your subscription anytime.",
+      "Secure one-time checkout via Stripe. No monthly subscription for Nutrition or Full Access.",
     successTitle: "Payment successful",
     successText:
       "Your payment was completed. If your access does not update immediately, refresh the page in a few seconds.",
 
-    heroTitle: "Choose the system that fits your transformation.",
+    heroTitle: "Choose your transformation system.",
     heroText:
-      "Start with nutrition structure or unlock the full fitness system with workouts, programs, progress tracking, Couple Zone, VIP guidance, and coaching.",
+      "Start with nutrition structure or unlock the full fitness platform with workouts, programs, progress tracking, Couple Zone, and coaching call access.",
 
     nutritionName: "Nutrition",
     nutritionFeatures: [
@@ -30,39 +28,23 @@ const billingTranslations = {
       "✓ 150 daily routines",
       "✓ Weekly recipes",
       "✓ Smart grocery generator",
-      "✓ Works for 1 or 2 people",
+      "✓ Access to Coaching page",
     ],
-    nutritionText: "Never overthink food again.",
-    nutritionButton: "Start Nutrition",
+    nutritionText: "Your complete food, recipe, and grocery system.",
+    nutritionButton: "Buy Nutrition",
 
     fullAccessName: "Full Access",
     fullAccessFeatures: [
       "✓ Everything in Nutrition",
       "✓ Full workout system",
       "✓ Programs",
-      "✓ Progress tracking",
+      "✓ Plan Builder",
       "✓ Couple Zone",
+      "✓ Progress tracking",
+      "✓ Access to Coaching page",
     ],
-    fullAccessText: "Complete transformation system.",
-    fullAccessButton: "Unlock Full Access",
-
-    vipName: "VIP",
-    vipFeatures: [
-      "✓ Coaching calls",
-      "✓ Accountability",
-      "✓ Priority support",
-    ],
-    vipScarcity: "14/90 VIP spots taken",
-    vipButton: "Go VIP",
-
-    coachingName: "Coaching",
-    coachingFeatures: [
-      "✓ Weekly 1-on-1",
-      "✓ Fully custom plan",
-      "✓ Direct support",
-    ],
-    coachingScarcity: "2/12 spots free",
-    coachingButton: "Start Coaching",
+    fullAccessText: "The complete Fit Couple Club transformation platform.",
+    fullAccessButton: "Buy Full Access",
   },
 
   nl: {
@@ -70,18 +52,17 @@ const billingTranslations = {
     status: "Status",
     active: "Actief",
     inactive: "Niet actief",
-    manage: "Abonnement beheren",
-    mostChosen: "🔥 Meest gekozen",
-    month: "/maand",
+    mostChosen: "🔥 Beste keuze",
+    oneTime: "eenmalig",
     secure:
-      "Veilig afrekenen via Stripe. Je kunt je abonnement altijd beheren of annuleren.",
+      "Veilig eenmalig afrekenen via Stripe. Geen maandabonnement voor Voeding of Full Access.",
     successTitle: "Betaling succesvol",
     successText:
       "Je betaling is voltooid. Als je toegang niet meteen verandert, vernieuw de pagina na een paar seconden.",
 
-    heroTitle: "Kies het systeem dat past bij jouw transformatie.",
+    heroTitle: "Kies jouw transformatie systeem.",
     heroText:
-      "Start met voedingsstructuur of ontgrendel het volledige fitnesssysteem met workouts, programma’s, progressie tracking, Couple Zone, VIP begeleiding en coaching.",
+      "Start met voedingsstructuur of ontgrendel het volledige fitnessplatform met workouts, programma’s, progressie tracking, Couple Zone en toegang tot coaching calls.",
 
     nutritionName: "Voeding",
     nutritionFeatures: [
@@ -89,39 +70,23 @@ const billingTranslations = {
       "✓ 150 dagelijkse routines",
       "✓ Wekelijkse recepten",
       "✓ Slimme boodschappen generator",
-      "✓ Werkt voor 1 of 2 personen",
+      "✓ Toegang tot Coaching pagina",
     ],
-    nutritionText: "Nooit meer nadenken over eten.",
-    nutritionButton: "Start Voeding",
+    nutritionText: "Jouw complete voedings-, recepten- en boodschappen systeem.",
+    nutritionButton: "Koop Voeding",
 
     fullAccessName: "Full Access",
     fullAccessFeatures: [
       "✓ Alles van Voeding",
       "✓ Volledig workout systeem",
       "✓ Programma’s",
-      "✓ Progressie tracking",
+      "✓ Plan Builder",
       "✓ Couple Zone",
+      "✓ Progressie tracking",
+      "✓ Toegang tot Coaching pagina",
     ],
-    fullAccessText: "Compleet transformatie systeem.",
-    fullAccessButton: "Ontgrendel Full Access",
-
-    vipName: "VIP",
-    vipFeatures: [
-      "✓ Coaching calls",
-      "✓ Accountability",
-      "✓ Prioriteit support",
-    ],
-    vipScarcity: "14/90 VIP plekken bezet",
-    vipButton: "Ga VIP",
-
-    coachingName: "Coaching",
-    coachingFeatures: [
-      "✓ Wekelijkse 1-op-1",
-      "✓ Volledig custom plan",
-      "✓ Direct support",
-    ],
-    coachingScarcity: "2/12 plekken vrij",
-    coachingButton: "Start Coaching",
+    fullAccessText: "Het complete Fit Couple Club transformatie platform.",
+    fullAccessButton: "Koop Full Access",
   },
 };
 
@@ -134,7 +99,6 @@ function normalizeMembership(value) {
 
   if (clean === "full access" || clean === "full-access") return "full_access";
   if (clean === "starter" || clean === "premium") return "full_access";
-  if (clean === "premium_plus" || clean === "premium-plus") return "vip";
 
   return clean;
 }
@@ -147,7 +111,6 @@ function isCurrentPlan(membershipType, planKey, isActive) {
 }
 
 function getButtonVariant(planKey) {
-  if (planKey === "vip") return "blue";
   if (planKey === "full_access") return "yellow";
   return "green";
 }
@@ -158,7 +121,7 @@ function getPlans(language) {
       key: "nutrition",
       name: bt(language, "nutritionName"),
       price: "€19.99",
-      month: bt(language, "month"),
+      payType: bt(language, "oneTime"),
       features: bt(language, "nutritionFeatures"),
       text: bt(language, "nutritionText"),
       button: bt(language, "nutritionButton"),
@@ -167,43 +130,18 @@ function getPlans(language) {
     {
       key: "full_access",
       name: bt(language, "fullAccessName"),
-      price: "€34.99",
-      month: bt(language, "month"),
+      price: "€29.99",
+      payType: bt(language, "oneTime"),
       badge: bt(language, "mostChosen"),
       features: bt(language, "fullAccessFeatures"),
       text: bt(language, "fullAccessText"),
       button: bt(language, "fullAccessButton"),
       cardStyle: highlightCard,
     },
-    {
-      key: "vip",
-      name: bt(language, "vipName"),
-      price: "€90",
-      month: bt(language, "month"),
-      features: bt(language, "vipFeatures"),
-      scarcity: bt(language, "vipScarcity"),
-      button: bt(language, "vipButton"),
-      cardStyle: vipCard,
-    },
-    {
-      key: "coaching",
-      name: bt(language, "coachingName"),
-      price: "€340",
-      month: bt(language, "month"),
-      features: bt(language, "coachingFeatures"),
-      scarcity: bt(language, "coachingScarcity"),
-      button: bt(language, "coachingButton"),
-      cardStyle: coachingCard,
-    },
   ];
 }
 
-export default function BillingClient({
-  userEmail,
-  membershipType,
-  isActive,
-  hasCustomer,
-}) {
+export default function BillingClient({ membershipType, isActive }) {
   const searchParams = useSearchParams();
   const success = searchParams?.get("success") === "1";
   const { language } = useLanguage();
@@ -230,16 +168,10 @@ export default function BillingClient({
           </h2>
         </div>
 
-        <div style={statusRow}>
-          <span style={statusPill(isActive)}>
-            {bt(language, "status")}:{" "}
-            {isActive ? bt(language, "active") : bt(language, "inactive")}
-          </span>
-
-          {hasCustomer && (
-            <ManageSubscriptionButton label={bt(language, "manage")} />
-          )}
-        </div>
+        <span style={statusPill(isActive)}>
+          {bt(language, "status")}:{" "}
+          {isActive ? bt(language, "active") : bt(language, "inactive")}
+        </span>
       </section>
 
       <section style={heroUpsellCard}>
@@ -262,7 +194,7 @@ export default function BillingClient({
 
                 <div style={priceRow}>
                   <span style={price}>{plan.price}</span>
-                  <span style={month}>{plan.month}</span>
+                  <span style={payType}>{plan.payType}</span>
                 </div>
 
                 <ul style={featureList}>
@@ -270,10 +202,6 @@ export default function BillingClient({
                     <li key={feature}>{feature}</li>
                   ))}
                 </ul>
-
-                {plan.scarcity && (
-                  <div style={scarcityText}>{plan.scarcity}</div>
-                )}
 
                 {plan.text && <p style={planText}>{plan.text}</p>}
               </div>
@@ -303,7 +231,7 @@ const pageWrap = {
   display: "grid",
   gap: "22px",
   width: "100%",
-  maxWidth: "1320px",
+  maxWidth: "1050px",
   margin: "0 auto",
   overflowX: "hidden",
 };
@@ -313,8 +241,11 @@ const statusCard = {
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: "22px",
   padding: "clamp(18px, 4vw, 24px)",
-  display: "grid",
+  display: "flex",
   gap: "14px",
+  justifyContent: "space-between",
+  alignItems: "center",
+  flexWrap: "wrap",
   minWidth: 0,
 };
 
@@ -361,14 +292,6 @@ const text = {
   lineHeight: 1.8,
 };
 
-const statusRow = {
-  display: "flex",
-  gap: "12px",
-  flexWrap: "wrap",
-  alignItems: "center",
-  justifyContent: "space-between",
-};
-
 const statusPill = (active) => ({
   display: "inline-flex",
   width: "fit-content",
@@ -381,7 +304,7 @@ const statusPill = (active) => ({
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
   gap: "18px",
   alignItems: "stretch",
 };
@@ -408,19 +331,6 @@ const highlightCard = {
   ...basePlanCard,
   background: "rgba(250,204,21,0.08)",
   border: "1px solid rgba(250,204,21,0.45)",
-};
-
-const vipCard = {
-  ...basePlanCard,
-  background: "rgba(96,165,250,0.08)",
-  border: "1px solid rgba(96,165,250,0.28)",
-};
-
-const coachingCard = {
-  ...basePlanCard,
-  background:
-    "linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(255,255,255,0.22)",
 };
 
 const bestValue = {
@@ -457,7 +367,7 @@ const cardTitle = {
 const priceRow = {
   display: "flex",
   alignItems: "flex-end",
-  gap: "4px",
+  gap: "8px",
   marginBottom: "24px",
   flexWrap: "wrap",
 };
@@ -468,7 +378,7 @@ const price = {
   lineHeight: 0.95,
 };
 
-const month = {
+const payType = {
   color: "rgba(255,255,255,0.7)",
   fontWeight: "800",
   marginBottom: "6px",
@@ -480,12 +390,6 @@ const featureList = {
   color: "rgba(255,255,255,0.72)",
   lineHeight: 1.75,
   fontSize: "16px",
-};
-
-const scarcityText = {
-  marginTop: "18px",
-  color: "#facc15",
-  fontWeight: "900",
 };
 
 const planText = {
