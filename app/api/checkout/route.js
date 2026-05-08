@@ -9,9 +9,27 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const PLAN_PRICE_MAP = {
   nutrition: process.env.STRIPE_PRICE_NUTRITION,
   full_access: process.env.STRIPE_PRICE_FULL_ACCESS,
-  vip: process.env.STRIPE_PRICE_VIP,
-  coaching: process.env.STRIPE_PRICE_COACHING,
+  upgrade_full_access: process.env.STRIPE_PRICE_UPGRADE_FULL_ACCESS,
+  coaching_call: process.env.STRIPE_PRICE_COACHING_CALL,
 };
+
+function normalizePlan(plan) {
+  const clean = String(plan || "").toLowerCase().trim();
+
+  if (clean === "full access" || clean === "full-access") {
+    return "full_access";
+  }
+
+  if (clean === "upgrade full access" || clean === "upgrade-full-access") {
+    return "upgrade_full_access";
+  }
+
+  if (clean === "coaching call" || clean === "coaching-call") {
+    return "coaching_call";
+  }
+
+  return clean;
+}
 
 async function getOrCreateCustomer(user, email) {
   const supabase = await createClient();
@@ -38,16 +56,14 @@ async function getOrCreateCustomer(user, email) {
     },
   });
 
- const { error: updateError } = await supabase.from("profiles").upsert(
-  {
-    id: user.id,
-    email,
-    stripe_customer_id: customer.id,
-    membership_type: "free",
-    is_active: false,
-  },
-  { onConflict: "id" }
-);
+  const { error: updateError } = await supabase.from("profiles").upsert(
+    {
+      id: user.id,
+      email,
+      stripe_customer_id: customer.id,
+    },
+    { onConflict: "id" }
+  );
 
   if (updateError) {
     console.error("SAVE STRIPE CUSTOMER ERROR:", updateError);
@@ -90,19 +106,21 @@ export async function POST(req) {
       );
     }
 
-    const { plan } = await req.json();
-
-    const normalizedPlan = String(plan || "").toLowerCase().trim();
+    const body = await req.json();
+    const normalizedPlan = normalizePlan(body?.plan);
 
     if (!normalizedPlan) {
-      return NextResponse.json({ error: "Missing plan" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing plan" },
+        { status: 400 }
+      );
     }
 
     const priceId = PLAN_PRICE_MAP[normalizedPlan];
 
     if (!priceId) {
       return NextResponse.json(
-        { error: `Invalid plan: ${normalizedPlan}` },
+        { error: `Invalid plan or missing Stripe price env: ${normalizedPlan}` },
         { status: 400 }
       );
     }
@@ -116,6 +134,24 @@ export async function POST(req) {
       );
     }
 
+    if (normalizedPlan === "upgrade_full_access") {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("membership_type,is_active")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (
+        !profile?.is_active ||
+        String(profile?.membership_type || "").toLowerCase() !== "nutrition"
+      ) {
+        return NextResponse.json(
+          { error: "Upgrade is only available for active Nutrition members." },
+          { status: 403 }
+        );
+      }
+    }
+
     const customerId = await getOrCreateCustomer(user, userEmail);
 
     const metadata = {
@@ -124,7 +160,7 @@ export async function POST(req) {
       email: userEmail,
     };
 
-    console.log("CREATING CHECKOUT SESSION:", {
+    console.log("CREATING ONE-TIME CHECKOUT SESSION:", {
       user_id: user.id,
       email: userEmail,
       plan: normalizedPlan,
@@ -132,11 +168,21 @@ export async function POST(req) {
       priceId,
     });
 
+    const successPath =
+      normalizedPlan === "coaching_call"
+        ? "/coaching?success=1"
+        : "/billing?success=1";
+
+    const cancelPath =
+      normalizedPlan === "coaching_call"
+        ? "/coaching?canceled=1"
+        : "/billing?canceled=1";
+
     const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
+      mode: "payment",
       customer: customerId,
       client_reference_id: user.id,
-      
+
       line_items: [
         {
           price: priceId,
@@ -144,12 +190,11 @@ export async function POST(req) {
         },
       ],
 
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/billing?success=1&plan=${normalizedPlan}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/billing?canceled=1`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}${successPath}&plan=${normalizedPlan}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}${cancelPath}`,
 
       metadata,
-
-      subscription_data: {
+      payment_intent_data: {
         metadata,
       },
     });
@@ -157,6 +202,7 @@ export async function POST(req) {
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error("STRIPE CHECKOUT ERROR:", error);
+
     return NextResponse.json(
       { error: error?.message || "Stripe error" },
       { status: 500 }
