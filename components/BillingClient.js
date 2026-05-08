@@ -143,8 +143,13 @@ function isCurrentPlan(membershipType, planKey, isActive) {
   if (!isActive) return false;
 
   const membership = normalizeMembership(membershipType);
-
   return membership === planKey;
+}
+
+function getButtonVariant(planKey) {
+  if (planKey === "vip") return "blue";
+  if (planKey === "full_access") return "yellow";
+  return "green";
 }
 
 function getPlans(language) {
@@ -158,7 +163,6 @@ function getPlans(language) {
       text: bt(language, "nutritionText"),
       button: bt(language, "nutritionButton"),
       cardStyle: card,
-      priceIdEnv: "STRIPE_PRICE_NUTRITION",
     },
     {
       key: "full_access",
@@ -170,7 +174,6 @@ function getPlans(language) {
       text: bt(language, "fullAccessText"),
       button: bt(language, "fullAccessButton"),
       cardStyle: highlightCard,
-      priceIdEnv: "STRIPE_PRICE_FULL_ACCESS",
     },
     {
       key: "vip",
@@ -181,7 +184,6 @@ function getPlans(language) {
       scarcity: bt(language, "vipScarcity"),
       button: bt(language, "vipButton"),
       cardStyle: vipCard,
-      priceIdEnv: "STRIPE_PRICE_VIP",
     },
     {
       key: "coaching",
@@ -192,7 +194,6 @@ function getPlans(language) {
       scarcity: bt(language, "coachingScarcity"),
       button: bt(language, "coachingButton"),
       cardStyle: coachingCard,
-      priceIdEnv: "STRIPE_PRICE_COACHING",
     },
   ];
 }
@@ -283,10 +284,9 @@ export default function BillingClient({
                 </button>
               ) : (
                 <CheckoutButton
-                  userEmail={userEmail}
-                  membershipType={plan.key}
+                  plan={plan.key}
                   label={plan.button}
-                  priceIdEnv={plan.priceIdEnv}
+                  variant={getButtonVariant(plan.key)}
                 />
               )}
             </article>
