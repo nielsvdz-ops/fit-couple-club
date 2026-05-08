@@ -49,71 +49,70 @@ export default function Home() {
 
   const t = {
     en: {
-      badge: "Fitness, nutrition, groceries & couple accountability",
-      heroTitle: "Stop guessing. Build a body and routine that actually lasts.",
+      badge: "Fitness, food, groceries & staying consistent together",
+      heroTitle: "Train smarter, eat better, and build a routine you can actually keep.",
       heroText:
-        "Fit Couple Club gives you daily nutrition routines, smart supermarket grocery planning, workouts, progress tools, and Couple Zone accountability — all in one clear system.",
-      start: "Start Your Journey",
+        "Fit Couple Club helps you know what to eat, how to train, what to buy, and how to stay consistent — whether you do it solo or together.",
+      start: "Get Started",
       viewPlans: "View Plans",
-      trust1: "150 nutrition routines",
+      trust1: "150 food routines",
       trust2: "Couple Zone",
-      trust3: "Smart grocery engine",
+      trust3: "Smart grocery lists",
       overlayTitle: "Solo or together",
       overlayText:
-        "Built for real discipline, real routines, and real couples who want structure.",
+        "Made for real life, busy weeks, and couples who want a clear plan.",
       how: "How It Works",
-      howTitle: "One system. Less guessing. Better consistency.",
+      howTitle: "Less guessing. More structure. Better consistency.",
       features: [
         [
           "01",
-          "Choose your goal",
-          "Lose fat, build muscle, tone, improve performance, or transform as a couple.",
+          "Pick your goal",
+          "Choose whether you want to lose fat, build muscle, feel fitter, or work on it together.",
         ],
         [
           "02",
-          "Follow the structure",
-          "Use daily routines, workouts, recipes, grocery planning, and progress tools.",
+          "Follow a simple structure",
+          "Use ready-made meals, recipes, workouts, grocery lists, and progress tools.",
         ],
         [
           "03",
-          "Stay accountable",
-          "Couple Zone helps you score the week, detect weak points, and improve together.",
+          "Stay on track",
+          "Couple Zone helps you check in, see what went well, and spot what needs more attention.",
         ],
         [
           "04",
-          "Upgrade support",
-          "Book a Coaching Call when you want personal guidance and accountability.",
+          "Choose your access",
+          "Start with food only, or get the full fitness platform with one simple payment.",
         ],
       ],
       about: "About Us",
-      aboutTitle: "Built from real experience, not theory.",
+      aboutTitle: "Built from real experience, not just theory.",
       aboutText1:
-        "We have been together for over 12 years. We train together, eat together, and built our bodies and lifestyle side by side.",
+        "We have been together for over 12 years. We train together, eat together, and learned what works by living it ourselves.",
       aboutText2:
-        "Rosanna’s journey gave her deep real-world knowledge about food, balance, healthy eating, and recovery.",
+        "Rosanna learned a lot through her own journey with food, balance, healthy habits, and recovery.",
       aboutText3:
-        "Niels has trained since he was 15 and built years of discipline, structure, and athletic lifestyle experience.",
+        "Niels has been training since he was 15 and brings years of discipline, structure, and fitness experience.",
       goalsEyebrow: "Choose Your Goal",
-      goalsTitle: "Built around what people actually want.",
+      goalsTitle: "Built around the goals people actually care about.",
       coupleEyebrow: "Couple Zone",
-      coupleTitle: "Your biggest advantage is doing this together.",
+      coupleTitle: "It gets easier when you do it together.",
       coupleText1:
-        "Couple Zone is a premium accountability system for couples who want to train, eat, shop, and stay consistent together without pressure or arguments.",
+        "Couple Zone helps couples train, eat, shop, and stay consistent together without turning everything into pressure or arguments.",
       coupleText2:
-        "Score your week, track history, detect the weakest area, and get personalized advice so you know exactly what to improve next.",
-      mini1: "Weakest-area detection",
-      mini2: "Couple grocery planning",
-      mini3: "Personalized advice",
+        "Check your week, see your patterns, and get clear suggestions on what to improve next.",
+      mini1: "Find weak spots",
+      mini2: "Plan groceries together",
+      mini3: "Simple advice",
       membership: "Membership Plans",
-      membershipTitle: "Choose the level of support you need.",
+      membershipTitle: "Choose what you need.",
       membershipIntro:
-        "Start with Nutrition, unlock the full transformation system with Full Access, or book a separate coaching call when you want personal guidance.",
+        "Start with the food plan, or choose Full Access for food, workouts, programs, progress, and Couple Zone. Both are one-time payments.",
       digitalDelivery:
-        "All content and services are delivered digitally through a secure member dashboard after purchase, including structured workout programs, nutrition plans, and optional one-time coaching call support.",
+        "After purchase, everything is available inside your member dashboard: food plans, recipes, grocery lists, workouts, programs, and progress tools.",
       bestValue: "🔥 Best Value",
-      soldOut: "Sold Out",
       footer:
-        "© Fit Couple Club — Build your body, health, and lifestyle solo or as a team.",
+        "© Fit Couple Club — Build your body, health, and lifestyle your way.",
       terms: "Terms",
       privacy: "Privacy Policy",
       refund: "Refund Policy",
@@ -127,7 +126,7 @@ export default function Home() {
             "Weekly recipes & structure",
             "Smart grocery generator",
             "Couple grocery mode",
-            "Access to Coaching section",
+            "Access to the Coaching page after login",
           ],
           cta: "Get Nutrition",
           featured: false,
@@ -136,148 +135,84 @@ export default function Home() {
           name: "Full Access",
           price: "€29.99",
           points: [
-            "Everything in Nutrition",
-            "Full workout system",
-            "Step-by-step programs",
-            "Exercise GIF guidance",
+            "Everything from Nutrition",
+            "Complete workout library",
+            "Step-by-step training programs",
+            "Exercise guidance",
             "Progress tracking",
-            "Couple Zone system",
-            "Access to Coaching section",
+            "Couple Zone",
+            "Access to the Coaching page after login",
           ],
-          cta: "Unlock Full Access",
+          cta: "Get Full Access",
           featured: true,
-        },
-        {
-          name: "Coaching Call",
-          price: "€60",
-          points: [
-            "1-on-1 coaching call",
-            "Training & nutrition review",
-            "Personalized advice",
-            "Progress analysis",
-            "Direct support session",
-            "Book & reschedule inside dashboard",
-          ],
-          cta: "Book Coaching Call",
-          featured: false,
-          type: "coaching",
-        },
-      ],
-          cta: "Start Nutrition",
-          featured: false,
-        },
-        {
-          name: "Full Access",
-          price: "€34.99/mo",
-          points: [
-            "Everything in Nutrition",
-            "Full workout system",
-            "Step-by-step programs",
-            "Exercise GIF guidance",
-            "Progress tracking",
-            "Couple Zone system",
-          ],
-          cta: "Unlock Full System",
-          featured: true,
-        },
-        {
-          name: "VIP",
-          price: "€90/mo",
-          points: [
-            "Everything in Full Access",
-            "Monthly coaching call",
-            "Weekly couple check-ins",
-            "Personalized advice",
-            "Priority support",
-            "Limited VIP spots",
-          ],
-          cta: "Go VIP",
-          featured: false,
-          type: "vip",
-        },
-        {
-          name: "Coaching",
-          price: "€340/mo",
-          points: [
-            "Everything in VIP",
-            "Weekly 1-on-1 calls",
-            "Fully custom plan",
-            "Direct support",
-            "Couple coaching available",
-            "Coaching by Niels & Rosanna",
-          ],
-          cta: "Start Coaching",
-          featured: false,
-          type: "coaching",
         },
       ],
     },
     nl: {
-      badge: "Fitness, voeding, boodschappen & couple accountability",
-      heroTitle: "Stop met gokken. Bouw een lichaam en routine die echt blijft.",
+      badge: "Fitness, voeding, boodschappen & samen consistent blijven",
+      heroTitle: "Train slimmer, eet beter en bouw een routine die je echt volhoudt.",
       heroText:
-        "Fit Couple Club geeft je dagelijkse voedingsroutines, slimme supermarkt boodschappenplanning, workouts, progressietools en Couple Zone accountability — alles in één duidelijk systeem.",
-      start: "Start Je Journey",
+        "Fit Couple Club helpt je met wat je eet, hoe je traint, wat je koopt en hoe je consistent blijft — alleen of samen.",
+      start: "Start Nu",
       viewPlans: "Bekijk Plannen",
       trust1: "150 voedingsroutines",
       trust2: "Couple Zone",
-      trust3: "Slimme boodschappen engine",
+      trust3: "Slimme boodschappenlijsten",
       overlayTitle: "Solo of samen",
       overlayText:
-        "Gebouwd voor echte discipline, echte routines en koppels die structuur willen.",
+        "Gemaakt voor het echte leven, drukke weken en koppels die een duidelijk plan willen.",
       how: "Hoe Het Werkt",
-      howTitle: "Eén systeem. Minder gokken. Meer consistentie.",
+      howTitle: "Minder gokken. Meer structuur. Meer consistentie.",
       features: [
         [
           "01",
           "Kies je doel",
-          "Vet verliezen, spiermassa opbouwen, strakker worden, prestaties verbeteren of samen transformeren.",
+          "Kies of je vet wilt verliezen, spiermassa wilt opbouwen, fitter wilt worden of dit samen wilt aanpakken.",
         ],
         [
           "02",
-          "Volg de structuur",
-          "Gebruik dagelijkse routines, workouts, recepten, boodschappenplanning en progressietools.",
+          "Volg een simpele structuur",
+          "Gebruik kant-en-klare maaltijden, recepten, workouts, boodschappenlijsten en progressietools.",
         ],
         [
           "03",
-          "Blijf accountable",
-          "Couple Zone helpt je de week te scoren, zwakke punten te vinden en samen te verbeteren.",
+          "Blijf op koers",
+          "Couple Zone helpt je samen inchecken, zien wat goed ging en ontdekken waar je meer aandacht aan moet geven.",
         ],
         [
           "04",
-          "Upgrade support",
-          "Boek een Coaching Call wanneer je persoonlijke begeleiding en accountability wilt.",
+          "Kies je toegang",
+          "Start alleen met voeding, of krijg het volledige fitnessplatform met één simpele betaling.",
         ],
       ],
       about: "Over Ons",
-      aboutTitle: "Gebouwd vanuit echte ervaring, niet theorie.",
+      aboutTitle: "Gebouwd vanuit echte ervaring, niet alleen theorie.",
       aboutText1:
-        "Wij zijn al meer dan 12 jaar samen. We trainen samen, eten samen en hebben onze lichamen en lifestyle samen opgebouwd.",
+        "Wij zijn al meer dan 12 jaar samen. We trainen samen, eten samen en hebben zelf geleerd wat wel en niet werkt.",
       aboutText2:
-        "Rosanna’s journey gaf haar diepe praktijkkennis over voeding, balans, gezond eten en herstel.",
+        "Rosanna heeft door haar eigen journey veel geleerd over voeding, balans, gezonde gewoontes en herstel.",
       aboutText3:
-        "Niels traint sinds zijn 15e en bouwde jarenlange discipline, structuur en atletische lifestyle ervaring op.",
+        "Niels traint sinds zijn 15e en brengt jaren ervaring mee in discipline, structuur en fitness.",
       goalsEyebrow: "Kies Je Doel",
-      goalsTitle: "Gebouwd rondom wat mensen echt willen.",
+      goalsTitle: "Gebouwd rondom doelen die mensen echt belangrijk vinden.",
       coupleEyebrow: "Couple Zone",
-      coupleTitle: "Jullie grootste voordeel is dit samen doen.",
+      coupleTitle: "Het wordt makkelijker als je het samen doet.",
       coupleText1:
-        "Couple Zone is een premium accountability systeem voor koppels die samen willen trainen, eten, boodschappen doen en consistent blijven zonder druk of discussies.",
+        "Couple Zone helpt koppels samen trainen, eten, boodschappen doen en consistent blijven zonder dat het voelt als druk of discussie.",
       coupleText2:
-        "Score je week, track geschiedenis, vind het zwakste gebied en krijg persoonlijk advies zodat je precies weet wat je moet verbeteren.",
-      mini1: "Zwakke punten",
-      mini2: "Samen boodschappen",
-      mini3: "Persoonlijk advies",
+        "Check je week, zie je patronen en krijg duidelijke tips over wat je als volgende kunt verbeteren.",
+      mini1: "Vind zwakke plekken",
+      mini2: "Plan boodschappen samen",
+      mini3: "Simpele tips",
       membership: "Membership Plannen",
-      membershipTitle: "Kies het niveau support dat je nodig hebt.",
+      membershipTitle: "Kies wat jij nodig hebt.",
       membershipIntro:
-        "Start met Nutrition, ontgrendel het volledige transformatiesysteem met Full Access of boek een losse coaching call wanneer je persoonlijke begeleiding wilt.",
+        "Start met alleen voeding, of kies Full Access voor voeding, workouts, programma’s, progressie en Couple Zone. Beide zijn eenmalige betalingen.",
       digitalDelivery:
-        "Alle content en services worden digitaal geleverd via een beveiligd member dashboard na aankoop, inclusief workout programma’s, voedingsplannen en optionele eenmalige coaching call support.",
+        "Na aankoop staat alles klaar in je member dashboard: voedingsplannen, recepten, boodschappenlijsten, workouts, programma’s en progressietools.",
       bestValue: "🔥 Beste Keuze",
-      soldOut: "Uitverkocht",
       footer:
-        "© Fit Couple Club — Bouw je lichaam, gezondheid en lifestyle solo of als team.",
+        "© Fit Couple Club — Bouw je lichaam, gezondheid en lifestyle op jouw manier.",
       terms: "Voorwaarden",
       privacy: "Privacybeleid",
       refund: "Refundbeleid",
@@ -291,7 +226,7 @@ export default function Home() {
             "Wekelijkse recepten & structuur",
             "Slimme boodschappen generator",
             "Couple grocery mode",
-            "Toegang tot Coaching sectie",
+            "Toegang tot de Coaching pagina na login",
           ],
           cta: "Koop Nutrition",
           featured: false,
@@ -300,79 +235,16 @@ export default function Home() {
           name: "Full Access",
           price: "€29.99",
           points: [
-            "Alles in Nutrition",
-            "Volledig workout systeem",
-            "Stap-voor-stap programma’s",
-            "Exercise GIF begeleiding",
+            "Alles van Nutrition",
+            "Complete workout bibliotheek",
+            "Stap-voor-stap trainingsprogramma’s",
+            "Oefening begeleiding",
             "Progressie tracking",
-            "Couple Zone systeem",
-            "Toegang tot Coaching sectie",
+            "Couple Zone",
+            "Toegang tot de Coaching pagina na login",
           ],
-          cta: "Ontgrendel Full Access",
+          cta: "Krijg Full Access",
           featured: true,
-        },
-        {
-          name: "Coaching Call",
-          price: "€60",
-          points: [
-            "1-op-1 coaching call",
-            "Training & voeding analyse",
-            "Persoonlijk advies",
-            "Progressie analyse",
-            "Directe support sessie",
-            "Boeken & verplaatsen in dashboard",
-          ],
-          cta: "Boek Coaching Call",
-          featured: false,
-          type: "coaching",
-        },
-      ],
-          cta: "Start Nutrition",
-          featured: false,
-        },
-        {
-          name: "Full Access",
-          price: "€34.99/mo",
-          points: [
-            "Alles in Nutrition",
-            "Volledig workout systeem",
-            "Stap-voor-stap programma’s",
-            "Exercise GIF begeleiding",
-            "Progressie tracking",
-            "Couple Zone systeem",
-          ],
-          cta: "Ontgrendel Full System",
-          featured: true,
-        },
-        {
-          name: "VIP",
-          price: "€90/mo",
-          points: [
-            "Alles in Full Access",
-            "Maandelijkse coaching call",
-            "Wekelijkse couple check-ins",
-            "Persoonlijk advies",
-            "Priority support",
-            "Beperkte VIP plekken",
-          ],
-          cta: "Ga VIP",
-          featured: false,
-          type: "vip",
-        },
-        {
-          name: "Coaching",
-          price: "€340/mo",
-          points: [
-            "Alles in VIP",
-            "Wekelijkse 1-op-1 calls",
-            "Volledig custom plan",
-            "Direct support",
-            "Couple coaching mogelijk",
-            "Coaching door Niels & Rosanna",
-          ],
-          cta: "Start Coaching",
-          featured: false,
-          type: "coaching",
         },
       ],
     },
@@ -567,7 +439,6 @@ export default function Home() {
               style={{
                 ...pricingCard,
                 ...(plan.featured ? pricingCardFeatured : {}),
-                ...(plan.disabled ? disabledCard : {}),
               }}
             >
               {plan.featured && <div style={bestValue}>{t.bestValue}</div>}
@@ -582,15 +453,14 @@ export default function Home() {
                   ))}
                 </ul>
 
-                {plan.scarcity && <div style={scarcity}>{plan.scarcity}</div>}
+
               </div>
 
               <a
-                href={plan.type === "coaching" ? "/login" : "/signup"}
+                href="/signup"
                 style={{
                   ...pricingButton,
                   ...(plan.featured ? pricingButtonFeatured : {}),
-                  ...(plan.disabled ? disabledButton : {}),
                 }}
               >
                 {plan.cta}
@@ -939,9 +809,6 @@ const pricingCardFeatured = {
   border: "1px solid rgba(250,204,21,0.45)",
 };
 
-const disabledCard = {
-  opacity: 0.55,
-};
 
 const bestValue = {
   position: "absolute",
@@ -975,12 +842,6 @@ const pricingList = {
   color: "rgba(255,255,255,0.78)",
 };
 
-const scarcity = {
-  marginTop: "16px",
-  color: "#facc15",
-  fontSize: "13px",
-  fontWeight: "900",
-};
 
 const pricingButton = {
   display: "block",
@@ -1000,11 +861,6 @@ const pricingButtonFeatured = {
   background: "#facc15",
 };
 
-const disabledButton = {
-  pointerEvents: "none",
-  cursor: "not-allowed",
-  opacity: 0.6,
-};
 
 const footer = {
   borderTop: "1px solid rgba(255,255,255,0.08)",
@@ -1016,8 +872,8 @@ const footer = {
 const footerLinks = {
   display: "flex",
   justifyContent: "center",
-        overflowWrap: "break-word",
-        wordBreak: "break-word",
+  overflowWrap: "break-word",
+  wordBreak: "break-word",
   gap: "18px",
   flexWrap: "wrap",
   marginTop: "14px",
