@@ -37,7 +37,9 @@ const copy = {
     progression: "Weekly progression",
     startProgram: "Start Program",
     save: "Save for Later",
+    all: "All",
   },
+
   nl: {
     pageTitle: "Programma’s",
     pageSubtitle:
@@ -62,6 +64,7 @@ const copy = {
     progression: "Weekelijkse progressie",
     startProgram: "Start Programma",
     save: "Bewaar voor later",
+    all: "Alle",
   },
 };
 
@@ -136,7 +139,9 @@ export default async function ProgramsPage() {
           <div style={filterRow}>
             {categories.map((category) => (
               <div key={category} style={filterPill}>
-                {tr(category, language)}
+                {category === "All"
+                  ? t.all
+                  : tr(category, language)}
               </div>
             ))}
           </div>
@@ -172,69 +177,100 @@ export default async function ProgramsPage() {
                 </div>
               </div>
 
-              <h3 style={cardTitle}>{tr(program.title, language)}</h3>
+              <h3 style={cardTitle}>
+                {tr(program.title, language)}
+              </h3>
 
-              <p style={cardGoal}>{tr(program.goal, language)}</p>
+              <p style={cardGoal}>
+                {tr(program.goal, language)}
+              </p>
 
               <div style={metaGrid}>
                 <div style={metaItem}>
                   <div style={metaLabel}>{t.duration}</div>
-                  <div style={metaValue}>{tr(program.duration, language)}</div>
+
+                  <div style={metaValue}>
+                    {tr(program.duration, language)}
+                  </div>
                 </div>
 
                 <div style={metaItem}>
                   <div style={metaLabel}>{t.schedule}</div>
-                  <div style={metaValue}>{tr(program.schedule, language)}</div>
+
+                  <div style={metaValue}>
+                    {tr(program.schedule, language)}
+                  </div>
                 </div>
 
                 <div style={metaItem}>
                   <div style={metaLabel}>{t.equipment}</div>
-                  <div style={metaValue}>{tr(program.equipment, language)}</div>
+
+                  <div style={metaValue}>
+                    {tr(program.equipment, language)}
+                  </div>
                 </div>
 
                 <div style={metaItem}>
                   <div style={metaLabel}>{t.idealFor}</div>
-                  <div style={metaValue}>{tr(program.idealFor, language)}</div>
+
+                  <div style={metaValue}>
+                    {tr(program.idealFor, language)}
+                  </div>
                 </div>
               </div>
 
               <div style={sectionBlock}>
                 <div style={sectionLabel}>{t.expect}</div>
-                <p style={cardText}>{tr(program.result, language)}</p>
+
+                <p style={cardText}>
+                  {tr(program.result, language)}
+                </p>
               </div>
 
               <div style={sectionBlock}>
                 <div style={sectionLabel}>{t.inside}</div>
+
                 <ul style={list}>
                   {program.includes.map((item) => (
-                    <li key={item}>{tr(item, language)}</li>
+                    <li key={item}>
+                      {tr(item, language)}
+                    </li>
                   ))}
                 </ul>
               </div>
 
               <div style={sectionBlock}>
                 <div style={sectionLabel}>{t.split}</div>
+
                 <ul style={list}>
                   {program.trainingSplit.map((item) => (
-                    <li key={item}>{tr(item, language)}</li>
+                    <li key={item}>
+                      {tr(item, language)}
+                    </li>
                   ))}
                 </ul>
               </div>
 
               <div style={sectionBlock}>
                 <div style={sectionLabel}>{t.progression}</div>
+
                 <ul style={list}>
                   {program.weeklyPlan.map((block) => (
                     <li key={`${program.slug}-${block.week}`}>
-                      <strong>{tr(block.week, language)}</strong> —{" "}
-                      {tr(block.focus, language)}
+                      <strong>
+                        {tr(block.week, language)}
+                      </strong>{" "}
+                      — {tr(block.focus, language)}
                     </li>
                   ))}
                 </ul>
               </div>
 
               <div style={ctaRow}>
-                <Link href={`/programs/${program.slug}`} style={primaryButton}>
+                <Link
+                  href={`/programs/${program.slug}`}
+                  style={primaryButton}
+                >
                   {t.startProgram}
                 </Link>
 
@@ -329,7 +365,8 @@ const statLabel = {
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%, 340px),1fr))",
+  gridTemplateColumns:
+    "repeat(auto-fit,minmax(min(100%, 340px),1fr))",
   gap: "18px",
 };
 
