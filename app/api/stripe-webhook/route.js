@@ -95,4 +95,135 @@ async function updateProfileAccess({
       { onConflict: "id" }
     );
 
-    if (!error)
+    if (!error) return null;
+    console.error("UPSERT PROFILE ERROR:", error);
+  }
+
+  return new Error("No matching profile found to update.");
+}
+
+async function createCoachingCallCredit({
+  userId,
+  customerId,
+  email,
+  stripeSessionId,
+}) {
+  const normalizedEmail = String(email || "").toLowerCase().trim();
+
+  const { error } = await supabase.from("coaching_calls").insert({
+    user_id: userId || null,
+    email: normalizedEmail || null,
+    stripe_customer_id: customerId || null,
+    stripe_session_id: stripeSessionId,
+    status: "paid_unscheduled",
+  });
+
+  if (error) {
+    console.error("CREATE COACHING CALL CREDIT ERROR:", error);
+    return error;
+  }
+
+  return null;
+}
+
+export async function POST(req) {
+  const body = await req.text();
+  const signature = req.headers.get("stripe-signature");
+
+  if (!signature) {
+    return new Response("Missing stripe-signature header", { status: 400 });
+  }
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (error) {
+    console.error("WEBHOOK SIGNATURE ERROR:", error.message);
+    return new Response(`Webhook Error: ${error.message}`, { status: 400 });
+  }
+
+  try {
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
+
+      const customerId = String(session.customer || "").trim();
+
+      const email = String(
+        session.customer_email ||
+          session.customer_details?.email ||
+          session.metadata?.email ||
+          ""
+      )
+        .toLowerCase()
+        .trim();
+
+      const userId = String(
+        session.metadata?.user_id || session.client_reference_id || ""
+      ).trim();
+
+      const plan = normalizePlan(session.metadata?.plan);
+
+      console.log("STRIPE ONE-TIME SESSION COMPLETED:", {
+        session: session.id,
+        customerId,
+        userId,
+        email,
+        plan,
+        paymentStatus: session.payment_status,
+      });
+
+      if (session.payment_status !== "paid") {
+        console.log("SESSION NOT PAID YET:", session.id);
+        return new Response("Session not paid", { status: 200 });
+      }
+
+      if (plan === "coaching_call") {
+        const coachingError = await createCoachingCallCredit({
+          userId,
+          customerId,
+          email,
+          stripeSessionId: session.id,
+        });
+
+        if (coachingError) {
+          return new Response("Coaching call credit failed", { status: 500 });
+        }
+
+        return new Response("ok", { status: 200 });
+      }
+
+      const membershipType = PLAN_MEMBERSHIP_MAP[plan];
+
+      if (!membershipType) {
+        console.error("NO MEMBERSHIP TYPE FOUND:", {
+          session: session.id,
+          plan,
+        });
+
+        return new Response("No membership type found", { status: 200 });
+      }
+
+      const updateError = await updateProfileAccess({
+        userId,
+        customerId,
+        email,
+        membershipType,
+      });
+
+      if (updateError) {
+        console.error("SUPABASE UPDATE ERROR:", updateError.message);
+        return new Response("Database update failed", { status: 500 });
+      }
+    }
+
+    return new Response("ok", { status: 200 });
+  } catch (error) {
+    console.error("WEBHOOK PROCESSING ERROR:", error);
+    return new Response("Webhook handler failed", { status: 500 });
+  }
+}
