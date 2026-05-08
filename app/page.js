@@ -423,52 +423,62 @@ export default function Home() {
       </section>
 
       <section id="pricing" style={sectionWrap}>
-        <div style={sectionHeader}>
-          <div style={eyebrow}>{t.membership}</div>
-          <h2 style={sectionTitle}>{t.membershipTitle}</h2>
+  <div style={sectionHeader}>
+    <div style={eyebrow}>{t.membership}</div>
 
-          <p style={sectionIntro}>{t.membershipIntro}</p>
+    <h2 style={sectionTitle}>{t.membershipTitle}</h2>
 
-          <p style={digitalDeliveryText}>{t.digitalDelivery}</p>
+    <p style={sectionIntro}>{t.membershipIntro}</p>
+
+    <p style={digitalDeliveryText}>{t.digitalDelivery}</p>
+  </div>
+
+  <div style={pricingGrid}>
+    {pricingPlans.map((plan) => (
+      <div
+        key={plan.name}
+        style={{
+          ...pricingCard,
+          ...(plan.featured ? pricingCardFeatured : {}),
+        }}
+      >
+        {plan.featured && (
+          <div style={bestValue}>{t.bestValue}</div>
+        )}
+
+        <div>
+          <h3 style={pricingTitle}>{plan.name}</h3>
+
+          <div style={pricingPrice}>{plan.price}</div>
+
+          <div style={pricingSubtext}>
+            {language === "nl"
+              ? "Eenmalige betaling. Geen maandabonnement."
+              : "One-time payment. No monthly subscription."}
+          </div>
+
+          <ul style={pricingList}>
+            {plan.points.map((point) => (
+              <li key={point}>• {point}</li>
+            ))}
+          </ul>
         </div>
 
-        <div style={pricingGrid}>
-          {pricingPlans.map((plan) => (
-            <div
-              key={plan.name}
-              style={{
-                ...pricingCard,
-                ...(plan.featured ? pricingCardFeatured : {}),
-              }}
-            >
-              {plan.featured && <div style={bestValue}>{t.bestValue}</div>}
-
-              <div>
-                <h3 style={pricingTitle}>{plan.name}</h3>
-                <div style={pricingPrice}>{plan.price}</div>
-
-                <ul style={pricingList}>
-                  {plan.points.map((point) => (
-                    <li key={point}>✔ {point}</li>
-                  ))}
-                </ul>
-
-
-              </div>
-
-              <a
-                href="/signup"
-                style={{
-                  ...pricingButton,
-                  ...(plan.featured ? pricingButtonFeatured : {}),
-                }}
-              >
-                {plan.cta}
-              </a>
-            </div>
-          ))}
-        </div>
-      </section>
+        <a
+          href="/signup"
+          style={{
+            ...pricingButton,
+            ...(plan.featured
+              ? pricingButtonFeatured
+              : {}),
+          }}
+        >
+          {plan.cta}
+        </a>
+      </div>
+    ))}
+  </div>
+</section>
 
       <footer style={footer}>
         <div>{t.footer}</div>
@@ -787,78 +797,90 @@ const miniFeature = {
 
 const pricingGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
-  gap: "20px",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+  gap: "28px",
   alignItems: "stretch",
 };
 
 const pricingCard = {
-  background: "rgba(255,255,255,0.04)",
+  background: "#050505",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "26px",
-  padding: "30px",
-  minHeight: "480px",
+  borderRadius: "30px",
+  padding: "40px",
+  minHeight: "640px",
   position: "relative",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
+  boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
 };
 
 const pricingCardFeatured = {
-  background: "rgba(250,204,21,0.08)",
-  border: "1px solid rgba(250,204,21,0.45)",
+  background: "rgba(250,204,21,0.06)",
+  border: "2px solid #facc15",
 };
-
 
 const bestValue = {
   position: "absolute",
-  top: "-11px",
-  right: "14px",
+  top: "-14px",
+  right: "18px",
   background: "#facc15",
   color: "black",
-  fontSize: "12px",
+  fontSize: "13px",
   fontWeight: "900",
-  padding: "6px 10px",
-  borderRadius: "9px",
+  padding: "10px 14px",
+  borderRadius: "12px",
 };
 
 const pricingTitle = {
-  fontSize: "clamp(22px, 2vw, 32px)",
-  margin: "0 0 10px",
-  fontWeight: "900",
+  fontSize: "clamp(34px, 5vw, 50px)",
+  margin: "0 0 18px",
+  fontWeight: "950",
+  lineHeight: 1,
 };
 
 const pricingPrice = {
-  fontSize: "42px",
+  fontSize: "clamp(62px, 9vw, 84px)",
   fontWeight: "950",
-  marginBottom: "22px",
-  lineHeight: 1.15,
+  marginBottom: "8px",
+  lineHeight: 1,
+};
+
+const pricingSubtext = {
+  color: "rgba(255,255,255,0.62)",
+  fontWeight: "800",
+  marginBottom: "28px",
+  fontSize: "18px",
 };
 
 const pricingList = {
-  paddingLeft: "18px",
-  lineHeight: 1.9,
-  margin: 0,
-  color: "rgba(255,255,255,0.78)",
+  paddingLeft: "22px",
+  lineHeight: 2,
+  marginTop: "30px",
+  marginBottom: "34px",
+  color: "rgba(255,255,255,0.82)",
+  fontSize: "clamp(16px, 2vw, 19px)",
 };
-
 
 const pricingButton = {
   display: "block",
   width: "100%",
   textAlign: "center",
   textDecoration: "none",
-  padding: "14px 18px",
-  borderRadius: "14px",
-  fontWeight: "900",
-  background: "white",
+  padding: "20px 18px",
+  borderRadius: "18px",
+  fontWeight: "950",
+  fontSize: "clamp(20px, 2vw, 24px)",
+  background: "#facc15",
   color: "black",
-  marginTop: "28px",
+  marginTop: "34px",
   boxSizing: "border-box",
+  transition: "all 0.25s ease",
 };
 
 const pricingButtonFeatured = {
-  background: "#facc15",
+  background: "white",
 };
 
 
