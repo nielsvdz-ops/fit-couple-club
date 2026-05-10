@@ -1,10 +1,12 @@
 import Stripe from "stripe";
+import { Resend } from "resend";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -20,19 +22,192 @@ const PLAN_MEMBERSHIP_MAP = {
 function normalizePlan(plan) {
   const clean = String(plan || "").toLowerCase().trim();
 
-  if (clean === "full access" || clean === "full-access") {
-    return "full_access";
-  }
-
-  if (clean === "upgrade full access" || clean === "upgrade-full-access") {
-    return "upgrade_full_access";
-  }
-
-  if (clean === "coaching call" || clean === "coaching-call") {
-    return "coaching_call";
-  }
+  if (clean === "full access" || clean === "full-access") return "full_access";
+  if (clean === "upgrade full access" || clean === "upgrade-full-access") return "upgrade_full_access";
+  if (clean === "coaching call" || clean === "coaching-call") return "coaching_call";
 
   return clean;
+}
+
+function getPlanDetails(plan) {
+  const plans = {
+    nutrition: {
+      name: "Nutrition",
+      badge: "Nutrition Member",
+      dashboardPath: "/dashboard",
+      perks: [
+        "Daily nutrition routines",
+        "Recipe access",
+        "Smart grocery planning",
+        "Nutrition structure for solo or couple goals",
+        "Access to the Coaching page",
+      ],
+    },
+    full_access: {
+      name: "Full Access",
+      badge: "Full Access Member",
+      dashboardPath: "/dashboard",
+      perks: [
+        "Everything from Nutrition",
+        "Workout library",
+        "Programs",
+        "Plan Builder",
+        "Progress tracking",
+        "Couple Zone",
+        "Access to the Coaching page",
+      ],
+    },
+    upgrade_full_access: {
+      name: "Full Access Upgrade",
+      badge: "Full Access Member",
+      dashboardPath: "/dashboard",
+      perks: [
+        "Workout library unlocked",
+        "Programs unlocked",
+        "Plan Builder unlocked",
+        "Progress tracking unlocked",
+        "Couple Zone unlocked",
+      ],
+    },
+    coaching_call: {
+      name: "Coaching Call",
+      badge: "Coaching Call Purchased",
+      dashboardPath: "/coaching",
+      perks: [
+        "1 paid coaching call",
+        "Choose your preferred date and time",
+        "Reschedule request option",
+        "Training and nutrition review",
+        "Personal guidance from Fit Couple Club",
+      ],
+    },
+  };
+
+  return plans[plan] || plans.full_access;
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function buildWelcomeEmail({ plan, email }) {
+  const details = getPlanDetails(plan);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://fitcoupleclub.com";
+  const dashboardUrl = `${siteUrl}${details.dashboardPath}`;
+
+  const perksHtml = details.perks
+    .map(
+      (perk) => `
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <span style="color:#facc15;font-weight:900;">✓</span>
+            <span style="color:#f5f5f5;margin-left:8px;">${escapeHtml(perk)}</span>
+          </td>
+        </tr>
+      `
+    )
+    .join("");
+
+  return {
+    subject: `Welcome to Fit Couple Club — ${details.name}`,
+    html: `
+      <div style="margin:0;padding:0;background:#050505;font-family:Arial,Helvetica,sans-serif;color:#ffffff;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#050505;padding:32px 14px;">
+          <tr>
+            <td align="center">
+              <table width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background:#0b0b0b;border:1px solid rgba(255,255,255,0.10);border-radius:26px;overflow:hidden;">
+                
+                <tr>
+                  <td style="padding:34px 28px;background:linear-gradient(135deg,#050505,#111111 55%,rgba(250,204,21,0.14));">
+                    <div style="display:inline-block;padding:8px 13px;border-radius:999px;background:rgba(250,204,21,0.14);border:1px solid rgba(250,204,21,0.35);color:#facc15;font-size:12px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;">
+                      ${escapeHtml(details.badge)}
+                    </div>
+
+                    <h1 style="margin:22px 0 12px;font-size:38px;line-height:1.02;color:#ffffff;font-weight:950;">
+                      Welcome to the Fit Couple Club team.
+                    </h1>
+
+                    <p style="margin:0;color:rgba(255,255,255,0.74);font-size:17px;line-height:1.7;">
+                      We’re happy to have you with us. Your purchase is confirmed and your access is now being unlocked inside your member dashboard.
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:28px;">
+                    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px;">
+                      <div style="color:rgba(255,255,255,0.48);font-size:12px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px;">
+                        You bought
+                      </div>
+
+                      <div style="font-size:30px;line-height:1.1;font-weight:950;color:#ffffff;">
+                        ${escapeHtml(details.name)}
+                      </div>
+
+                      <div style="margin-top:10px;color:rgba(255,255,255,0.62);font-size:14px;">
+                        Account: ${escapeHtml(email)}
+                      </div>
+                    </div>
+
+                    <h2 style="margin:28px 0 12px;color:#ffffff;font-size:24px;font-weight:950;">
+                      What you unlocked
+                    </h2>
+
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      ${perksHtml}
+                    </table>
+
+                    <div style="text-align:center;margin:32px 0 10px;">
+                      <a href="${dashboardUrl}" style="display:inline-block;background:#facc15;color:#000000;text-decoration:none;font-weight:950;font-size:16px;padding:16px 26px;border-radius:16px;">
+                        Open Your Dashboard
+                      </a>
+                    </div>
+
+                    <p style="margin:24px 0 0;color:rgba(255,255,255,0.68);font-size:15px;line-height:1.7;">
+                      Start simple: open your dashboard, choose the section you bought access to, and follow the structure step by step. No guessing, no overthinking — just consistency.
+                    </p>
+
+                    <p style="margin:22px 0 0;color:#ffffff;font-size:15px;line-height:1.7;">
+                      Welcome to the team,<br />
+                      <strong>Niels & Rosanna</strong><br />
+                      Fit Couple Club
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:20px 28px;background:#070707;border-top:1px solid rgba(255,255,255,0.08);">
+                    <p style="margin:0;color:rgba(255,255,255,0.42);font-size:12px;line-height:1.6;text-align:center;">
+                      Need help? Reply to this email or contact us through Fit Couple Club.
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `,
+  };
+}
+
+async function sendWelcomeEmail({ plan, email }) {
+  if (!process.env.RESEND_API_KEY || !email) return;
+
+  const emailData = buildWelcomeEmail({ plan, email });
+
+  await resend.emails.send({
+    from: "Fit Couple Club <noreply@fitcoupleclub.com>",
+    to: [email],
+    subject: emailData.subject,
+    html: emailData.html,
+  });
 }
 
 async function updateProfileAccess({
@@ -178,7 +353,6 @@ export async function POST(req) {
       });
 
       if (session.payment_status !== "paid") {
-        console.log("SESSION NOT PAID YET:", session.id);
         return new Response("Session not paid", { status: 200 });
       }
 
@@ -192,6 +366,12 @@ export async function POST(req) {
 
         if (coachingError) {
           return new Response("Coaching call credit failed", { status: 500 });
+        }
+
+        try {
+          await sendWelcomeEmail({ plan, email });
+        } catch (emailError) {
+          console.error("WELCOME EMAIL ERROR:", emailError);
         }
 
         return new Response("ok", { status: 200 });
@@ -218,6 +398,12 @@ export async function POST(req) {
       if (updateError) {
         console.error("SUPABASE UPDATE ERROR:", updateError.message);
         return new Response("Database update failed", { status: 500 });
+      }
+
+      try {
+        await sendWelcomeEmail({ plan, email });
+      } catch (emailError) {
+        console.error("WELCOME EMAIL ERROR:", emailError);
       }
     }
 
