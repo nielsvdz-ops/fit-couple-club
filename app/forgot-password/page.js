@@ -197,7 +197,7 @@ const button = (loading) => ({
   cursor: loading ? "not-allowed" : "pointer",
   opacity: loading ? 0.8 : 1,
   fontSize: "16px",
-};
+)};
 
 const footerText = {
   marginTop: "18px",
