@@ -21,6 +21,7 @@ export default function LoginPage() {
       emailPlaceholder: "you@example.com",
       password: "Password",
       passwordPlaceholder: "Enter your password",
+      forgotPassword: "Forgot password?",
       loading: "Logging in...",
       button: "Login",
       error: "Something went wrong while logging in.",
@@ -35,6 +36,7 @@ export default function LoginPage() {
       emailPlaceholder: "jij@example.com",
       password: "Wachtwoord",
       passwordPlaceholder: "Vul je wachtwoord in",
+      forgotPassword: "Wachtwoord vergeten?",
       loading: "Bezig met inloggen...",
       button: "Inloggen",
       error: "Er ging iets mis tijdens het inloggen.",
@@ -93,6 +95,7 @@ export default function LoginPage() {
             <label htmlFor="email" style={label}>
               {t.email}
             </label>
+
             <input
               id="email"
               value={email}
@@ -106,9 +109,16 @@ export default function LoginPage() {
           </div>
 
           <div style={fieldWrap}>
-            <label htmlFor="password" style={label}>
-              {t.password}
-            </label>
+            <div style={passwordLabelRow}>
+              <label htmlFor="password" style={label}>
+                {t.password}
+              </label>
+
+              <a href="/forgot-password" style={smallLink}>
+                {t.forgotPassword}
+              </a>
+            </div>
+
             <input
               id="password"
               value={password}
@@ -191,6 +201,14 @@ const fieldWrap = {
   gap: "8px",
 };
 
+const passwordLabelRow = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: "12px",
+  flexWrap: "wrap",
+};
+
 const label = {
   fontSize: "14px",
   fontWeight: "700",
@@ -232,4 +250,11 @@ const link = {
   color: "white",
   fontWeight: "800",
   textDecoration: "none",
+};
+
+const smallLink = {
+  color: "rgba(255,255,255,0.78)",
+  fontWeight: "800",
+  textDecoration: "none",
+  fontSize: "13px",
 };
