@@ -143,6 +143,8 @@ export default function DashboardLayout({
   return (
     <div style={layout}>
       <aside style={sidebar}>
+        <div style={sidebarOverlay} />
+
         <SidebarContent
           navItems={navItems}
           membership={membership}
@@ -160,7 +162,7 @@ export default function DashboardLayout({
         </button>
 
         <div style={mobileBrand}>
-          Fit Couple Club
+          FITCOUPLECLUB
         </div>
 
         <LanguageToggle />
@@ -169,6 +171,8 @@ export default function DashboardLayout({
       {mobileOpen && (
         <div style={overlay}>
           <div style={mobilePanel}>
+            <div style={mobilePanelOverlay} />
+
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
@@ -188,15 +192,23 @@ export default function DashboardLayout({
       )}
 
       <main style={main}>
-        <h1 style={pageTitle}>
-          {translatedTitle}
-        </h1>
+        <div style={mainGlow} />
 
-        {subtitle ? (
-          <p style={subtitleStyle}>
-            {subtitle}
-          </p>
-        ) : null}
+        <div style={pageHeader}>
+          <div style={pageEyebrow}>
+            FITCOUPLECLUB SYSTEM
+          </div>
+
+          <h1 style={pageTitle}>
+            {translatedTitle}
+          </h1>
+
+          {subtitle ? (
+            <p style={subtitleStyle}>
+              {subtitle}
+            </p>
+          ) : null}
+        </div>
 
         {children}
       </main>
@@ -206,7 +218,7 @@ export default function DashboardLayout({
           {t.dashboard}
         </a>
 
-        <a href="/billing" style={bottomLink}>
+        <a href="/billing" style={bottomLinkActive}>
           {t.upgrade}
         </a>
 
@@ -226,8 +238,18 @@ function SidebarContent({
 }) {
   return (
     <>
-      <div style={brand}>
-        Fit Couple Club
+      <div style={brandWrap}>
+        <img
+          src="/images/fitcouple-logo.png"
+          alt="FitCoupleClub"
+          style={brandLogo}
+        />
+
+        <div style={brandText}>
+          ONE GOAL.
+          <br />
+          ONE MINDSET.
+        </div>
       </div>
 
       <div style={topRow}>
@@ -246,6 +268,7 @@ function SidebarContent({
             style={navLink}
             onClick={onNavigate}
           >
+            <span style={navDot} />
             {label}
           </a>
         ))}
@@ -269,83 +292,161 @@ function formatMembershipLabel(membership, t) {
 
 const layout = {
   display: "grid",
-  gridTemplateColumns: "280px 1fr",
+  gridTemplateColumns: "300px 1fr",
   minHeight: "100vh",
-  background: "#060606",
+  background: "#020202",
   color: "white",
 };
 
 const sidebar = {
-  borderRight:
-    "1px solid rgba(255,255,255,0.08)",
-  padding: "24px 18px",
   position: "sticky",
   top: 0,
   height: "100vh",
+  padding: "28px 18px",
+  borderRight:
+    "1px solid rgba(255,255,255,0.08)",
+  background: "#050505",
+  overflow: "hidden",
 };
 
-const brand = {
-  fontSize: "28px",
-  fontWeight: "900",
-  marginBottom: "12px",
+const sidebarOverlay = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "radial-gradient(circle at top, rgba(120,0,0,0.22), transparent 45%)",
+  pointerEvents: "none",
+};
+
+const brandWrap = {
+  position: "relative",
+  zIndex: 2,
+  marginBottom: "24px",
+};
+
+const brandLogo = {
+  width: "170px",
+  marginBottom: "16px",
+  filter:
+    "drop-shadow(0 20px 40px rgba(0,0,0,0.7))",
+};
+
+const brandText = {
+  color: "rgba(255,255,255,0.52)",
+  fontSize: "12px",
+  fontWeight: "950",
+  letterSpacing: "0.16em",
+  textTransform: "uppercase",
+  lineHeight: 1.8,
 };
 
 const topRow = {
+  position: "relative",
+  zIndex: 2,
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
   gap: "10px",
-  marginBottom: "24px",
+  marginBottom: "28px",
 };
 
 const memberTag = {
-  display: "inline-block",
-  padding: "8px 12px",
-  borderRadius: "999px",
-  background: "rgba(255,255,255,0.06)",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "10px 14px",
+  background: "rgba(176,0,0,0.12)",
   border:
-    "1px solid rgba(255,255,255,0.1)",
-  fontWeight: "800",
+    "1px solid rgba(176,0,0,0.35)",
+  color: "#ef4444",
+  fontWeight: "950",
+  textTransform: "uppercase",
+  fontSize: "12px",
+  letterSpacing: "0.08em",
 };
 
 const nav = {
+  position: "relative",
+  zIndex: 2,
   display: "grid",
-  gap: "10px",
+  gap: "12px",
 };
 
 const navLink = {
-  display: "block",
+  display: "flex",
+  alignItems: "center",
+  gap: "14px",
   textDecoration: "none",
   color: "white",
-  padding: "15px 16px",
-  borderRadius: "16px",
-  background: "rgba(255,255,255,0.04)",
+  padding: "16px 18px",
+  background: "rgba(255,255,255,0.03)",
   border:
-    "1px solid rgba(255,255,255,0.06)",
-  fontWeight: "800",
+    "1px solid rgba(255,255,255,0.08)",
+  fontWeight: "900",
+  fontSize: "15px",
+  textTransform: "uppercase",
+  letterSpacing: "0.04em",
+  transition: "all 0.2s ease",
+};
+
+const navDot = {
+  width: "8px",
+  height: "8px",
+  background: "#b00000",
+  borderRadius: "999px",
+  boxShadow:
+    "0 0 18px rgba(176,0,0,0.85)",
 };
 
 const main = {
-  padding: "clamp(18px, 4vw, 28px)",
+  position: "relative",
+  padding: "clamp(22px, 5vw, 38px)",
   minWidth: 0,
-  paddingBottom: "90px",
+  paddingBottom: "120px",
   overflowX: "hidden",
 };
 
+const mainGlow = {
+  position: "absolute",
+  top: "-140px",
+  right: "-140px",
+  width: "420px",
+  height: "420px",
+  background:
+    "radial-gradient(circle, rgba(176,0,0,0.18), transparent 70%)",
+  pointerEvents: "none",
+};
+
+const pageHeader = {
+  position: "relative",
+  zIndex: 2,
+  marginBottom: "34px",
+};
+
+const pageEyebrow = {
+  color: "#ef4444",
+  fontSize: "12px",
+  fontWeight: "950",
+  letterSpacing: "0.18em",
+  textTransform: "uppercase",
+  marginBottom: "10px",
+};
+
 const pageTitle = {
-  fontSize: "clamp(36px, 7vw, 56px)",
-  fontWeight: "900",
+  fontSize: "clamp(42px, 8vw, 72px)",
+  fontWeight: "950",
   margin: 0,
-  lineHeight: 1.02,
+  lineHeight: 0.92,
+  textTransform: "uppercase",
+  letterSpacing: "-0.06em",
 };
 
 const subtitleStyle = {
-  color: "rgba(255,255,255,0.7)",
-  marginTop: "12px",
-  marginBottom: "28px",
-  fontSize: "clamp(16px, 3vw, 20px)",
-  lineHeight: 1.7,
-  maxWidth: "900px",
+  color: "rgba(255,255,255,0.72)",
+  marginTop: "16px",
+  marginBottom: "0",
+  fontSize: "clamp(16px, 3vw, 19px)",
+  lineHeight: 1.8,
+  maxWidth: "920px",
 };
 
 const mobileTopbar = {
@@ -353,85 +454,107 @@ const mobileTopbar = {
   position: "sticky",
   top: 0,
   zIndex: 40,
-  background: "rgba(6,6,6,0.96)",
+  background: "rgba(5,5,5,0.96)",
   borderBottom:
     "1px solid rgba(255,255,255,0.08)",
-  padding: "12px",
+  padding: "14px",
   alignItems: "center",
   justifyContent: "space-between",
   gap: "10px",
+  backdropFilter: "blur(16px)",
 };
 
 const mobileMenuButton = {
-  background: "rgba(255,255,255,0.08)",
+  background: "rgba(176,0,0,0.18)",
   color: "white",
   border:
-    "1px solid rgba(255,255,255,0.12)",
-  borderRadius: "12px",
-  padding: "10px 12px",
-  fontWeight: "900",
+    "1px solid rgba(176,0,0,0.35)",
+  padding: "11px 14px",
+  fontWeight: "950",
+  textTransform: "uppercase",
+  fontSize: "12px",
 };
 
 const mobileBrand = {
-  fontWeight: "900",
-  fontSize: "16px",
+  fontWeight: "950",
+  fontSize: "14px",
+  letterSpacing: "0.12em",
 };
 
 const overlay = {
   position: "fixed",
   inset: 0,
-  background: "rgba(0,0,0,0.72)",
+  background: "rgba(0,0,0,0.82)",
   zIndex: 80,
 };
 
 const mobilePanel = {
+  position: "relative",
   width: "min(86vw, 340px)",
   height: "100vh",
-  background: "#080808",
+  background: "#050505",
   borderRight:
-    "1px solid rgba(255,255,255,0.1)",
+    "1px solid rgba(255,255,255,0.08)",
   padding: "18px",
   overflowY: "auto",
 };
 
+const mobilePanelOverlay = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "radial-gradient(circle at top, rgba(120,0,0,0.22), transparent 45%)",
+  pointerEvents: "none",
+};
+
 const closeButton = {
+  position: "relative",
+  zIndex: 2,
   width: "100%",
-  marginBottom: "18px",
-  padding: "12px",
-  borderRadius: "12px",
+  marginBottom: "20px",
+  padding: "14px",
   border:
-    "1px solid rgba(255,255,255,0.12)",
-  background: "rgba(255,255,255,0.08)",
+    "1px solid rgba(255,255,255,0.10)",
+  background: "rgba(255,255,255,0.05)",
   color: "white",
-  fontWeight: "900",
+  fontWeight: "950",
+  textTransform: "uppercase",
 };
 
 const bottomNav = {
   display: "none",
   position: "fixed",
-  left: "10px",
-  right: "10px",
-  bottom: "10px",
+  left: "12px",
+  right: "12px",
+  bottom: "12px",
   zIndex: 60,
-  background: "rgba(10,10,10,0.92)",
-  backdropFilter: "blur(14px)",
+  background: "rgba(5,5,5,0.94)",
+  backdropFilter: "blur(16px)",
   border:
-    "1px solid rgba(255,255,255,0.1)",
-  borderRadius: "18px",
-  padding: "8px",
+    "1px solid rgba(255,255,255,0.08)",
+  padding: "10px",
   gridTemplateColumns: "repeat(3,1fr)",
-  gap: "8px",
+  gap: "10px",
 };
 
 const bottomLink = {
   textAlign: "center",
-  color: "white",
+  color: "rgba(255,255,255,0.78)",
   textDecoration: "none",
-  padding: "11px 8px",
-  borderRadius: "12px",
-  background: "rgba(255,255,255,0.06)",
-  fontSize: "13px",
-  fontWeight: "900",
+  padding: "13px 8px",
+  background: "rgba(255,255,255,0.04)",
+  fontSize: "12px",
+  fontWeight: "950",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
+};
+
+const bottomLinkActive = {
+  ...bottomLink,
+  background: "rgba(176,0,0,0.22)",
+  border:
+    "1px solid rgba(176,0,0,0.35)",
+  color: "white",
 };
 
 if (typeof window !== "undefined") {
@@ -443,7 +566,7 @@ if (typeof window !== "undefined") {
         overflow-x: hidden;
       }
 
-      div[style*="grid-template-columns: 280px 1fr"] {
+      div[style*="grid-template-columns: 300px 1fr"] {
         display: block !important;
       }
 
@@ -452,7 +575,7 @@ if (typeof window !== "undefined") {
       }
 
       main {
-        padding: 18px 14px 96px !important;
+        padding: 22px 16px 110px !important;
       }
 
       input,
