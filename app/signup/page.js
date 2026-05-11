@@ -16,42 +16,56 @@ export default function SignupPage() {
   const t =
     {
       en: {
-        eyebrow: "Create Account",
-        title: "Start your journey",
+        eyebrow: "Join The Club",
+        title: "Start your transformation.",
         subtitle:
-          "Create your account first. After that, you can choose your membership on the billing page.",
+          "Create your account first. Then choose Nutrition or Full Access and unlock your member dashboard.",
         email: "Email",
         emailPlaceholder: "you@example.com",
         password: "Password",
         passwordPlaceholder: "Create a password",
         loading: "Creating Account...",
         button: "Create Account",
-        success: "Account created. Redirecting to billing...",
+        success: "Account created. Redirecting to plans...",
         error: "Something went wrong while creating your account.",
         alreadyExists:
           "This email already exists. Please log in to keep your membership.",
         redirectLogin: "Redirecting to login...",
         already: "Already have an account?",
         login: "Log in here",
+        slogan: "ONE GOAL. ONE MIND. ONE LIFESTYLE.",
+        points: [
+          "High-protein nutrition",
+          "Booty Builder programs",
+          "Workouts & progress tracking",
+          "Couple accountability",
+        ],
       },
       nl: {
-        eyebrow: "Account Aanmaken",
-        title: "Start je journey",
+        eyebrow: "Join De Club",
+        title: "Start je transformatie.",
         subtitle:
-          "Maak eerst je account aan. Daarna kun je je membership kiezen op de billing pagina.",
+          "Maak eerst je account aan. Kies daarna Nutrition of Full Access en ontgrendel je member dashboard.",
         email: "E-mail",
         emailPlaceholder: "jij@example.com",
         password: "Wachtwoord",
         passwordPlaceholder: "Maak een wachtwoord",
         loading: "Account wordt aangemaakt...",
         button: "Account Aanmaken",
-        success: "Account aangemaakt. Je wordt doorgestuurd naar billing...",
+        success: "Account aangemaakt. Je wordt doorgestuurd naar plannen...",
         error: "Er ging iets mis tijdens het aanmaken van je account.",
         alreadyExists:
           "Dit e-mailadres bestaat al. Log in om je membership te behouden.",
         redirectLogin: "Je wordt doorgestuurd naar login...",
         already: "Heb je al een account?",
         login: "Log hier in",
+        slogan: "ÉÉN DOEL. ÉÉN MINDSET. ÉÉN LIFESTYLE.",
+        points: [
+          "Eiwitrijke voeding",
+          "Booty Builder programma’s",
+          "Workouts & progressie tracking",
+          "Couple accountability",
+        ],
       },
     }[language] || {};
 
@@ -127,103 +141,225 @@ export default function SignupPage() {
 
   return (
     <main style={main}>
-      <div style={card}>
-        <div style={eyebrow}>{t.eyebrow}</div>
-        <h1 style={title}>{t.title}</h1>
-        <p style={subtitle}>{t.subtitle}</p>
+      <div style={backgroundImage} />
+      <div style={overlay} />
 
-        <form onSubmit={handleSignup} style={form}>
-          <div style={fieldWrap}>
-            <label htmlFor="email" style={label}>
-              {t.email}
-            </label>
-            <input
-              id="email"
-              placeholder={t.emailPlaceholder}
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              style={input}
-            />
+      <section style={layout}>
+        <div style={brandPanel}>
+          <img
+            src="/images/fitcouple-logo.png"
+            alt="FitCoupleClub"
+            style={logo}
+          />
+
+          <div style={slogan}>{t.slogan}</div>
+
+          <h1 style={brandTitle}>
+            {language === "nl" ? (
+              <>
+                STERKER
+                <br />
+                <span style={redText}>SAMEN.</span>
+              </>
+            ) : (
+              <>
+                STRONGER
+                <br />
+                <span style={redText}>TOGETHER.</span>
+              </>
+            )}
+          </h1>
+
+          <div style={pointGrid}>
+            {t.points.map((point) => (
+              <div key={point} style={pointItem}>
+                ✓ {point}
+              </div>
+            ))}
           </div>
+        </div>
 
-          <div style={fieldWrap}>
-            <label htmlFor="password" style={label}>
-              {t.password}
-            </label>
-            <input
-              id="password"
-              placeholder={t.passwordPlaceholder}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="new-password"
-              style={input}
-            />
-          </div>
+        <div style={card}>
+          <div style={eyebrow}>{t.eyebrow}</div>
+          <h2 style={title}>{t.title}</h2>
+          <p style={subtitle}>{t.subtitle}</p>
 
-          <button type="submit" disabled={loading} style={button(loading)}>
-            {loading ? t.loading : t.button}
-          </button>
-        </form>
+          <form onSubmit={handleSignup} style={form}>
+            <div style={fieldWrap}>
+              <label htmlFor="email" style={label}>
+                {t.email}
+              </label>
+              <input
+                id="email"
+                placeholder={t.emailPlaceholder}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                style={input}
+              />
+            </div>
 
-        {message && <p style={messageStyle}>{message}</p>}
+            <div style={fieldWrap}>
+              <label htmlFor="password" style={label}>
+                {t.password}
+              </label>
+              <input
+                id="password"
+                placeholder={t.passwordPlaceholder}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="new-password"
+                style={input}
+              />
+            </div>
 
-        <p style={footerText}>
-          {t.already}{" "}
-          <a href="/login" style={link}>
-            {t.login}
-          </a>
-        </p>
-      </div>
+            <button type="submit" disabled={loading} style={button(loading)}>
+              {loading ? t.loading : t.button}
+            </button>
+          </form>
+
+          {message && <p style={messageStyle}>{message}</p>}
+
+          <p style={footerText}>
+            {t.already}{" "}
+            <a href="/login" style={link}>
+              {t.login}
+            </a>
+          </p>
+        </div>
+      </section>
     </main>
   );
 }
 
 const main = {
   minHeight: "100vh",
-  background: "#0a0a0a",
+  background: "#020202",
   color: "white",
-  display: "flex",
+  position: "relative",
+  overflow: "hidden",
+};
+
+const backgroundImage = {
+  position: "absolute",
+  inset: 0,
+  backgroundImage: "url('/images/background.png')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  filter: "grayscale(1) brightness(0.28) contrast(1.2)",
+  transform: "scale(1.04)",
+};
+
+const overlay = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(90deg, rgba(0,0,0,0.96), rgba(0,0,0,0.78), rgba(80,0,0,0.36)), radial-gradient(circle at 75% 40%, rgba(185,0,0,0.35), transparent 38%)",
+};
+
+const layout = {
+  position: "relative",
+  zIndex: 2,
+  minHeight: "100vh",
+  width: "100%",
+  maxWidth: "1220px",
+  margin: "0 auto",
+  padding: "clamp(22px, 5vw, 44px)",
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
+  gap: "clamp(28px, 6vw, 70px)",
   alignItems: "center",
-  justifyContent: "center",
-  padding: "clamp(20px, 5vw, 32px)",
-  overflowX: "hidden",
+  boxSizing: "border-box",
+};
+
+const brandPanel = {
+  display: "grid",
+  gap: "20px",
+};
+
+const logo = {
+  width: "clamp(150px, 22vw, 270px)",
+  height: "auto",
+  filter: "drop-shadow(0 20px 50px rgba(0,0,0,0.85))",
+};
+
+const slogan = {
+  color: "rgba(255,255,255,0.52)",
+  fontSize: "clamp(14px, 2vw, 20px)",
+  fontWeight: "950",
+  letterSpacing: "0.14em",
+  textTransform: "uppercase",
+};
+
+const brandTitle = {
+  margin: 0,
+  fontSize: "clamp(56px, 11vw, 118px)",
+  lineHeight: 0.84,
+  letterSpacing: "-0.06em",
+  fontWeight: "950",
+  textTransform: "uppercase",
+};
+
+const redText = {
+  color: "#b00000",
+};
+
+const pointGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 210px), 1fr))",
+  gap: "12px",
+  marginTop: "12px",
+};
+
+const pointItem = {
+  borderLeft: "3px solid #b00000",
+  background: "rgba(255,255,255,0.04)",
+  padding: "13px 14px",
+  fontWeight: "900",
+  color: "rgba(255,255,255,0.82)",
 };
 
 const card = {
   width: "100%",
-  maxWidth: "480px",
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "clamp(18px, 4vw, 24px)",
-  padding: "clamp(24px, 6vw, 36px)",
+  maxWidth: "500px",
+  justifySelf: "end",
+  background: "rgba(5,5,5,0.82)",
+  border: "1px solid rgba(255,255,255,0.10)",
+  borderTop: "3px solid #b00000",
+  borderRadius: "0px",
+  padding: "clamp(26px, 6vw, 42px)",
   boxSizing: "border-box",
+  boxShadow: "0 30px 100px rgba(0,0,0,0.65)",
+  backdropFilter: "blur(10px)",
 };
 
 const eyebrow = {
   fontSize: "12px",
   textTransform: "uppercase",
-  letterSpacing: "0.16em",
-  color: "rgba(255,255,255,0.45)",
+  letterSpacing: "0.18em",
+  color: "#ef4444",
   marginBottom: "10px",
+  fontWeight: "950",
 };
 
 const title = {
   margin: 0,
-  fontSize: "clamp(36px, 9vw, 42px)",
-  lineHeight: 1.05,
-  fontWeight: "900",
+  fontSize: "clamp(36px, 8vw, 48px)",
+  lineHeight: 0.95,
+  fontWeight: "950",
+  textTransform: "uppercase",
+  letterSpacing: "-0.04em",
 };
 
 const subtitle = {
   color: "rgba(255,255,255,0.7)",
   lineHeight: 1.7,
-  marginTop: "12px",
-  marginBottom: "24px",
+  marginTop: "14px",
+  marginBottom: "26px",
   fontSize: "clamp(15px, 3.8vw, 16px)",
 };
 
@@ -238,16 +374,19 @@ const fieldWrap = {
 };
 
 const label = {
-  fontSize: "14px",
-  fontWeight: "700",
+  fontSize: "13px",
+  fontWeight: "900",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
+  color: "rgba(255,255,255,0.78)",
 };
 
 const input = {
   width: "100%",
-  padding: "14px 16px",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.12)",
-  background: "rgba(255,255,255,0.03)",
+  padding: "15px 16px",
+  borderRadius: "0px",
+  border: "1px solid rgba(255,255,255,0.14)",
+  background: "rgba(0,0,0,0.48)",
   color: "white",
   outline: "none",
   boxSizing: "border-box",
@@ -256,26 +395,29 @@ const input = {
 
 const button = (loading) => ({
   width: "100%",
-  padding: "14px 16px",
-  borderRadius: "12px",
+  padding: "16px 16px",
+  borderRadius: "0px",
   border: "none",
-  background: "white",
-  color: "black",
-  fontWeight: "800",
+  background: "#b00000",
+  color: "white",
+  fontWeight: "950",
   cursor: loading ? "not-allowed" : "pointer",
-  opacity: loading ? 0.8 : 1,
+  opacity: loading ? 0.75 : 1,
   fontSize: "16px",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
+  boxShadow: "0 18px 45px rgba(176,0,0,0.35)",
 });
 
 const messageStyle = {
   marginTop: "18px",
-  color: "rgba(255,255,255,0.75)",
+  color: "rgba(255,255,255,0.78)",
   lineHeight: 1.6,
   fontSize: "15px",
 };
 
 const footerText = {
-  marginTop: "18px",
+  marginTop: "20px",
   color: "rgba(255,255,255,0.68)",
   lineHeight: 1.6,
   fontSize: "15px",
@@ -283,6 +425,7 @@ const footerText = {
 
 const link = {
   color: "white",
-  fontWeight: "800",
+  fontWeight: "950",
   textDecoration: "none",
+  borderBottom: "1px solid #b00000",
 };
