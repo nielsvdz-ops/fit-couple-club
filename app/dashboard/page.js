@@ -2,327 +2,451 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import DashboardLayout from "../../components/DashboardLayout";
-import { getCurrentUserAndProfile } from "../../lib/getProfile";
+import DashboardCard from "../../components/DashboardCard";
+import CheckoutButton from "../../components/CheckoutButton";
+
 import {
-  canAccessStarterPages,
   canAccessNutritionPages,
   canAccessFitnessPages,
-  canAccessVipPage,
+  canAccessCoachingPage,
 } from "../../lib/access";
+
+import { getCurrentUserAndProfile } from "../../lib/getProfile";
 
 export default async function DashboardPage() {
   const { user, profile } = await getCurrentUserAndProfile();
 
-  if (!user) redirect("/login");
-  if (!canAccessStarterPages(profile)) redirect("/billing");
+  if (!user) {
+    redirect("/login");
+  }
 
-  const membership = String(profile?.membership_type || "free")
-    .toLowerCase()
-    .trim();
+  if (
+    !canAccessNutritionPages(profile) &&
+    !canAccessFitnessPages(profile)
+  ) {
+    redirect("/billing");
+  }
 
-  const hasNutrition = canAccessNutritionPages(profile);
-  const hasFitness = canAccessFitnessPages(profile);
-  const hasVip = canAccessVipPage(profile);
+  const membershipType = profile?.membership_type || "free";
+
+  const isNutrition =
+    String(membershipType).toLowerCase() === "nutrition";
+
+  const hasFitness =
+    canAccessFitnessPages(profile);
 
   return (
     <DashboardLayout
       title="Dashboard"
-      subtitle="Your member home base. Access your plans, food, recipes, billing, and member tools from here."
-      membershipType={profile?.membership_type}
+      subtitle="Your transformation system, workouts, nutrition, progress tracking, and coaching tools."
+      membershipType={membershipType}
     >
-      <div style={pageWrap}>
+      <div style={wrap}>
         <section style={heroCard}>
-          <div>
-            <div style={eyebrow}>Welcome Back</div>
-            <h2 style={heroTitle}>{profile?.full_name || user.email}</h2>
-            <p style={muted}>
-              Membership:{" "}
-              <strong>{formatMembership(profile?.membership_type)}</strong> ·
-              Status:{" "}
-              <strong>{profile?.is_active ? "Active" : "Inactive"}</strong>
-            </p>
-          </div>
-
-          <div style={ctaRow}>
-            {hasFitness && (
-              <a href="/plan-builder" style={primaryButton}>
-                Open Plan Builder
-              </a>
-            )}
-
-            {hasNutrition && (
-              <a href="/nutrition" style={ghostButton}>
-                Open Nutrition
-              </a>
-            )}
-
-            {hasNutrition && (
-              <a href="/recipes" style={ghostButton}>
-                Open Recipes
-              </a>
-            )}
-
-            {membership === "nutrition" && (
-              <a href="/billing" style={upgradeButton}>
-                Upgrade to Full Access
-              </a>
-            )}
-          </div>
-        </section>
-
-        {membership === "nutrition" && (
-          <section style={upgradeCard}>
+          <div style={heroTop}>
             <div>
-              <div style={eyebrow}>Unlock the full transformation system</div>
-              <h3 style={upgradeTitle}>You are missing workouts, programs, progress tracking, and Couple Zone.</h3>
-              <p style={muted}>
-                Nutrition gives you food structure. Full Access gives you the complete system:
-                training, programs, plan builder, progress tracking, and couple accountability.
+              <div style={eyebrow}>Fit Couple Club</div>
+
+              <h2 style={heroTitle}>
+                Welcome back
+                {user?.email
+                  ? `, ${user.email.split("@")[0]}`
+                  : ""}
+              </h2>
+
+              <p style={heroText}>
+                Continue your transformation with nutrition systems,
+                workouts, meal plans, progress tracking, Couple Zone,
+                and coaching tools.
               </p>
             </div>
 
-            <a href="/billing" style={upgradeButton}>
-              Upgrade Now
-            </a>
+            <div style={membershipPill(hasFitness)}>
+              {String(membershipType)
+                .replace("_", " ")
+                .toUpperCase()}
+            </div>
+          </div>
+
+          <div style={statsGrid}>
+            <div style={statCard}>
+              <div style={statLabel}>Membership</div>
+              <div style={statValue}>
+                {String(membershipType).replace("_", " ")}
+              </div>
+            </div>
+
+            <div style={statCard}>
+              <div style={statLabel}>Status</div>
+              <div style={statValue}>
+                {profile?.is_active ? "Active" : "Inactive"}
+              </div>
+            </div>
+
+            <div style={statCard}>
+              <div style={statLabel}>Nutrition Access</div>
+              <div style={statValue}>
+                {canAccessNutritionPages(profile)
+                  ? "Unlocked"
+                  : "Locked"}
+              </div>
+            </div>
+
+            <div style={statCard}>
+              <div style={statLabel}>Fitness Access</div>
+              <div style={statValue}>
+                {hasFitness
+                  ? "Unlocked"
+                  : "Locked"}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {isNutrition && (
+          <section style={upgradeCard}>
+            <div>
+              <div style={eyebrow}>Upgrade</div>
+
+              <h3 style={upgradeTitle}>
+                Unlock Full Access for only €10
+              </h3>
+
+              <p style={upgradeText}>
+                You already own Nutrition.
+                Upgrade once and unlock workouts,
+                programs, plan builder, Couple Zone,
+                progress tracking, and the full fitness platform.
+              </p>
+            </div>
+
+            <div style={upgradeButtonWrap}>
+              <CheckoutButton
+                plan="upgrade_full_access"
+                label="Upgrade for €10"
+                variant="yellow"
+              />
+            </div>
           </section>
         )}
 
-        <section style={grid}>
-          {hasFitness && (
-            <a href="/workouts" style={cardLink}>
-              <div style={cardTitle}>Workouts</div>
-              <div style={cardText}>
-                Training structure, splits, and exercise access based on your membership.
-              </div>
-            </a>
-          )}
-
-          {hasNutrition && (
-            <a href="/nutrition" style={cardLink}>
-              <div style={cardTitle}>Nutrition</div>
-              <div style={cardText}>
-                Goal-based nutrition, grocery guidance, calories, and macro structure.
-              </div>
-            </a>
-          )}
-
-          {hasNutrition && (
-            <a href="/recipes" style={cardLink}>
-              <div style={cardTitle}>Recipes</div>
-              <div style={cardText}>
-                Recipe library and daily food structures based on your member level.
-              </div>
-            </a>
-          )}
-
-          {hasFitness && (
-            <a href="/plan-builder" style={cardLink}>
-              <div style={cardTitle}>Plan Builder</div>
-              <div style={cardText}>
-                Generate training plans based on your goal, focus, and membership access.
-              </div>
-            </a>
-          )}
-
-          {hasFitness && (
-            <>
-              <a href="/programs" style={cardLink}>
-                <div style={cardTitle}>Programs</div>
-                <div style={cardText}>
-                  Structured transformations and premium program access.
-                </div>
-              </a>
-
-              <a href="/couple-zone" style={featuredCardLink}>
-                <div style={miniBadge}>Main Feature</div>
-                <div style={cardTitle}>Couple Zone</div>
-                <div style={cardText}>
-                  Partner-focused tools, shared goals, weekly scoring, and couple accountability.
-                </div>
-              </a>
-
-              <a href="/progress" style={cardLink}>
-                <div style={cardTitle}>Progress</div>
-                <div style={cardText}>
-                  Track body changes, adherence, consistency, and progress over time.
-                </div>
-              </a>
-            </>
-          )}
-
-          {hasVip && (
-            <a href="/vip" style={vipCardLink}>
-              <div style={cardTitle}>VIP</div>
-              <div style={cardText}>
-                Monthly call access, VIP-only accountability, and exclusive support tools.
-              </div>
-            </a>
-          )}
-
-          <a href="/billing" style={cardLink}>
-            <div style={cardTitle}>Billing</div>
-            <div style={cardText}>
-              Manage your membership, upgrade options, and subscription access.
+        <section style={section}>
+          <div style={sectionHeader}>
+            <div>
+              <div style={eyebrow}>Main Systems</div>
+              <h3 style={sectionTitle}>
+                Transformation Hub
+              </h3>
             </div>
-          </a>
+          </div>
 
-          <a href="/account" style={cardLink}>
-            <div style={cardTitle}>Account</div>
-            <div style={cardText}>
-              Your member profile and account settings.
+          <div style={grid}>
+            <DashboardCard
+              title="Nutrition"
+              description="Daily meal systems, macros, recipes, and grocery planning."
+              href="/nutrition"
+            />
+
+            <DashboardCard
+              title="Recipes"
+              description="Smart recipes generated for your goals and routines."
+              href="/recipes"
+            />
+
+            {hasFitness && (
+              <>
+                <DashboardCard
+                  title="Workouts"
+                  description="Structured gym workouts with progression systems."
+                  href="/workouts"
+                />
+
+                <DashboardCard
+                  title="Programs"
+                  description="Transformation programs based on your goal and experience."
+                  href="/programs"
+                />
+
+                <DashboardCard
+                  title="Plan Builder"
+                  description="Generate your personalized training and nutrition system."
+                  href="/plan-builder"
+                />
+
+                <DashboardCard
+                  title="Progress"
+                  description="Track weight, body stats, consistency, and progression."
+                  href="/progress"
+                />
+
+                <DashboardCard
+                  title="Couple Zone"
+                  description="Train together, shop together, and stay accountable together."
+                  href="/couple-zone"
+                />
+              </>
+            )}
+
+            <DashboardCard
+              title="Coaching"
+              description="Book coaching calls, schedule sessions, and get direct guidance."
+              href="/coaching"
+            />
+          </div>
+        </section>
+
+        <section style={bottomGrid}>
+          <div style={tipsCard}>
+            <div style={eyebrow}>Quick Tips</div>
+
+            <h3 style={miniTitle}>
+              Stay consistent
+            </h3>
+
+            <ul style={tipsList}>
+              <li>Track your meals daily</li>
+              <li>Hit your protein target</li>
+              <li>Train at least 3x per week</li>
+              <li>Sleep 7–9 hours consistently</li>
+              <li>Review your progress weekly</li>
+            </ul>
+          </div>
+
+          <div style={activityCard}>
+            <div style={eyebrow}>System Access</div>
+
+            <h3 style={miniTitle}>
+              Unlocked features
+            </h3>
+
+            <div style={featureList}>
+              <div style={featureItem(
+                canAccessNutritionPages(profile)
+              )}>
+                Nutrition System
+              </div>
+
+              <div style={featureItem(
+                hasFitness
+              )}>
+                Workout System
+              </div>
+
+              <div style={featureItem(true)}>
+                Meal Plans
+              </div>
+
+              <div style={featureItem(true)}>
+                Grocery Generator
+              </div>
+
+              <div style={featureItem(
+                canAccessCoachingPage(profile)
+              )}>
+                Coaching Access
+              </div>
             </div>
-          </a>
+          </div>
         </section>
       </div>
     </DashboardLayout>
   );
 }
 
-function formatMembership(type) {
-  const m = String(type || "").toLowerCase().trim();
-
-  if (m === "nutrition") return "Nutrition";
-  if (m === "full_access") return "Full Access";
-  if (m === "vip") return "VIP";
-  if (m === "coaching") return "Coaching";
-
-  return "Free";
-}
-
-const pageWrap = {
+const wrap = {
   display: "grid",
-  gap: "22px",
+  gap: "24px",
+  width: "100%",
+  maxWidth: "1400px",
+  margin: "0 auto",
 };
 
 const heroCard = {
-  background: "rgba(255,255,255,0.04)",
+  background:
+    "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(250,204,21,0.08))",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "22px",
-  padding: "24px",
+  borderRadius: "28px",
+  padding: "clamp(20px, 4vw, 34px)",
+  display: "grid",
+  gap: "24px",
 };
 
-const upgradeCard = {
-  background:
-    "linear-gradient(135deg, rgba(250,204,21,0.12), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(250,204,21,0.28)",
-  borderRadius: "22px",
-  padding: "24px",
-  display: "grid",
-  gap: "16px",
+const heroTop = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  gap: "20px",
+  flexWrap: "wrap",
 };
 
 const eyebrow = {
   fontSize: "12px",
   textTransform: "uppercase",
-  letterSpacing: "0.16em",
+  letterSpacing: "0.18em",
   color: "rgba(255,255,255,0.45)",
-  marginBottom: "8px",
+  marginBottom: "10px",
 };
 
 const heroTitle = {
   margin: 0,
-  fontSize: "clamp(28px, 6vw, 36px)",
+  fontSize: "clamp(32px, 6vw, 56px)",
   fontWeight: "900",
+  lineHeight: 1,
+};
+
+const heroText = {
+  marginTop: "16px",
+  maxWidth: "720px",
+  color: "rgba(255,255,255,0.72)",
+  lineHeight: 1.8,
+  fontSize: "clamp(15px, 2vw, 18px)",
+};
+
+const membershipPill = (full) => ({
+  padding: "12px 18px",
+  borderRadius: "999px",
+  background: full
+    ? "rgba(250,204,21,0.18)"
+    : "rgba(255,255,255,0.08)",
+  border: full
+    ? "1px solid rgba(250,204,21,0.35)"
+    : "1px solid rgba(255,255,255,0.10)",
+  fontWeight: "900",
+  fontSize: "13px",
+  letterSpacing: "0.08em",
+});
+
+const statsGrid = {
+  display: "grid",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
+  gap: "16px",
+};
+
+const statCard = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "18px",
+  padding: "18px",
+};
+
+const statLabel = {
+  color: "rgba(255,255,255,0.45)",
+  fontSize: "12px",
+  textTransform: "uppercase",
+  letterSpacing: "0.14em",
+  marginBottom: "10px",
+};
+
+const statValue = {
+  fontSize: "22px",
+  fontWeight: "800",
+};
+
+const upgradeCard = {
+  background:
+    "linear-gradient(135deg, rgba(250,204,21,0.12), rgba(255,255,255,0.05))",
+  border: "1px solid rgba(250,204,21,0.28)",
+  borderRadius: "24px",
+  padding: "26px",
+  display: "grid",
+  gap: "20px",
 };
 
 const upgradeTitle = {
-  margin: "0 0 8px 0",
-  fontSize: "clamp(22px, 5vw, 30px)",
+  margin: 0,
+  fontSize: "34px",
   fontWeight: "900",
-  lineHeight: 1.15,
 };
 
-const muted = {
-  color: "rgba(255,255,255,0.7)",
+const upgradeText = {
+  marginTop: "12px",
+  color: "rgba(255,255,255,0.74)",
   lineHeight: 1.8,
+  maxWidth: "900px",
 };
 
-const ctaRow = {
+const upgradeButtonWrap = {
+  maxWidth: "320px",
+};
+
+const section = {
+  display: "grid",
+  gap: "20px",
+};
+
+const sectionHeader = {
   display: "flex",
-  gap: "12px",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "20px",
   flexWrap: "wrap",
-  marginTop: "18px",
+};
+
+const sectionTitle = {
+  margin: 0,
+  fontSize: "clamp(24px, 4vw, 36px)",
+  fontWeight: "900",
 };
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
-  gap: "18px",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
+  gap: "20px",
 };
 
-const cardLink = {
-  display: "block",
-  textDecoration: "none",
-  color: "white",
+const bottomGrid = {
+  display: "grid",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+  gap: "20px",
+  paddingBottom: "40px",
+};
+
+const tipsCard = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "20px",
-  padding: "20px",
+  borderRadius: "24px",
+  padding: "24px",
 };
 
-const featuredCardLink = {
-  ...cardLink,
-  background: "rgba(250,204,21,0.08)",
-  border: "1px solid rgba(250,204,21,0.28)",
-  position: "relative",
+const activityCard = {
+  background:
+    "linear-gradient(135deg, rgba(96,165,250,0.10), rgba(255,255,255,0.04))",
+  border: "1px solid rgba(96,165,250,0.18)",
+  borderRadius: "24px",
+  padding: "24px",
 };
 
-const vipCardLink = {
-  ...cardLink,
-  background: "rgba(96,165,250,0.08)",
-  border: "1px solid rgba(96,165,250,0.28)",
-};
-
-const miniBadge = {
-  display: "inline-block",
-  marginBottom: "10px",
-  padding: "5px 9px",
-  borderRadius: "999px",
-  background: "#facc15",
-  color: "black",
-  fontSize: "11px",
+const miniTitle = {
+  margin: "0 0 18px",
+  fontSize: "28px",
   fontWeight: "900",
 };
 
-const cardTitle = {
-  fontSize: "24px",
-  fontWeight: "900",
-  marginBottom: "8px",
+const tipsList = {
+  margin: 0,
+  paddingLeft: "20px",
+  color: "rgba(255,255,255,0.75)",
+  lineHeight: 2,
 };
 
-const cardText = {
-  color: "rgba(255,255,255,0.68)",
-  lineHeight: 1.7,
+const featureList = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "12px",
 };
 
-const primaryButton = {
-  display: "inline-block",
-  padding: "12px 16px",
+const featureItem = (active) => ({
+  padding: "12px 14px",
   borderRadius: "12px",
-  background: "white",
-  color: "black",
-  textDecoration: "none",
-  fontWeight: "900",
-};
-
-const upgradeButton = {
-  display: "inline-block",
-  padding: "12px 16px",
-  borderRadius: "12px",
-  background: "#facc15",
-  color: "black",
-  textDecoration: "none",
-  fontWeight: "900",
-  textAlign: "center",
-};
-
-const ghostButton = {
-  display: "inline-block",
-  padding: "12px 16px",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.16)",
-  background: "transparent",
-  color: "white",
-  textDecoration: "none",
-  fontWeight: "800",
-};
+  background: active
+    ? "rgba(34,197,94,0.12)"
+    : "rgba(255,255,255,0.06)",
+  border: active
+    ? "1px solid rgba(34,197,94,0.22)"
+    : "1px solid rgba(255,255,255,0.08)",
+  color: active ? "#86efac" : "rgba(255,255,255,0.6)",
+  fontWeight: "700",
+});

@@ -14,6 +14,161 @@ import {
   getRecommendedDefaults,
 } from "../lib/workoutplan";
 
+
+function translateOption(value, language) {
+  if (language !== "nl") return value;
+
+  const map = {
+    "Build Muscle": "Spieren Opbouwen",
+    "Lose Fat": "Vet Verliezen",
+    "Fat Loss": "Vetverlies",
+    Recomp: "Recomp",
+    "Athletic Performance": "Atletische Prestatie",
+    "Tone & Shape": "Strakker & Meer Vorm",
+
+    Booty: "Billen",
+    "Full Body": "Full Body",
+    Legs: "Benen",
+    "Upper Body": "Bovenlichaam",
+    Core: "Core",
+    Back: "Rug",
+    Shoulders: "Schouders",
+    Arms: "Armen",
+    Chest: "Borst",
+
+    Slim: "Slank",
+    Average: "Gemiddeld",
+    Athletic: "Atletisch",
+    Heavy: "Zwaarder",
+
+    Beginner: "Beginner",
+    Intermediate: "Gemiddeld",
+    Advanced: "Gevorderd",
+
+    "Balanced Lifestyle": "Gebalanceerde Levensstijl",
+    "Busy Lifestyle": "Drukke Levensstijl",
+    "Highly Active": "Zeer Actief",
+  };
+
+  return map[value] || value;
+}
+
+function translateWorkoutText(value, language) {
+  if (language !== "nl" || !value) return value;
+
+  let text = String(value);
+
+  const exactMap = {
+    "Generated Plan": "Gegenereerd Plan",
+    "Build Muscle": "Spieren Opbouwen",
+    "Lose Fat": "Vet Verliezen",
+    "Fat Loss": "Vetverlies",
+    "Full Body": "Full Body",
+    "Upper Body": "Bovenlichaam",
+    "Lower Body": "Onderlichaam",
+    Push: "Push",
+    Pull: "Pull",
+    Legs: "Benen",
+    Booty: "Billen",
+    Core: "Core",
+    Rest: "Rust",
+    "Active Recovery": "Actief Herstel",
+    Strength: "Kracht",
+    Hypertrophy: "Spiergroei",
+    Conditioning: "Conditie",
+    Cardio: "Cardio",
+    Mobility: "Mobiliteit",
+    Recovery: "Herstel",
+
+    Squat: "Squat",
+    Deadlift: "Deadlift",
+    "Bench Press": "Bankdrukken",
+    "Shoulder Press": "Schouderdrukken",
+    "Hip Thrust": "Hip Thrust",
+    "Romanian Deadlift": "Romanian Deadlift",
+    "Lat Pulldown": "Lat Pulldown",
+    "Seated Row": "Seated Row",
+    "Leg Press": "Leg Press",
+    "Leg Curl": "Leg Curl",
+    "Leg Extension": "Leg Extension",
+    "Cable Row": "Cable Row",
+    "Bicep Curl": "Bicep Curl",
+    "Tricep Pushdown": "Tricep Pushdown",
+    "Walking Lunges": "Walking Lunges",
+    Plank: "Plank",
+  };
+
+  if (exactMap[text]) return exactMap[text];
+
+  const replacements = [
+    ["Generated", "Gegenereerd"],
+    ["generated", "gegenereerd"],
+    ["Build Muscle", "Spieren Opbouwen"],
+    ["Lose Fat", "Vet Verliezen"],
+    ["Fat Loss", "Vetverlies"],
+    ["Full Body", "Full Body"],
+    ["Upper Body", "Bovenlichaam"],
+    ["Lower Body", "Onderlichaam"],
+    ["Body", "Lichaam"],
+    ["body", "lichaam"],
+    ["Beginner", "Beginner"],
+    ["Intermediate", "Gemiddeld"],
+    ["Advanced", "Gevorderd"],
+    ["Average", "Gemiddeld"],
+    ["Athletic", "Atletisch"],
+    ["Balanced Lifestyle", "Gebalanceerde Levensstijl"],
+    ["Busy Lifestyle", "Drukke Levensstijl"],
+    ["Strength", "Kracht"],
+    ["strength", "kracht"],
+    ["Hypertrophy", "Spiergroei"],
+    ["hypertrophy", "spiergroei"],
+    ["Conditioning", "Conditie"],
+    ["conditioning", "conditie"],
+    ["Recovery", "Herstel"],
+    ["recovery", "herstel"],
+    ["Mobility", "Mobiliteit"],
+    ["mobility", "mobiliteit"],
+    ["Booty", "Billen"],
+    ["booty", "billen"],
+    ["Legs", "Benen"],
+    ["legs", "benen"],
+    ["Back", "Rug"],
+    ["back", "rug"],
+    ["Shoulders", "Schouders"],
+    ["shoulders", "schouders"],
+    ["Arms", "Armen"],
+    ["arms", "armen"],
+    ["Chest", "Borst"],
+    ["chest", "borst"],
+    ["Rest", "Rust"],
+    ["rest", "rust"],
+    ["Day", "Dag"],
+    ["day", "dag"],
+    ["Days", "Dagen"],
+    ["days", "dagen"],
+    ["reps", "herhalingen"],
+    ["Reps", "Herhalingen"],
+    ["minutes", "minuten"],
+    ["minute", "minuut"],
+    ["based on", "gebaseerd op"],
+    ["Based on", "Gebaseerd op"],
+    ["your", "jouw"],
+    ["goal", "doel"],
+    ["level", "niveau"],
+    ["lifestyle", "levensstijl"],
+    ["recommended", "aanbevolen"],
+    ["advanced", "geavanceerd"],
+    ["progression", "progressie"],
+    ["nutrition", "voeding"],
+  ];
+
+  replacements.forEach(([from, to]) => {
+    text = text.split(from).join(to);
+  });
+
+  return text;
+}
+
 export default function PlanBuilderClient({ membershipType }) {
   const { language } = useLanguage();
   const supabase = createClient();
@@ -59,6 +214,10 @@ export default function PlanBuilderClient({ membershipType }) {
       limitation: "Upgrade limitation",
       limitationText:
         "You can generate and view your plan, but saving plans, advanced rotations, and deeper progression logic are unlocked in Full Access and above.",
+      savePlans: "Save plans to your account",
+      advancedRotations: "Advanced workout rotations",
+      bodyTypeLogic: "Body type based deeper profile logic",
+      advancedProgression: "More advanced progression and program depth",
       upgrade: "Upgrade to Full Access",
     },
     nl: {
@@ -102,9 +261,13 @@ export default function PlanBuilderClient({ membershipType }) {
       limitation: "Upgrade beperking",
       limitationText:
         "Je kunt je plan genereren en bekijken, maar plannen opslaan, geavanceerde rotaties en diepere progressie zijn beschikbaar vanaf Full Access.",
+      savePlans: "Plannen opslaan in je account",
+      advancedRotations: "Geavanceerde workout rotaties",
+      bodyTypeLogic: "Diepere lichaamstype logica",
+      advancedProgression: "Meer geavanceerde progressie en programmadiepte",
       upgrade: "Upgrade naar Full Access",
     },
-  }[language];
+  }[language] || {};
 
   const membership = String(membershipType || "").toLowerCase().trim();
 
@@ -286,7 +449,9 @@ export default function PlanBuilderClient({ membershipType }) {
             style={input}
           >
             {GOALS.map((item) => (
-              <option key={item}>{item}</option>
+              <option key={item} value={item} style={optionStyle}>
+                {translateOption(item, language)}
+              </option>
             ))}
           </select>
         </Field>
@@ -298,7 +463,9 @@ export default function PlanBuilderClient({ membershipType }) {
             style={input}
           >
             {FOCUS_AREAS.map((item) => (
-              <option key={item}>{item}</option>
+              <option key={item} value={item} style={optionStyle}>
+                {translateOption(item, language)}
+              </option>
             ))}
           </select>
         </Field>
@@ -313,7 +480,9 @@ export default function PlanBuilderClient({ membershipType }) {
             style={input}
           >
             {BODY_TYPES.map((item) => (
-              <option key={item}>{item}</option>
+              <option key={item} value={item} style={optionStyle}>
+                {translateOption(item, language)}
+              </option>
             ))}
           </select>
         </Field>
@@ -328,7 +497,9 @@ export default function PlanBuilderClient({ membershipType }) {
             style={input}
           >
             {EXPERIENCE_LEVELS.map((item) => (
-              <option key={item}>{item}</option>
+              <option key={item} value={item} style={optionStyle}>
+                {translateOption(item, language)}
+              </option>
             ))}
           </select>
         </Field>
@@ -343,7 +514,9 @@ export default function PlanBuilderClient({ membershipType }) {
             style={input}
           >
             {LIFESTYLES.map((item) => (
-              <option key={item}>{item}</option>
+              <option key={item} value={item} style={optionStyle}>
+                {translateOption(item, language)}
+              </option>
             ))}
           </select>
         </Field>
@@ -358,7 +531,7 @@ export default function PlanBuilderClient({ membershipType }) {
             style={input}
           >
             {TRAINING_DAYS.map((d) => (
-              <option key={d} value={d}>
+              <option key={d} value={d} style={optionStyle}>
                 {d} {t.daysWeek}
               </option>
             ))}
@@ -448,54 +621,96 @@ export default function PlanBuilderClient({ membershipType }) {
             <div style={planHeader}>
               <div>
                 <div style={eyebrow}>{t.generated}</div>
-                <h2 style={planTitle}>{currentPlan.title}</h2>
-                <p style={planText}>{currentPlan.note}</p>
+                <h2 style={planTitle}>
+                  {translateWorkoutText(currentPlan.title, language)}
+                </h2>
+                <p style={planText}>
+                  {translateWorkoutText(currentPlan.note, language)}
+                </p>
               </div>
-              <div style={badge}>{focus}</div>
+              <div style={badge}>{translateOption(focus, language)}</div>
             </div>
 
             <div style={summaryGrid}>
-              <InfoCard label={t.category} value={currentPlan.category} />
+              <InfoCard
+                label={t.category}
+                value={translateWorkoutText(currentPlan.category, language)}
+              />
               <InfoCard
                 label={t.trainingStyle}
-                value={currentPlan.profile.trainingStyle}
+                value={translateWorkoutText(
+                  currentPlan.profile.trainingStyle,
+                  language
+                )}
               />
-              <InfoCard label={t.nutrition} value={currentPlan.nutritionHint} />
-              <InfoCard label={t.cardio} value={currentPlan.cardioHint} />
+              <InfoCard
+                label={t.nutrition}
+                value={translateWorkoutText(currentPlan.nutritionHint, language)}
+              />
+              <InfoCard
+                label={t.cardio}
+                value={translateWorkoutText(currentPlan.cardioHint, language)}
+              />
             </div>
 
             <div style={noteGrid}>
-              <NoteCard label={t.bodyLogic} value={currentPlan.profile.bodyTypeNote} />
-              <NoteCard label={t.recovery} value={currentPlan.recoveryNote} />
-              <NoteCard label={t.restRule} value={currentPlan.profile.restRule} />
-              <NoteCard label={t.levelRule} value={currentPlan.profile.levelRule.note} />
+              <NoteCard
+                label={t.bodyLogic}
+                value={translateWorkoutText(
+                  currentPlan.profile.bodyTypeNote,
+                  language
+                )}
+              />
+              <NoteCard
+                label={t.recovery}
+                value={translateWorkoutText(currentPlan.recoveryNote, language)}
+              />
+              <NoteCard
+                label={t.restRule}
+                value={translateWorkoutText(currentPlan.profile.restRule, language)}
+              />
+              <NoteCard
+                label={t.levelRule}
+                value={translateWorkoutText(
+                  currentPlan.profile.levelRule.note,
+                  language
+                )}
+              />
             </div>
 
             <div style={dayGrid}>
-              {currentPlan.split.map((day, index) => (
-                <div key={`${day.day}-${index}`} style={dayCard}>
-                  <div style={dayTop}>
-                    <div style={dayLabel}>{day.day}</div>
-                    <h3 style={dayTitle}>
-                      {day.day.includes("—")
-                        ? day.day.split("—")[1]?.trim()
-                        : day.day}
-                    </h3>
-                  </div>
+              {currentPlan.split.map((day, index) => {
+                const cleanDayTitle = day.day.includes("—")
+                  ? day.day.split("—")[1]?.trim()
+                  : day.day;
 
-                  <div style={exerciseList}>
-                    {day.exercises.map(([name, sets, reps]) => (
-                      <div key={name} style={exerciseRow}>
-                        <div style={exerciseName}>{name}</div>
-                        <div style={exerciseMeta}>
-                          <span>{sets}</span>
-                          <span>{reps}</span>
-                        </div>
+                return (
+                  <div key={`${day.day}-${index}`} style={dayCard}>
+                    <div style={dayTop}>
+                      <div style={dayLabel}>
+                        {translateWorkoutText(day.day, language)}
                       </div>
-                    ))}
+                      <h3 style={dayTitle}>
+                        {translateWorkoutText(cleanDayTitle, language)}
+                      </h3>
+                    </div>
+
+                    <div style={exerciseList}>
+                      {day.exercises.map(([name, sets, reps]) => (
+                        <div key={name} style={exerciseRow}>
+                          <div style={exerciseName}>
+                            {translateWorkoutText(name, language)}
+                          </div>
+                          <div style={exerciseMeta}>
+                            <span>{translateWorkoutText(sets, language)}</span>
+                            <span>{translateWorkoutText(reps, language)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {!canSave && (
@@ -504,10 +719,10 @@ export default function PlanBuilderClient({ membershipType }) {
                 <p style={lockedText}>{t.limitationText}</p>
 
                 <ul style={lockedList}>
-                  <li>Save plans to your account</li>
-                  <li>Advanced workout rotations</li>
-                  <li>Body type based deeper profile logic</li>
-                  <li>More advanced progression and program depth</li>
+                  <li>{t.savePlans}</li>
+                  <li>{t.advancedRotations}</li>
+                  <li>{t.bodyTypeLogic}</li>
+                  <li>{t.advancedProgression}</li>
                 </ul>
 
                 <a href="/billing" style={unlockButton}>
@@ -553,6 +768,9 @@ const layout = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,320px),1fr))",
   gap: "22px",
+  width: "100%",
+  maxWidth: "100%",
+  overflowX: "hidden",
 };
 
 const sidebarCard = {
@@ -561,6 +779,7 @@ const sidebarCard = {
   borderRadius: "22px",
   padding: "clamp(18px, 4vw, 22px)",
   alignSelf: "start",
+  minWidth: 0,
 };
 
 const contentCard = {
@@ -598,6 +817,11 @@ const input = {
   background: "#111",
   color: "white",
   fontSize: "16px",
+};
+
+const optionStyle = {
+  background: "#111",
+  color: "white",
 };
 
 const variationWrap = {
@@ -734,11 +958,13 @@ const infoCard = {
   border: "1px solid rgba(255,255,255,0.05)",
   borderRadius: "14px",
   padding: "14px",
+  minWidth: 0,
 };
 
 const infoValue = {
   color: "rgba(255,255,255,0.82)",
   lineHeight: 1.7,
+  overflowWrap: "anywhere",
 };
 
 const noteGrid = {
@@ -753,11 +979,13 @@ const noteCard = {
   border: "1px solid rgba(255,255,255,0.05)",
   borderRadius: "14px",
   padding: "14px",
+  minWidth: 0,
 };
 
 const noteText = {
   color: "rgba(255,255,255,0.76)",
   lineHeight: 1.75,
+  overflowWrap: "anywhere",
 };
 
 const dayGrid = {
@@ -771,6 +999,7 @@ const dayCard = {
   border: "1px solid rgba(255,255,255,0.06)",
   borderRadius: "18px",
   padding: "18px",
+  minWidth: 0,
 };
 
 const dayTop = {
@@ -789,6 +1018,7 @@ const dayTitle = {
   fontSize: "22px",
   fontWeight: "900",
   margin: "0",
+  overflowWrap: "anywhere",
 };
 
 const exerciseList = {
@@ -801,11 +1031,13 @@ const exerciseRow = {
   border: "1px solid rgba(255,255,255,0.05)",
   borderRadius: "12px",
   padding: "12px",
+  minWidth: 0,
 };
 
 const exerciseName = {
   fontWeight: "800",
   marginBottom: "6px",
+  overflowWrap: "anywhere",
 };
 
 const exerciseMeta = {

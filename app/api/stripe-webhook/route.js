@@ -1,10 +1,12 @@
 import Stripe from "stripe";
+import { Resend } from "resend";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -14,29 +16,211 @@ const supabase = createClient(
 const PLAN_MEMBERSHIP_MAP = {
   nutrition: "nutrition",
   full_access: "full_access",
-  vip: "vip",
-  coaching: "coaching",
+  upgrade_full_access: "full_access",
 };
 
-const PRICE_MEMBERSHIP_MAP = {
-  [process.env.STRIPE_PRICE_NUTRITION]: "nutrition",
-  [process.env.STRIPE_PRICE_FULL_ACCESS]: "full_access",
-  [process.env.STRIPE_PRICE_VIP]: "vip",
-  [process.env.STRIPE_PRICE_COACHING]: "coaching",
-};
+function normalizePlan(plan) {
+  const clean = String(plan || "").toLowerCase().trim();
+
+  if (clean === "full access" || clean === "full-access") return "full_access";
+  if (clean === "upgrade full access" || clean === "upgrade-full-access") return "upgrade_full_access";
+  if (clean === "coaching call" || clean === "coaching-call") return "coaching_call";
+
+  return clean;
+}
+
+function getPlanDetails(plan) {
+  const plans = {
+    nutrition: {
+      name: "Nutrition",
+      badge: "Nutrition Member",
+      dashboardPath: "/dashboard",
+      perks: [
+        "Daily nutrition routines",
+        "Recipe access",
+        "Smart grocery planning",
+        "Nutrition structure for solo or couple goals",
+        "Access to the Coaching page",
+      ],
+    },
+    full_access: {
+      name: "Full Access",
+      badge: "Full Access Member",
+      dashboardPath: "/dashboard",
+      perks: [
+        "Everything from Nutrition",
+        "Workout library",
+        "Programs",
+        "Plan Builder",
+        "Progress tracking",
+        "Couple Zone",
+        "Access to the Coaching page",
+      ],
+    },
+    upgrade_full_access: {
+      name: "Full Access Upgrade",
+      badge: "Full Access Member",
+      dashboardPath: "/dashboard",
+      perks: [
+        "Workout library unlocked",
+        "Programs unlocked",
+        "Plan Builder unlocked",
+        "Progress tracking unlocked",
+        "Couple Zone unlocked",
+      ],
+    },
+    coaching_call: {
+      name: "Coaching Call",
+      badge: "Coaching Call Purchased",
+      dashboardPath: "/coaching",
+      perks: [
+        "1 paid coaching call",
+        "Choose your preferred date and time",
+        "Reschedule request option",
+        "Training and nutrition review",
+        "Personal guidance from Fit Couple Club",
+      ],
+    },
+  };
+
+  return plans[plan] || plans.full_access;
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function buildWelcomeEmail({ plan, email }) {
+  const details = getPlanDetails(plan);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://fitcoupleclub.com";
+  const dashboardUrl = `${siteUrl}${details.dashboardPath}`;
+
+  const perksHtml = details.perks
+    .map(
+      (perk) => `
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <span style="color:#facc15;font-weight:900;">✓</span>
+            <span style="color:#f5f5f5;margin-left:8px;">${escapeHtml(perk)}</span>
+          </td>
+        </tr>
+      `
+    )
+    .join("");
+
+  return {
+    subject: `Welcome to Fit Couple Club — ${details.name}`,
+    html: `
+      <div style="margin:0;padding:0;background:#050505;font-family:Arial,Helvetica,sans-serif;color:#ffffff;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#050505;padding:32px 14px;">
+          <tr>
+            <td align="center">
+              <table width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background:#0b0b0b;border:1px solid rgba(255,255,255,0.10);border-radius:26px;overflow:hidden;">
+                
+                <tr>
+                  <td style="padding:34px 28px;background:linear-gradient(135deg,#050505,#111111 55%,rgba(250,204,21,0.14));">
+                    <div style="display:inline-block;padding:8px 13px;border-radius:999px;background:rgba(250,204,21,0.14);border:1px solid rgba(250,204,21,0.35);color:#facc15;font-size:12px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;">
+                      ${escapeHtml(details.badge)}
+                    </div>
+
+                    <h1 style="margin:22px 0 12px;font-size:38px;line-height:1.02;color:#ffffff;font-weight:950;">
+                      Welcome to the Fit Couple Club team.
+                    </h1>
+
+                    <p style="margin:0;color:rgba(255,255,255,0.74);font-size:17px;line-height:1.7;">
+                      We’re happy to have you with us. Your purchase is confirmed and your access is now being unlocked inside your member dashboard.
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:28px;">
+                    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px;">
+                      <div style="color:rgba(255,255,255,0.48);font-size:12px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px;">
+                        You bought
+                      </div>
+
+                      <div style="font-size:30px;line-height:1.1;font-weight:950;color:#ffffff;">
+                        ${escapeHtml(details.name)}
+                      </div>
+
+                      <div style="margin-top:10px;color:rgba(255,255,255,0.62);font-size:14px;">
+                        Account: ${escapeHtml(email)}
+                      </div>
+                    </div>
+
+                    <h2 style="margin:28px 0 12px;color:#ffffff;font-size:24px;font-weight:950;">
+                      What you unlocked
+                    </h2>
+
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      ${perksHtml}
+                    </table>
+
+                    <div style="text-align:center;margin:32px 0 10px;">
+                      <a href="${dashboardUrl}" style="display:inline-block;background:#facc15;color:#000000;text-decoration:none;font-weight:950;font-size:16px;padding:16px 26px;border-radius:16px;">
+                        Open Your Dashboard
+                      </a>
+                    </div>
+
+                    <p style="margin:24px 0 0;color:rgba(255,255,255,0.68);font-size:15px;line-height:1.7;">
+                      Start simple: open your dashboard, choose the section you bought access to, and follow the structure step by step. No guessing, no overthinking — just consistency.
+                    </p>
+
+                    <p style="margin:22px 0 0;color:#ffffff;font-size:15px;line-height:1.7;">
+                      Welcome to the team,<br />
+                      <strong>Niels & Rosanna</strong><br />
+                      Fit Couple Club
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:20px 28px;background:#070707;border-top:1px solid rgba(255,255,255,0.08);">
+                    <p style="margin:0;color:rgba(255,255,255,0.42);font-size:12px;line-height:1.6;text-align:center;">
+                      Need help? Reply to this email or contact us through Fit Couple Club.
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `,
+  };
+}
+
+async function sendWelcomeEmail({ plan, email }) {
+  if (!process.env.RESEND_API_KEY || !email) return;
+
+  const emailData = buildWelcomeEmail({ plan, email });
+
+  await resend.emails.send({
+    from: "Fit Couple Club <noreply@fitcoupleclub.com>",
+    to: [email],
+    subject: emailData.subject,
+    html: emailData.html,
+  });
+}
 
 async function updateProfileAccess({
   userId,
   customerId,
   email,
   membershipType,
-  isActive,
 }) {
   const normalizedEmail = String(email || "").toLowerCase().trim();
 
   const updateData = {
     membership_type: membershipType,
-    is_active: isActive,
+    is_active: true,
     ...(customerId ? { stripe_customer_id: customerId } : {}),
     ...(normalizedEmail ? { email: normalizedEmail } : {}),
   };
@@ -80,7 +264,7 @@ async function updateProfileAccess({
         id: userId,
         email: normalizedEmail,
         membership_type: membershipType,
-        is_active: isActive,
+        is_active: true,
         ...(customerId ? { stripe_customer_id: customerId } : {}),
       },
       { onConflict: "id" }
@@ -93,23 +277,28 @@ async function updateProfileAccess({
   return new Error("No matching profile found to update.");
 }
 
-function getMembershipFromPlan(plan) {
-  return PLAN_MEMBERSHIP_MAP[String(plan || "").toLowerCase().trim()] || null;
-}
+async function createCoachingCallCredit({
+  userId,
+  customerId,
+  email,
+  stripeSessionId,
+}) {
+  const normalizedEmail = String(email || "").toLowerCase().trim();
 
-function getMembershipFromPriceId(priceId) {
-  return PRICE_MEMBERSHIP_MAP[priceId] || null;
-}
-
-async function getMembershipFromSubscription(subscriptionId) {
-  if (!subscriptionId) return null;
-
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
-    expand: ["items.data.price"],
+  const { error } = await supabase.from("coaching_calls").insert({
+    user_id: userId || null,
+    email: normalizedEmail || null,
+    stripe_customer_id: customerId || null,
+    stripe_session_id: stripeSessionId,
+    status: "paid_unscheduled",
   });
 
-  const priceId = subscription?.items?.data?.[0]?.price?.id;
-  return getMembershipFromPriceId(priceId);
+  if (error) {
+    console.error("CREATE COACHING CALL CREDIT ERROR:", error);
+    return error;
+  }
+
+  return null;
 }
 
 export async function POST(req) {
@@ -138,7 +327,6 @@ export async function POST(req) {
       const session = event.data.object;
 
       const customerId = String(session.customer || "").trim();
-      const subscriptionId = String(session.subscription || "").trim();
 
       const email = String(
         session.customer_email ||
@@ -153,26 +341,50 @@ export async function POST(req) {
         session.metadata?.user_id || session.client_reference_id || ""
       ).trim();
 
-      const plan = String(session.metadata?.plan || "").toLowerCase().trim();
+      const plan = normalizePlan(session.metadata?.plan);
 
-      let membershipType = getMembershipFromPlan(plan);
-
-      if (!membershipType && subscriptionId) {
-        membershipType = await getMembershipFromSubscription(subscriptionId);
-      }
-
-      console.log("STRIPE SESSION COMPLETED:", {
+      console.log("STRIPE ONE-TIME SESSION COMPLETED:", {
         session: session.id,
         customerId,
-        subscriptionId,
         userId,
         email,
         plan,
-        membershipType,
+        paymentStatus: session.payment_status,
       });
 
+      if (session.payment_status !== "paid") {
+        return new Response("Session not paid", { status: 200 });
+      }
+
+      if (plan === "coaching_call") {
+        const coachingError = await createCoachingCallCredit({
+          userId,
+          customerId,
+          email,
+          stripeSessionId: session.id,
+        });
+
+        if (coachingError) {
+          return new Response("Coaching call credit failed", { status: 500 });
+        }
+
+        try {
+          await sendWelcomeEmail({ plan, email });
+        } catch (emailError) {
+          console.error("WELCOME EMAIL ERROR:", emailError);
+        }
+
+        return new Response("ok", { status: 200 });
+      }
+
+      const membershipType = PLAN_MEMBERSHIP_MAP[plan];
+
       if (!membershipType) {
-        console.error("NO MEMBERSHIP TYPE FOUND:", session.id);
+        console.error("NO MEMBERSHIP TYPE FOUND:", {
+          session: session.id,
+          plan,
+        });
+
         return new Response("No membership type found", { status: 200 });
       }
 
@@ -181,104 +393,17 @@ export async function POST(req) {
         customerId,
         email,
         membershipType,
-        isActive: true,
       });
 
       if (updateError) {
         console.error("SUPABASE UPDATE ERROR:", updateError.message);
         return new Response("Database update failed", { status: 500 });
       }
-    }
 
-    if (event.type === "customer.subscription.updated") {
-      const subscription = event.data.object;
-
-      const customerId = String(subscription.customer || "").trim();
-      const userId = String(subscription.metadata?.user_id || "").trim();
-      const email = String(subscription.metadata?.email || "")
-        .toLowerCase()
-        .trim();
-
-      const plan = String(subscription.metadata?.plan || "")
-        .toLowerCase()
-        .trim();
-
-      const priceId = subscription?.items?.data?.[0]?.price?.id;
-
-      const membershipType =
-        getMembershipFromPlan(plan) || getMembershipFromPriceId(priceId);
-
-      if (customerId && membershipType) {
-        const updateError = await updateProfileAccess({
-          userId,
-          customerId,
-          email,
-          membershipType,
-          isActive: subscription.status === "active",
-        });
-
-        if (updateError) {
-          console.error("SUBSCRIPTION UPDATE ERROR:", updateError.message);
-          return new Response("Subscription update failed", { status: 500 });
-        }
-      }
-    }
-
-    if (event.type === "customer.subscription.deleted") {
-      const subscription = event.data.object;
-      const customerId = String(subscription.customer || "").trim();
-
-      if (customerId) {
-        const { error } = await supabase
-          .from("profiles")
-          .update({
-            membership_type: "free",
-            is_active: false,
-          })
-          .eq("stripe_customer_id", customerId);
-
-        if (error) {
-          console.error("SUBSCRIPTION DELETE UPDATE ERROR:", error);
-          return new Response("Subscription delete update failed", {
-            status: 500,
-          });
-        }
-      }
-    }
-
-    if (event.type === "invoice.payment_failed") {
-      const invoice = event.data.object;
-      const customerId = String(invoice.customer || "").trim();
-
-      if (customerId) {
-        const { error } = await supabase
-          .from("profiles")
-          .update({ is_active: false })
-          .eq("stripe_customer_id", customerId);
-
-        if (error) {
-          console.error("PAYMENT FAILED UPDATE ERROR:", error);
-          return new Response("Payment failed update failed", { status: 500 });
-        }
-      }
-    }
-
-    if (event.type === "invoice.payment_succeeded") {
-      const invoice = event.data.object;
-      const customerId = String(invoice.customer || "").trim();
-
-      if (customerId) {
-        const { error } = await supabase
-          .from("profiles")
-          .update({ is_active: true })
-          .eq("stripe_customer_id", customerId);
-
-        if (error) {
-          console.error("PAYMENT SUCCEEDED UPDATE ERROR:", error);
-          return new Response("Payment succeeded update failed", {
-            status: 500,
-          });
-        }
+      try {
+        await sendWelcomeEmail({ plan, email });
+      } catch (emailError) {
+        console.error("WELCOME EMAIL ERROR:", emailError);
       }
     }
 

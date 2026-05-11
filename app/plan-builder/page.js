@@ -18,15 +18,17 @@ export default async function PlanBuilderPage() {
     return (
       <DashboardLayout
         title="Plan Builder"
-        subtitle="Generate your training plan based on your goal and member level."
+        subtitle=""
         membershipType={membership}
       >
-        <UpgradeLockScreen
-          title="Unlock the Plan Builder"
-          text="Build structured training plans based on your goal, focus, and weekly schedule. This feature is part of Full Access and above."
-          requiredPlan="Full Access"
-          buttonLabel="Upgrade to Full Access"
-        />
+        <section style={pageWrap}>
+          <UpgradeLockScreen
+            title="Unlock the Plan Builder"
+            text="Build structured training plans based on your goal, focus, and weekly schedule. This feature is part of Full Access and above."
+            requiredPlan="Full Access"
+            buttonLabel="Upgrade to Full Access"
+          />
+        </section>
       </DashboardLayout>
     );
   }
@@ -34,10 +36,23 @@ export default async function PlanBuilderPage() {
   return (
     <DashboardLayout
       title="Plan Builder"
-      subtitle="Build a structured training plan based on your goal, focus, and weekly schedule."
+      subtitle=""
       membershipType={membership}
     >
-      <PlanBuilderClient membershipType={membership} />
+      <section style={pageWrap}>
+        <PlanBuilderClient membershipType={membership} />
+      </section>
     </DashboardLayout>
   );
 }
+
+const pageWrap = {
+  width: "100%",
+  maxWidth: "1500px",
+  margin: "0 auto",
+  display: "grid",
+  gap: "clamp(18px, 3vw, 28px)",
+  paddingBottom: "clamp(80px, 10vw, 120px)",
+  overflowX: "hidden",
+  boxSizing: "border-box",
+};

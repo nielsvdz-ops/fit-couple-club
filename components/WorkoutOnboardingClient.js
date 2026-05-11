@@ -1,6 +1,103 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLanguage } from "../lib/useLanguage";
+
+
+// WORKOUT ONBOARDING TRANSLATIONS V2
+
+const onboardingTranslations = {
+  en: {
+    title: "Build your personalized training system",
+    subtitle:
+      "Choose your goals, focus areas, experience, and lifestyle so we can generate smarter workouts and weekly plans.",
+    continue: "Continue",
+    back: "Back",
+    finish: "Finish setup",
+
+    goal: "Goal",
+    focus: "Focus area",
+    bodyType: "Body type",
+    experience: "Experience level",
+    lifestyle: "Lifestyle",
+    trainingDays: "Training days",
+
+    loseFat: ot(language, "loseFat"),
+    buildMuscle: ot(language, "buildMuscle"),
+    toneShape: ot(language, "toneShape"),
+    athletic: ot(language, "athletic"),
+    beginnerReset: ot(language, "beginnerReset"),
+
+    booty: ot(language, "booty"),
+    abs: ot(language, "abs"),
+    legs: ot(language, "legs"),
+    upperBody: ot(language, "upperBody"),
+    fullBody: ot(language, "fullBody"),
+
+    slim: ot(language, "slim"),
+    average: ot(language, "average"),
+    curvy: ot(language, "curvy"),
+    athleticType: ot(language, "athleticType"),
+    plusSize: ot(language, "plusSize"),
+
+    beginner: ot(language, "beginner"),
+    intermediate: ot(language, "intermediate"),
+    advanced: ot(language, "advanced"),
+
+    busy: ot(language, "busy"),
+    balanced: ot(language, "balanced"),
+    active: ot(language, "active"),
+  },
+
+  nl: {
+    title: "Bouw jouw persoonlijke trainingssysteem",
+    subtitle:
+      "Kies jouw doelen, focusgebieden, ervaring en lifestyle zodat we slimmere workouts en weekschema’s kunnen genereren.",
+    continue: "Verder",
+    back: "Terug",
+    finish: "Setup afronden",
+
+    goal: "Doel",
+    focus: "Focusgebied",
+    bodyType: "Lichaamstype",
+    experience: "Ervaringsniveau",
+    lifestyle: "Lifestyle",
+    trainingDays: "Trainingsdagen",
+
+    loseFat: "Vetverlies",
+    buildMuscle: "Spieropbouw",
+    toneShape: "Tonen & Vormen",
+    athletic: "Atletische Lifestyle Behouden",
+    beginnerReset: ot(language, "beginnerReset"),
+
+    booty: "Billen",
+    abs: "Buikspieren",
+    legs: "Benen",
+    upperBody: "Bovenlichaam",
+    fullBody: ot(language, "fullBody"),
+
+    slim: "Slank",
+    average: "Gemiddeld",
+    curvy: ot(language, "curvy"),
+    athleticType: "Atletisch",
+    plusSize: ot(language, "plusSize"),
+
+    beginner: ot(language, "beginner"),
+    intermediate: "Gemiddeld",
+    advanced: "Gevorderd",
+
+    busy: "Drukke Agenda",
+    balanced: "Gebalanceerde Lifestyle",
+    active: "Zeer Actief",
+  },
+};
+
+function ot(language, key) {
+  return onboardingTranslations?.[language]?.[key] ||
+    onboardingTranslations.en[key] ||
+    key;
+}
+
 import {
   GOALS,
   FOCUS_AREAS,
@@ -13,7 +110,9 @@ import {
 } from "../lib/workoutplan";
 
 export default function WorkoutOnboardingClient() {
-  const [goal, setGoal] = useState(GOALS[0]);
+  
+  const { language } = useLanguage();
+const [goal, setGoal] = useState(GOALS[0]);
   const [focus, setFocus] = useState(FOCUS_AREAS[0]);
   const [bodyType, setBodyType] = useState(BODY_TYPES[1]);
   const [level, setLevel] = useState(EXPERIENCE_LEVELS[0]);
@@ -208,6 +307,8 @@ const input = {
 
 const buttonRow = {
   display: "flex",
+    overflowWrap: "break-word",
+    wordBreak: "break-word",
   gap: "12px",
   flexWrap: "wrap",
   marginTop: "18px",

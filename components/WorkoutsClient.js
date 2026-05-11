@@ -2,6 +2,309 @@
 
 import { useMemo, useState } from "react";
 import { getExerciseMedia } from "../lib/exerciseMedia";
+import { useLanguage } from "../lib/useLanguage";
+
+
+const workoutCopy = {
+  en: {
+    libraryEyebrow: "Exclusive Training Library",
+    libraryTitle: "Build your training around the result you want",
+    libraryText:
+      "This workout library is built like a private coaching system. Choose the body area you want to focus on, filter by training style, weekly frequency, goal, and level, then open the variation that fits your current target.",
+    bodyFocus: "Body Focus",
+    trainingStyle: "Training Style",
+    weeklyFrequency: "Weekly Frequency",
+    goal: "Goal",
+    experienceLevel: "Experience Level",
+    plansVisible: "plans visible",
+    openVariation:
+      "Open a variation below to see session goals, warm-ups, exercises, cues, mistakes, substitutes, and finishers.",
+    programNote: "Program Note",
+    structure: "Structure",
+    bestFor: "Best For",
+    access: "Access",
+    includedFullAccess: "Included in Full Access and above",
+    warmup: "Warm-up",
+    cue: "Cue",
+    commonMistake: "Common mistake",
+    substitute: "Substitute",
+    progression: "Progression",
+    progressionText:
+      "Add 1 rep or a small weight increase once top reps are achieved with clean form.",
+    finisher: "Finisher",
+    rest: "Rest",
+    demoComingSoon: "Demo coming soon",
+    rest: "Rest",
+    empty:
+      "No workout variations match this filter combination yet. Try another style, frequency, goal, or level.",
+  },
+  nl: {
+    libraryEyebrow: "Exclusieve trainingsbibliotheek",
+    libraryTitle: "Bouw je training rond het resultaat dat jij wilt",
+    libraryText:
+      "Deze workout bibliotheek werkt als een privé coachingsysteem. Kies het lichaamsdeel waarop je wilt focussen, filter op trainingsstijl, trainingsfrequentie, doel en niveau, en open de variant die past bij jouw huidige doel.",
+    bodyFocus: "Lichaamsfocus",
+    trainingStyle: "Trainingsstijl",
+    weeklyFrequency: "Wekelijkse frequentie",
+    goal: "Doel",
+    experienceLevel: "Ervaringsniveau",
+    plansVisible: "schema’s zichtbaar",
+    openVariation:
+      "Open een variant hieronder om sessiedoelen, warming-up, oefeningen, cues, fouten, alternatieven en finishers te zien.",
+    programNote: "Programma notitie",
+    structure: "Structuur",
+    bestFor: "Beste voor",
+    access: "Toegang",
+    includedFullAccess: "Inbegrepen bij Full Access en hoger",
+    warmup: "Warming-up",
+    cue: "Cue",
+    commonMistake: "Veelgemaakte fout",
+    substitute: "Alternatief",
+    progression: "Progressie",
+    progressionText:
+      "Voeg 1 herhaling toe of verhoog het gewicht licht zodra je de hoogste herhalingen met goede techniek haalt.",
+    finisher: "Finisher",
+    rest: "Rest",
+    demoComingSoon: "Demo komt binnenkort",
+    rest: "Rust",
+    empty:
+      "Geen workout variaties gevonden met deze filters. Probeer een andere stijl, frequentie, doel of niveau.",
+  },
+};
+
+function wc(language, key) {
+  return workoutCopy?.[language]?.[key] || workoutCopy.en[key] || key;
+}
+
+function normalizeAccess(value = "full_access") {
+  const clean = String(value || "").toLowerCase().trim();
+
+  if (
+    clean === "starter" ||
+    clean === "premium" ||
+    clean === "full access" ||
+    clean === "full-access" ||
+    clean === "full_access" ||
+    clean === "fitness" ||
+    clean === "workouts"
+  ) {
+    return "full_access";
+  }
+
+  if (clean === "nutrition") return "nutrition";
+  if (clean === "vip") return "vip";
+  if (clean === "coaching") return "coaching";
+
+  return "full_access";
+}
+
+function accessLabel(value, language = "en") {
+  const access = normalizeAccess(value);
+
+  const labels = {
+    en: {
+      nutrition: "Nutrition",
+      full_access: "Full Access",
+      vip: "VIP",
+      coaching: "Coaching",
+    },
+    nl: {
+      nutrition: "Voeding",
+      full_access: "Full Access",
+      vip: "VIP",
+      coaching: "Coaching",
+    },
+  };
+
+  return labels?.[language]?.[access] || labels.en.full_access;
+}
+
+function translateWorkout(value, language = "en") {
+  if (value === null || value === undefined) return "";
+
+  const text = String(value);
+
+  if (language !== "nl") {
+    if (text === "Starter" || text === "Premium") return "Full Access";
+    if (text === "Moderate") return "Moderate";
+    if (text === "High") return "High";
+    if (text === "Low") return "Low";
+    return text;
+  }
+
+  const exact = {
+    "Starter": "Full Access",
+    "Premium": "Full Access",
+    "Full Access": "Full Access",
+
+    "Glutes": "Billen",
+    "Booty": "Billen",
+    "Upper Body": "Bovenlichaam",
+    "Lower Body": "Onderlichaam",
+    "Legs": "Benen",
+    "Core": "Core",
+    "Abs": "Buikspieren",
+    "Full Body": "Full Body",
+
+    "Booty Builder": "Billen Builder",
+    "Shape, grow, and strengthen the glutes with a structured lower-body emphasis.":
+      "Vorm, bouw en versterk je billen met een gestructureerde lower-body focus.",
+
+    "Glute Foundation": "Bil Fundament",
+    "Curves & Control": "Curves & Controle",
+    "Glutes + Hamstrings": "Billen + Hamstrings",
+    "Lift & Shape": "Lift & Shape",
+    "Elite Glute Density": "Elite Bil Dichtheid",
+    "Heavy Glute Strength": "Zware Bil Kracht",
+    "Glute Volume Phase": "Bil Volume Fase",
+    "Glute Lift Premium": "Bil Lift Full Access",
+
+    "All Styles": "Alle stijlen",
+    "Shape & Sculpt": "Shape & Sculpt",
+    "Strength": "Kracht",
+    "Athletic": "Atletisch",
+    "Any Frequency": "Elke frequentie",
+    "2 Days / Week": "2 dagen / week",
+    "3 Days / Week": "3 dagen / week",
+    "4 Days / Week": "4 dagen / week",
+    "All Goals": "Alle doelen",
+    "Shape & Tone": "Shape & Tone",
+    "Build Muscle": "Spieropbouw",
+    "Fat Loss": "Vetverlies",
+    "Athletic Performance": "Atletische prestatie",
+    "All Levels": "Alle niveaus",
+    "Beginner": "Beginner",
+    "Intermediate": "Gemiddeld",
+    "Advanced": "Gevorderd",
+
+    "Moderate": "Gemiddeld",
+    "High": "Hoog",
+    "Low": "Laag",
+    "Moderate Intensity": "Gemiddelde intensiteit",
+    "High Intensity": "Hoge intensiteit",
+    "Low Intensity": "Lage intensiteit",
+
+    "2 days / week": "2 dagen / week",
+    "3 days / week": "3 dagen / week",
+    "4 days / week": "4 dagen / week",
+    "5 days / week": "5 dagen / week",
+    "6 days / week": "6 dagen / week",
+
+    "A clean entry point for building shape, glute awareness, and lower-body confidence.":
+      "Een duidelijke start om vorm, bilconnectie en lower-body vertrouwen op te bouwen.",
+    "Build glute connection and controlled tension":
+      "Bouw bilconnectie en gecontroleerde spanning op",
+    "Drive through the heels and hold the squeeze.":
+      "Duw door je hakken en houd de aanspanning vast.",
+    "Overarching the lower back.": "Te veel hol trekken van de onderrug.",
+    "Glute Bridge": "Glute Bridge",
+    "Lean slightly forward for more glute bias.":
+      "Leun licht naar voren voor meer bilfocus.",
+    "Staying too upright.": "Te rechtop blijven.",
+    "Lunges": "Lunges",
+  };
+
+  if (exact[text]) return exact[text];
+
+  let output = text;
+
+  const replacements = [
+    ["Starter", "Full Access"],
+    ["Premium", "Full Access"],
+
+    ["Workout", "Training"],
+    ["Workouts", "Trainingen"],
+    ["Exercise", "Oefening"],
+    ["Exercises", "Oefeningen"],
+    ["Program", "Programma"],
+    ["Programs", "Programma’s"],
+    ["Variation", "Variatie"],
+    ["Goal", "Doel"],
+    ["Session", "Sessie"],
+    ["Warm-up", "Warming-up"],
+    ["Finisher", "Finisher"],
+    ["Cue", "Cue"],
+    ["Common mistake", "Veelgemaakte fout"],
+    ["Substitute", "Alternatief"],
+    ["Progression", "Progressie"],
+    ["Structure", "Structuur"],
+    ["Best For", "Beste voor"],
+    ["Access", "Toegang"],
+
+    ["Glutes", "Billen"],
+    ["Glute", "Bil"],
+    ["Booty", "Billen"],
+    ["Upper Body", "Bovenlichaam"],
+    ["Lower Body", "Onderlichaam"],
+    ["Legs", "Benen"],
+    ["Abs", "Buikspieren"],
+    ["Core", "Core"],
+    ["Full Body", "Full Body"],
+    ["Hamstrings", "Hamstrings"],
+    ["Quads", "Quads"],
+
+    ["Foundation", "Fundament"],
+    ["Strength", "Kracht"],
+    ["Density", "Dichtheid"],
+    ["Volume Phase", "Volume Fase"],
+    ["Shape", "Shape"],
+    ["Sculpt", "Sculpt"],
+
+    ["Moderate Intensity", "Gemiddelde intensiteit"],
+    ["High Intensity", "Hoge intensiteit"],
+    ["Low Intensity", "Lage intensiteit"],
+    ["Moderate intensity", "gemiddelde intensiteit"],
+    ["High intensity", "hoge intensiteit"],
+    ["Low intensity", "lage intensiteit"],
+    ["Moderate", "Gemiddeld"],
+    ["High", "Hoog"],
+    ["Low", "Laag"],
+
+    ["Beginner", "Beginner"],
+    ["Intermediate", "Gemiddeld"],
+    ["Advanced", "Gevorderd"],
+
+    ["Shape & Tone", "Shape & Tone"],
+    ["Build Muscle", "Spieropbouw"],
+    ["Fat Loss", "Vetverlies"],
+    ["Athletic Performance", "Atletische prestatie"],
+
+    ["days / week", "dagen / week"],
+    ["day / week", "dag / week"],
+    ["sets", "sets"],
+    ["Rest", "Rust"],
+    ["sec", "sec"],
+    ["each leg", "per been"],
+    ["min", "min"],
+
+    ["Demo coming soon", "Demo komt binnenkort"],
+    ["Add 1 rep or a small weight increase once top reps are achieved with clean form.",
+      "Voeg 1 herhaling toe of verhoog het gewicht licht zodra je de hoogste herhalingen met goede techniek haalt."],
+  ];
+
+  replacements.forEach(([from, to]) => {
+    output = output.split(from).join(to);
+  });
+
+  return output;
+}
+
+function capitalizeTranslated(value, language = "en") {
+  const translated = translateWorkout(capitalize(value), language);
+  return translated;
+}
+
+function goalLabel(value, language = "en") {
+  const labels = {
+    shape: language === "nl" ? "Shape & Tone" : "Shape & Tone",
+    muscle: language === "nl" ? "Spieropbouw" : "Build Muscle",
+    strength: language === "nl" ? "Kracht" : "Strength",
+    "fat-loss": language === "nl" ? "Vetverlies" : "Fat Loss",
+    athletic: language === "nl" ? "Atletische prestatie" : "Athletic Performance",
+  };
+  return labels[value] || translateWorkout(value, language);
+}
+
 
 const workoutPrograms = [
   {
@@ -15,7 +318,7 @@ const workoutPrograms = [
     variations: [
       {
         name: "Glute Foundation",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -113,7 +416,7 @@ const workoutPrograms = [
       },
       {
         name: "Curves & Control",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -169,7 +472,7 @@ const workoutPrograms = [
       },
       {
         name: "Glutes + Hamstrings",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -225,7 +528,7 @@ const workoutPrograms = [
       },
       {
         name: "Lift & Shape",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -271,7 +574,7 @@ const workoutPrograms = [
       },
       {
         name: "Elite Glute Density",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "strength",
@@ -369,7 +672,7 @@ const workoutPrograms = [
       },
       {
         name: "Heavy Glute Strength",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -415,7 +718,7 @@ const workoutPrograms = [
       },
       {
         name: "Glute Volume Phase",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "shape",
@@ -471,7 +774,7 @@ const workoutPrograms = [
       },
       {
         name: "Glute Lift Premium",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -529,7 +832,7 @@ const workoutPrograms = [
     variations: [
       {
         name: "Push & Pull Foundation",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -607,7 +910,7 @@ const workoutPrograms = [
       },
       {
         name: "Sculpt & Tighten",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -685,7 +988,7 @@ const workoutPrograms = [
       },
       {
         name: "Upper Beginner Reset",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "athletic",
@@ -731,7 +1034,7 @@ const workoutPrograms = [
       },
       {
         name: "Upper Lean Look",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -777,7 +1080,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Upper Definition",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -875,7 +1178,7 @@ const workoutPrograms = [
       },
       {
         name: "Upper Strength Builder",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -921,7 +1224,7 @@ const workoutPrograms = [
       },
       {
         name: "Back-Focused Upper",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "athletic",
@@ -977,7 +1280,7 @@ const workoutPrograms = [
       },
       {
         name: "Shoulders & Shape",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -1035,7 +1338,7 @@ const workoutPrograms = [
     variations: [
       {
         name: "Leg Base",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "strength",
@@ -1081,7 +1384,7 @@ const workoutPrograms = [
       },
       {
         name: "Leg Volume",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -1123,7 +1426,7 @@ const workoutPrograms = [
       },
       {
         name: "Athletic Legs",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "athletic",
@@ -1169,7 +1472,7 @@ const workoutPrograms = [
       },
       {
         name: "Leg Shape Builder",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -1215,7 +1518,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Leg Density",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -1271,7 +1574,7 @@ const workoutPrograms = [
       },
       {
         name: "Quad Focus Premium",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -1317,7 +1620,7 @@ const workoutPrograms = [
       },
       {
         name: "Posterior Chain Premium",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -1363,7 +1666,7 @@ const workoutPrograms = [
       },
       {
         name: "Lower Strength Peak",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "strength",
@@ -1421,7 +1724,7 @@ const workoutPrograms = [
     variations: [
       {
         name: "Core Foundation",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "athletic",
@@ -1463,7 +1766,7 @@ const workoutPrograms = [
       },
       {
         name: "Waist Tightening",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "shape",
@@ -1495,7 +1798,7 @@ const workoutPrograms = [
       },
       {
         name: "Athletic Core Reset",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "athletic",
@@ -1527,7 +1830,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Core Density",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "athletic",
@@ -1569,7 +1872,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Athletic Midline",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "athletic",
@@ -1613,7 +1916,7 @@ const workoutPrograms = [
     variations: [
       {
         name: "Full Body Foundation",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "athletic",
@@ -1665,7 +1968,7 @@ const workoutPrograms = [
       },
       {
         name: "Full Body Lean",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -1707,7 +2010,7 @@ const workoutPrograms = [
       },
       {
         name: "Full Body Strength",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "2 days / week",
         trainingDays: 2,
         style: "strength",
@@ -1749,7 +2052,7 @@ const workoutPrograms = [
       },
       {
         name: "Full Body Reset Plus",
-        tier: "Starter",
+        tier: "full_access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "athletic",
@@ -1791,7 +2094,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Full Body Athletic",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "athletic",
@@ -1843,7 +2146,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Full Body Muscle",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "shape",
@@ -1885,7 +2188,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Full Body Strength",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "3 days / week",
         trainingDays: 3,
         style: "strength",
@@ -1927,7 +2230,7 @@ const workoutPrograms = [
       },
       {
         name: "Premium Full Body Recomp",
-        tier: "Premium",
+        tier: "full_access",
         weeklySplit: "4 days / week",
         trainingDays: 4,
         style: "shape",
@@ -1972,9 +2275,10 @@ const workoutPrograms = [
 ];
 
 export default function WorkoutsClient({ membershipType }) {
+  const { language } = useLanguage();
   const membership = String(membershipType || "").toLowerCase();
-  const isStarter = membership === "starter";
-  const isPremiumPlus = membership === "premium" || membership === "vip";
+  const isStarter = false;
+  const isPremiumPlus = ["full_access", "full-access", "vip", "coaching"].includes(membership);
 
   const bodyFocusOptions = workoutPrograms.map((program) => ({
     slug: program.slug,
@@ -2065,18 +2369,13 @@ export default function WorkoutsClient({ membershipType }) {
   return (
     <div style={{ display: "grid", gap: "26px" }}>
       <section style={heroCard}>
-        <div style={eyebrow}>Exclusive Training Library</div>
-        <h2 style={heroTitle}>Build your training around the result you want</h2>
-        <p style={heroText}>
-          This workout library is built like a private coaching system. Choose the
-          body area you want to focus on, filter by training style, weekly
-          frequency, goal, and level, then open the variation that fits your
-          current target.
-        </p>
+        <div style={eyebrow}>{wc(language, "libraryEyebrow")}</div>
+        <h2 style={heroTitle}>{wc(language, "libraryTitle")}</h2>
+        <p style={heroText}>{wc(language, "libraryText")}</p>
 
         <div style={topFilterBlock}>
           <div style={filterGroup}>
-            <div style={miniLabel}>Body Focus</div>
+            <div style={miniLabel}>{wc(language, "bodyFocus")}</div>
             <div style={filterTabs}>
               {bodyFocusOptions.map((item) => (
                 <button
@@ -2094,7 +2393,7 @@ export default function WorkoutsClient({ membershipType }) {
                     color: selectedFilter === item.slug ? "black" : "white",
                   }}
                 >
-                  {item.label}
+                  {translateWorkout(item.label, language)}
                 </button>
               ))}
             </div>
@@ -2102,7 +2401,7 @@ export default function WorkoutsClient({ membershipType }) {
 
           <div style={secondaryFilters}>
             <div style={selectWrap}>
-              <div style={miniLabel}>Training Style</div>
+              <div style={miniLabel}>{wc(language, "trainingStyle")}</div>
               <div style={selectShell}>
                 <select
                   value={selectedStyle}
@@ -2115,7 +2414,7 @@ export default function WorkoutsClient({ membershipType }) {
                       value={option.value}
                       style={selectOptionStyle}
                     >
-                      {option.label}
+                      {translateWorkout(option.label, language)}
                     </option>
                   ))}
                 </select>
@@ -2124,7 +2423,7 @@ export default function WorkoutsClient({ membershipType }) {
             </div>
 
             <div style={selectWrap}>
-              <div style={miniLabel}>Weekly Frequency</div>
+              <div style={miniLabel}>{wc(language, "weeklyFrequency")}</div>
               <div style={selectShell}>
                 <select
                   value={selectedFrequency}
@@ -2137,7 +2436,7 @@ export default function WorkoutsClient({ membershipType }) {
                       value={option.value}
                       style={selectOptionStyle}
                     >
-                      {option.label}
+                      {translateWorkout(option.label, language)}
                     </option>
                   ))}
                 </select>
@@ -2146,7 +2445,7 @@ export default function WorkoutsClient({ membershipType }) {
             </div>
 
             <div style={selectWrap}>
-              <div style={miniLabel}>Goal</div>
+              <div style={miniLabel}>{wc(language, "goal")}</div>
               <div style={selectShell}>
                 <select
                   value={selectedGoal}
@@ -2159,7 +2458,7 @@ export default function WorkoutsClient({ membershipType }) {
                       value={option.value}
                       style={selectOptionStyle}
                     >
-                      {option.label}
+                      {translateWorkout(option.label, language)}
                     </option>
                   ))}
                 </select>
@@ -2168,7 +2467,7 @@ export default function WorkoutsClient({ membershipType }) {
             </div>
 
             <div style={selectWrap}>
-              <div style={miniLabel}>Experience Level</div>
+              <div style={miniLabel}>{wc(language, "experienceLevel")}</div>
               <div style={selectShell}>
                 <select
                   value={selectedLevel}
@@ -2181,7 +2480,7 @@ export default function WorkoutsClient({ membershipType }) {
                       value={option.value}
                       style={selectOptionStyle}
                     >
-                      {option.label}
+                      {translateWorkout(option.label, language)}
                     </option>
                   ))}
                 </select>
@@ -2195,22 +2494,19 @@ export default function WorkoutsClient({ membershipType }) {
       <section style={programWrap}>
         <div style={programHead}>
           <div>
-            <div style={eyebrow}>{selectedProgram.title}</div>
-            <h2 style={programTitle}>{selectedProgram.subtitle}</h2>
-            <p style={programSubText}>
-              Open a variation below to see session goals, warm-ups, exercises,
-              cues, mistakes, substitutes, and finishers.
-            </p>
+            <div style={eyebrow}>{translateWorkout(selectedProgram.title, language)}</div>
+            <h2 style={programTitle}>{translateWorkout(selectedProgram.subtitle, language)}</h2>
+            <p style={programSubText}>{wc(language, "openVariation")}</p>
           </div>
 
           <div style={programCount}>
-            {filteredVariations.length}/{selectedProgram.variations.length} plans visible
+            {filteredVariations.length}/{selectedProgram.variations.length} {wc(language, "plansVisible")}
           </div>
         </div>
 
         <div style={variationList}>
           {filteredVariations.map((variation, index) => {
-            const variationKey = `${selectedProgram.slug}-${variation.name}-${index}`;
+            const variationKey = `${selectedProgram.slug}-${translateWorkout(variation.name, language)}-${index}`;
             const isOpen = expandedVariation === variationKey;
 
             return (
@@ -2222,17 +2518,17 @@ export default function WorkoutsClient({ membershipType }) {
                   style={variationSummaryButton}
                 >
                   <div style={variationSummaryLeft}>
-                    <div style={tierBadge}>{variation.tier}</div>
+                    <div style={tierBadge}>{accessLabel(variation.tier, language)}</div>
                     <div>
-                      <div style={variationTitle}>{variation.name}</div>
-                      <div style={variationGoal}>{variation.goal}</div>
+                      <div style={variationTitle}>{translateWorkout(variation.name, language)}</div>
+                      <div style={variationGoal}>{translateWorkout(variation.goal, language)}</div>
                     </div>
                   </div>
 
                   <div style={variationSummaryRight}>
-                    <div style={summaryMeta}>{variation.weeklySplit}</div>
-                    <div style={summaryMeta}>{variation.intensity} Intensity</div>
-                    <div style={summaryMeta}>{capitalize(variation.level)}</div>
+                    <div style={summaryMeta}>{translateWorkout(variation.weeklySplit, language)}</div>
+                    <div style={summaryMeta}>{translateWorkout(`${variation.intensity} Intensity`, language)}</div>
+                    <div style={summaryMeta}>{capitalizeTranslated(variation.level, language)}</div>
                     <div style={summaryArrow}>{isOpen ? "−" : "+"}</div>
                   </div>
                 </button>
@@ -2241,60 +2537,58 @@ export default function WorkoutsClient({ membershipType }) {
                   <div style={variationExpanded}>
                     <div style={variationOverviewGrid}>
                       <div style={overviewCard}>
-                        <div style={miniLabel}>Program Note</div>
-                        <div style={overviewText}>{variation.notes}</div>
+                        <div style={miniLabel}>{wc(language, "programNote")}</div>
+                        <div style={overviewText}>{translateWorkout(variation.notes, language)}</div>
                       </div>
                       <div style={overviewCard}>
-                        <div style={miniLabel}>Structure</div>
+                        <div style={miniLabel}>{wc(language, "structure")}</div>
                         <div style={overviewText}>
-                          {variation.weeklySplit} · {variation.intensity} intensity
+                          {translateWorkout(variation.weeklySplit, language)} · {variation.intensity} intensity
                         </div>
                       </div>
                       <div style={overviewCard}>
-                        <div style={miniLabel}>Best For</div>
+                        <div style={miniLabel}>{wc(language, "bestFor")}</div>
                         <div style={overviewText}>
-                          {goalLabel(variation.goalType)} · {capitalize(variation.level)}
+                          {goalLabel(variation.goalType)} · {capitalizeTranslated(variation.level, language)}
                         </div>
                       </div>
                       <div style={overviewCard}>
-                        <div style={miniLabel}>Access</div>
+                        <div style={miniLabel}>{wc(language, "access")}</div>
                         <div style={overviewText}>
-                          {variation.tier === "Starter"
-                            ? "Included in Starter and above"
-                            : "Unlocked in Premium and VIP"}
+                          {wc(language, "includedFullAccess")}
                         </div>
                       </div>
                     </div>
 
                     <div style={{ display: "grid", gap: "18px", marginTop: "18px" }}>
                       {variation.days.map((day) => (
-                        <div key={day.day} style={dayCard}>
+                        <div key={translateWorkout(day.day, language)} style={dayCard}>
                           <div style={dayHeaderRow}>
                             <div>
-                              <h4 style={dayTitle}>{day.day}</h4>
-                              <div style={dayGoal}>{day.sessionGoal}</div>
+                              <h4 style={dayTitle}>{translateWorkout(day.day, language)}</h4>
+                              <div style={dayGoal}>{translateWorkout(day.sessionGoal, language)}</div>
                             </div>
                           </div>
 
                           <div style={blockCard}>
-                            <div style={miniLabel}>Warm-up</div>
+                            <div style={miniLabel}>{wc(language, "warmup")}</div>
                             <ul style={bulletList}>
                               {day.warmup.map((item) => (
-                                <li key={item}>{item}</li>
+                                <li key={translateWorkout(item, language)}>{translateWorkout(item, language)}</li>
                               ))}
                             </ul>
                           </div>
 
                           <div style={exerciseGrid}>
                             {day.exercises.map((exercise) => (
-                              <div key={exercise.name} style={exerciseCard}>
+                              <div key={translateWorkout(exercise.name, language)} style={exerciseCard}>
                                 <div style={exerciseTop}>
                                   <div style={{ flex: 1 }}>
-                                    <div style={exerciseName}>{exercise.name}</div>
+                                    <div style={exerciseName}>{translateWorkout(exercise.name, language)}</div>
                                     <div style={exerciseMeta}>
-                                      {exercise.sets} sets · {exercise.reps} · Rest {exercise.rest}
+                                      {exercise.sets} sets · {translateWorkout(exercise.reps, language)} · {wc(language, "rest") || "Rust"} {exercise.rest}
                                     </div>
-                                    <div style={targetTag}>{exercise.target}</div>
+                                    <div style={targetTag}>{translateWorkout(exercise.target, language)}</div>
                                   </div>
 
                                   <div style={mediaBox}>
@@ -2309,33 +2603,32 @@ export default function WorkoutsClient({ membershipType }) {
                                         preload="metadata"
                                       />
                                     ) : (
-                                      <div style={missingMediaBox}>Demo coming soon</div>
+                                      <div style={missingMediaBox}>{wc(language, "demoComingSoon")}</div>
                                     )}
                                   </div>
                                 </div>
 
                                 <div style={detailGrid}>
                                   <div style={detailItem}>
-                                    <div style={detailLabel}>Cue</div>
-                                    <div style={detailText}>{exercise.cue}</div>
+                                    <div style={detailLabel}>{wc(language, "cue")}</div>
+                                    <div style={detailText}>{translateWorkout(exercise.cue, language)}</div>
                                   </div>
 
                                   <div style={detailItem}>
-                                    <div style={detailLabel}>Common mistake</div>
-                                    <div style={detailText}>{exercise.mistakes}</div>
+                                    <div style={detailLabel}>{wc(language, "commonMistake")}</div>
+                                    <div style={detailText}>{translateWorkout(exercise.mistakes, language)}</div>
                                   </div>
 
                                   <div style={detailItem}>
-                                    <div style={detailLabel}>Substitute</div>
-                                    <div style={detailText}>{exercise.substitute}</div>
+                                    <div style={detailLabel}>{wc(language, "substitute")}</div>
+                                    <div style={detailText}>{translateWorkout(exercise.substitute, language)}</div>
                                   </div>
 
                                   {(isPremiumPlus || variation.tier !== "Starter") && (
                                     <div style={detailItem}>
-                                      <div style={detailLabel}>Progression</div>
+                                      <div style={detailLabel}>{wc(language, "progression")}</div>
                                       <div style={detailText}>
-                                        Add 1 rep or a small weight increase once top reps are
-                                        achieved with clean form.
+                                        {wc(language, "progressionText")}
                                       </div>
                                     </div>
                                   )}
@@ -2345,8 +2638,8 @@ export default function WorkoutsClient({ membershipType }) {
                           </div>
 
                           <div style={{ ...blockCard, marginTop: "14px" }}>
-                            <div style={miniLabel}>Finisher</div>
-                            <div style={detailText}>{day.finisher}</div>
+                            <div style={miniLabel}>{wc(language, "finisher")}</div>
+                            <div style={detailText}>{translateWorkout(day.finisher, language)}</div>
                           </div>
                         </div>
                       ))}
@@ -2360,21 +2653,20 @@ export default function WorkoutsClient({ membershipType }) {
 
         {filteredVariations.length === 0 && (
           <div style={emptyBox}>
-            No workout variations match this filter combination yet. Try another style,
-            frequency, goal, or level.
+            {wc(language, "empty")}
           </div>
         )}
 
         {isStarter &&
           selectedProgram.variations.length > selectedProgram.starterVisible && (
             <div style={lockedBox}>
-              <div style={lockedTitle}>Premium workout library locked</div>
+              <div style={lockedTitle}>Full Access workout library</div>
               <p style={lockedText}>
                 Starter gives you the foundation. Upgrade to Premium or VIP for deeper
                 structure, more workout variations, and more advanced progression paths.
               </p>
               <a href="/pricing" style={unlockButton}>
-                Unlock Full Workout System
+                Unlock Full Access
               </a>
             </div>
           )}
@@ -2387,23 +2679,13 @@ function capitalize(value) {
   return String(value || "").charAt(0).toUpperCase() + String(value || "").slice(1);
 }
 
-function goalLabel(value) {
-  const labels = {
-    shape: "Shape & Tone",
-    muscle: "Build Muscle",
-    strength: "Strength",
-    "fat-loss": "Fat Loss",
-    athletic: "Athletic Performance",
-  };
-  return labels[value] || value;
-}
 
 const heroCard = {
   background:
     "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
   border: "1px solid rgba(255,255,255,0.1)",
   borderRadius: "24px",
-  padding: "28px",
+  padding: "clamp(18px, 4vw, 28px)",
 };
 
 const eyebrow = {
@@ -2416,7 +2698,7 @@ const eyebrow = {
 
 const heroTitle = {
   margin: 0,
-  fontSize: "36px",
+  fontSize: "clamp(28px, 5vw, 36px)",
   fontWeight: "900",
 };
 
@@ -2454,7 +2736,7 @@ const filterButton = {
 
 const secondaryFilters = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
   gap: "16px",
 };
 
@@ -2598,7 +2880,7 @@ const variationExpanded = {
 
 const variationOverviewGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
   gap: "12px",
 };
 
@@ -2764,7 +3046,7 @@ const missingMediaBox = {
 
 const detailGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
   gap: "12px",
 };
 

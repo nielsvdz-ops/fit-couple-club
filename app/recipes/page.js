@@ -14,8 +14,8 @@ export default async function RecipesPage() {
 
   return (
     <DashboardLayout
-      title="Recipes"
-      subtitle="Personalized daily food schedules based on your goal, sex, age, weight, height, and activity level."
+      title=""
+      subtitle=""
       membershipType={profile?.membership_type}
     >
       <RecipesClient membershipType={profile?.membership_type} />
