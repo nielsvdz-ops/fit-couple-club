@@ -4,295 +4,256 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useLanguage } from "../lib/useLanguage";
 
-const goalCards = {
-  en: [
-    {
-      title: "Lose Fat",
-      text: "Drop body fat with calorie structure, high-protein routines, smart groceries, and training that fits real life.",
-    },
-    {
-      title: "Build Muscle",
-      text: "Progressive workouts, higher-protein nutrition, and grocery structure that supports real growth.",
-    },
-    {
-      title: "Tone & Shape",
-      text: "Build a leaner, more athletic look with consistent workouts, better food choices, and clear weekly structure.",
-    },
-    {
-      title: "Couple Transformation",
-      text: "Train, eat, shop, and stay accountable together with Couple Zone, shared routines, and weekly check-ins.",
-    },
-  ],
-  nl: [
-    {
-      title: "Vet Verliezen",
-      text: "Verlies vet met caloriestructuur, eiwitrijke routines, slimme boodschappen en training die past in het echte leven.",
-    },
-    {
-      title: "Spiermassa Opbouwen",
-      text: "Progressieve workouts, eiwitrijke voeding en boodschappenstructuur die echte groei ondersteunt.",
-    },
-    {
-      title: "Strakker & Atletischer",
-      text: "Bouw een strakker lichaam met consistente workouts, betere voedingskeuzes en duidelijke weekstructuur.",
-    },
-    {
-      title: "Couple Transformatie",
-      text: "Train, eet, shop en blijf samen accountable met Couple Zone, gezamenlijke routines en wekelijkse check-ins.",
-    },
-  ],
-};
-
 export default function Home() {
   const { language } = useLanguage();
   const [loaded, setLoaded] = useState(false);
 
   const t = {
     en: {
-      badge: "Fitness, food, groceries & staying consistent together",
-      heroTitle: "Train smarter, eat better, and build a routine you can actually keep.",
+      badge: "ONE GOAL. ONE MIND. ONE LIFESTYLE.",
+      heroTitle1: "STRONGER",
+      heroTitle2: "TOGETHER.",
       heroText:
-        "Fit Couple Club helps you know what to eat, how to train, what to buy, and how to stay consistent — whether you do it solo or together.",
-      start: "Get Started",
-      viewPlans: "View Plans",
-      trust1: "150 food routines",
-      trust2: "Couple Zone",
-      trust3: "Smart grocery lists",
-      overlayTitle: "Solo or together",
-      overlayText:
-        "Made for real life, busy weeks, and couples who want a clear plan.",
-      how: "How It Works",
-      howTitle: "Less guessing. More structure. Better consistency.",
-      features: [
-        [
-          "01",
-          "Pick your goal",
-          "Choose whether you want to lose fat, build muscle, feel fitter, or work on it together.",
-        ],
-        [
-          "02",
-          "Follow a simple structure",
-          "Use ready-made meals, recipes, workouts, grocery lists, and progress tools.",
-        ],
-        [
-          "03",
-          "Stay on track",
-          "Couple Zone helps you check in, see what went well, and spot what needs more attention.",
-        ],
-        [
-          "04",
-          "Choose your access",
-          "Start with food only, or get the full fitness platform with one simple payment.",
-        ],
+        "FitCoupleClub is more than a fitness platform. It is a system for ambitious people who train together, grow together and build the lifestyle they deserve.",
+      start: "JOIN THE CLUB",
+      plans: "VIEW PLANS",
+      stats: [
+        ["TRAIN", "TOGETHER"],
+        ["STAY", "FOCUSED"],
+        ["BE", "DISCIPLINED"],
+        ["SEE", "RESULTS"],
       ],
-      about: "About Us",
-      aboutTitle: "Built from real experience, not just theory.",
-      aboutText1:
-        "We have been together for over 12 years. We train together, eat together, and learned what works by living it ourselves.",
-      aboutText2:
-        "Rosanna learned a lot through her own journey with food, balance, healthy habits, and recovery.",
-      aboutText3:
-        "Niels has been training since he was 15 and brings years of discipline, structure, and fitness experience.",
-      goalsEyebrow: "Choose Your Goal",
-      goalsTitle: "Built around the goals people actually care about.",
-      coupleEyebrow: "Couple Zone",
-      coupleTitle: "It gets easier when you do it together.",
-      coupleText1:
-        "Couple Zone helps couples train, eat, shop, and stay consistent together without turning everything into pressure or arguments.",
-      coupleText2:
-        "Check your week, see your patterns, and get clear suggestions on what to improve next.",
-      mini1: "Find weak spots",
-      mini2: "Plan groceries together",
-      mini3: "Simple advice",
-      membership: "Membership Plans",
-      membershipTitle: "Choose what you need.",
-      membershipIntro:
-        "Start with the food plan, or choose Full Access for food, workouts, programs, progress, and Couple Zone. Both are one-time payments.",
-      digitalDelivery:
-        "After purchase, everything is available inside your member dashboard: food plans, recipes, grocery lists, workouts, programs, and progress tools.",
-      bestValue: "🔥 Best Value",
-      footer:
-        "© Fit Couple Club — Build your body, health, and lifestyle your way.",
-      terms: "Terms",
-      privacy: "Privacy Policy",
-      refund: "Refund Policy",
-      pricingPlans: [
+
+      goalsEyebrow: "Transformation Systems",
+      goalsTitle: "Choose the body and lifestyle you want.",
+      goalsText:
+        "No more guessing. Pick your goal and follow a clear system built for consistency, discipline and visible progress.",
+      goals: [
+        ["Fat Loss", "High-protein meals, calorie structure and training built to drop body fat."],
+        ["Booty Builder", "Glute-focused workouts, activation, progressive overload and growth support."],
+        ["Muscle Gain", "Training progression and nutrition structure for real strength and size."],
+        ["Fasting Mode", "High-protein meals inside an 8-hour eating window."],
+        ["Couple Transformation", "Train, eat, shop and stay accountable together."],
+        ["Lean & Toned", "Build a sharper, fitter and more athletic look."],
+      ],
+
+      bootyTitle: "Booty Builder System",
+      bootyText:
+        "A dedicated glute training system with gym days, home workouts, activation routines, resistance band sessions and growth-focused nutrition support.",
+      bootyPoints: ["Glute Days", "Home + Gym", "Activation", "Progressive Overload", "Growth Nutrition"],
+
+      nutritionTitle: "Nutrition that fits real life.",
+      nutritionText:
+        "High-protein meal systems, smart grocery lists and soon: fasting, vegan, lactose-free and gluten-free options.",
+      nutritionCards: ["High Protein", "16:8 Fasting", "Vegan", "Lactose Free", "Gluten Free", "Smart Groceries"],
+
+      appTitle: "Everything inside one member dashboard.",
+      appText:
+        "Open your dashboard, follow your meals, train your program, track progress and stay consistent without overthinking.",
+      appCards: [
+        ["Nutrition", "Daily routines and recipes."],
+        ["Workouts", "Gym, home and goal-based training."],
+        ["Programs", "Step-by-step transformation plans."],
+        ["Progress", "Track consistency and results."],
+      ],
+
+      pricingTitle: "Choose your access.",
+      pricingText: "One-time payment. No monthly subscription.",
+      best: "🔥 Best Value",
+      plansData: [
         {
           name: "Nutrition",
           price: "€19.99",
+          cta: "Get Nutrition",
+          featured: false,
           points: [
             "5 body goals",
             "150 daily nutrition routines",
-            "Weekly recipes & structure",
+            "Weekly recipes",
             "Smart grocery generator",
             "Couple grocery mode",
-            "Access to the Coaching page after login",
+            "Coaching page access after login",
           ],
-          cta: "Get Nutrition",
-          featured: false,
         },
         {
           name: "Full Access",
           price: "€29.99",
+          cta: "Get Full Access",
+          featured: true,
           points: [
             "Everything from Nutrition",
             "Complete workout library",
-            "Step-by-step training programs",
-            "Exercise guidance",
+            "Booty Builder access",
+            "Programs",
             "Progress tracking",
             "Couple Zone",
-            "Access to the Coaching page after login",
+            "Coaching page access after login",
           ],
-          cta: "Get Full Access",
-          featured: true,
         },
       ],
+
+      footer: "© FitCoupleClub — One goal. One mind. One lifestyle.",
+      terms: "Terms",
+      privacy: "Privacy Policy",
+      refund: "Refund Policy",
     },
+
     nl: {
-      badge: "Fitness, voeding, boodschappen & samen consistent blijven",
-      heroTitle: "Train slimmer, eet beter en bouw een routine die je echt volhoudt.",
+      badge: "ÉÉN DOEL. ÉÉN MINDSET. ÉÉN LIFESTYLE.",
+      heroTitle1: "STERKER",
+      heroTitle2: "SAMEN.",
       heroText:
-        "Fit Couple Club helpt je met wat je eet, hoe je traint, wat je koopt en hoe je consistent blijft — alleen of samen.",
-      start: "Start Nu",
-      viewPlans: "Bekijk Plannen",
-      trust1: "150 voedingsroutines",
-      trust2: "Couple Zone",
-      trust3: "Slimme boodschappenlijsten",
-      overlayTitle: "Solo of samen",
-      overlayText:
-        "Gemaakt voor het echte leven, drukke weken en koppels die een duidelijk plan willen.",
-      how: "Hoe Het Werkt",
-      howTitle: "Minder gokken. Meer structuur. Meer consistentie.",
-      features: [
-        [
-          "01",
-          "Kies je doel",
-          "Kies of je vet wilt verliezen, spiermassa wilt opbouwen, fitter wilt worden of dit samen wilt aanpakken.",
-        ],
-        [
-          "02",
-          "Volg een simpele structuur",
-          "Gebruik kant-en-klare maaltijden, recepten, workouts, boodschappenlijsten en progressietools.",
-        ],
-        [
-          "03",
-          "Blijf op koers",
-          "Couple Zone helpt je samen inchecken, zien wat goed ging en ontdekken waar je meer aandacht aan moet geven.",
-        ],
-        [
-          "04",
-          "Kies je toegang",
-          "Start alleen met voeding, of krijg het volledige fitnessplatform met één simpele betaling.",
-        ],
+        "FitCoupleClub is meer dan een fitness platform. Het is een systeem voor ambitieuze mensen die samen trainen, samen groeien en de lifestyle bouwen die ze verdienen.",
+      start: "JOIN DE CLUB",
+      plans: "BEKIJK PLANNEN",
+      stats: [
+        ["TRAIN", "SAMEN"],
+        ["BLIJF", "GEFOCUST"],
+        ["WEES", "GEDISCIPLINEERD"],
+        ["ZIE", "RESULTAAT"],
       ],
-      about: "Over Ons",
-      aboutTitle: "Gebouwd vanuit echte ervaring, niet alleen theorie.",
-      aboutText1:
-        "Wij zijn al meer dan 12 jaar samen. We trainen samen, eten samen en hebben zelf geleerd wat wel en niet werkt.",
-      aboutText2:
-        "Rosanna heeft door haar eigen journey veel geleerd over voeding, balans, gezonde gewoontes en herstel.",
-      aboutText3:
-        "Niels traint sinds zijn 15e en brengt jaren ervaring mee in discipline, structuur en fitness.",
-      goalsEyebrow: "Kies Je Doel",
-      goalsTitle: "Gebouwd rondom doelen die mensen echt belangrijk vinden.",
-      coupleEyebrow: "Couple Zone",
-      coupleTitle: "Het wordt makkelijker als je het samen doet.",
-      coupleText1:
-        "Couple Zone helpt koppels samen trainen, eten, boodschappen doen en consistent blijven zonder dat het voelt als druk of discussie.",
-      coupleText2:
-        "Check je week, zie je patronen en krijg duidelijke tips over wat je als volgende kunt verbeteren.",
-      mini1: "Vind zwakke plekken",
-      mini2: "Plan boodschappen samen",
-      mini3: "Simpele tips",
-      membership: "Membership Plannen",
-      membershipTitle: "Kies wat jij nodig hebt.",
-      membershipIntro:
-        "Start met alleen voeding, of kies Full Access voor voeding, workouts, programma’s, progressie en Couple Zone. Beide zijn eenmalige betalingen.",
-      digitalDelivery:
-        "Na aankoop staat alles klaar in je member dashboard: voedingsplannen, recepten, boodschappenlijsten, workouts, programma’s en progressietools.",
-      bestValue: "🔥 Beste Keuze",
-      footer:
-        "© Fit Couple Club — Bouw je lichaam, gezondheid en lifestyle op jouw manier.",
-      terms: "Voorwaarden",
-      privacy: "Privacybeleid",
-      refund: "Refundbeleid",
-      pricingPlans: [
+
+      goalsEyebrow: "Transformatie Systemen",
+      goalsTitle: "Kies het lichaam en de lifestyle die jij wilt.",
+      goalsText:
+        "Geen gegok meer. Kies je doel en volg een duidelijk systeem voor consistentie, discipline en zichtbaar resultaat.",
+      goals: [
+        ["Vetverlies", "Eiwitrijke maaltijden, caloriestructuur en training om vet te verliezen."],
+        ["Booty Builder", "Glute-focused workouts, activatie, progressive overload en support voor groei."],
+        ["Spiermassa", "Trainingsprogressie en voedingsstructuur voor echte kracht en spiermassa."],
+        ["Fasting Mode", "Eiwitrijke maaltijden binnen een 8-uurs eetwindow."],
+        ["Couple Transformatie", "Train, eet, shop en blijf samen accountable."],
+        ["Lean & Toned", "Bouw een strakker, fitter en atletischer lichaam."],
+      ],
+
+      bootyTitle: "Booty Builder Systeem",
+      bootyText:
+        "Een dedicated glute trainingssysteem met gym days, home workouts, activatie routines, resistance band sessies en voeding gericht op groei.",
+      bootyPoints: ["Glute Dagen", "Thuis + Gym", "Activatie", "Progressive Overload", "Groei Voeding"],
+
+      nutritionTitle: "Voeding die past in het echte leven.",
+      nutritionText:
+        "Eiwitrijke meal systems, slimme boodschappenlijsten en binnenkort: fasting, vegan, lactosevrij en glutenvrij.",
+      nutritionCards: ["High Protein", "16:8 Fasting", "Vegan", "Lactosevrij", "Glutenvrij", "Slimme Boodschappen"],
+
+      appTitle: "Alles in één member dashboard.",
+      appText:
+        "Open je dashboard, volg je maaltijden, train je programma, track progressie en blijf consistent zonder te overdenken.",
+      appCards: [
+        ["Voeding", "Dagelijkse routines en recepten."],
+        ["Workouts", "Gym, thuis en doelgerichte training."],
+        ["Programma’s", "Stap-voor-stap transformatieplannen."],
+        ["Progressie", "Track consistentie en resultaat."],
+      ],
+
+      pricingTitle: "Kies je toegang.",
+      pricingText: "Eenmalige betaling. Geen maandabonnement.",
+      best: "🔥 Beste Keuze",
+      plansData: [
         {
           name: "Nutrition",
           price: "€19.99",
+          cta: "Koop Nutrition",
+          featured: false,
           points: [
             "5 lichaamsdoelen",
             "150 dagelijkse voedingsroutines",
-            "Wekelijkse recepten & structuur",
+            "Wekelijkse recepten",
             "Slimme boodschappen generator",
             "Couple grocery mode",
-            "Toegang tot de Coaching pagina na login",
+            "Coaching pagina toegang na login",
           ],
-          cta: "Koop Nutrition",
-          featured: false,
         },
         {
           name: "Full Access",
           price: "€29.99",
+          cta: "Krijg Full Access",
+          featured: true,
           points: [
             "Alles van Nutrition",
             "Complete workout bibliotheek",
-            "Stap-voor-stap trainingsprogramma’s",
-            "Oefening begeleiding",
+            "Booty Builder toegang",
+            "Programma’s",
             "Progressie tracking",
             "Couple Zone",
-            "Toegang tot de Coaching pagina na login",
+            "Coaching pagina toegang na login",
           ],
-          cta: "Krijg Full Access",
-          featured: true,
         },
       ],
+
+      footer: "© FitCoupleClub — Één doel. Één mindset. Één lifestyle.",
+      terms: "Voorwaarden",
+      privacy: "Privacybeleid",
+      refund: "Refundbeleid",
     },
   }[language];
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 100);
-
     return () => clearTimeout(timer);
   }, []);
-  const pricingPlans = t.pricingPlans;
 
   return (
     <main style={main}>
       <style jsx global>{`
-        @keyframes floatImage {
-          0% {
-            transform: translateY(0px);
+        @keyframes fadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(40px);
           }
-          50% {
-            transform: translateY(-10px);
-          }
-          100% {
-            transform: translateY(0px);
-          }
-        }
-
-        @keyframes softGlow {
-          0% {
-            opacity: 0.55;
-          }
-          50% {
-            opacity: 0.9;
-          }
-          100% {
-            opacity: 0.55;
+          to {
+            opacity: 1;
+            transform: translateY(0);
           }
         }
 
-        @media (max-width: 760px) {
-          html,
-          body {
-            overflow-x: hidden;
+        @media (max-width: 900px) {
+          .hero-section {
+            min-height: auto !important;
+            padding-top: 140px !important;
+            padding-bottom: 80px !important;
           }
 
-          a,
-          button {
-            -webkit-tap-highlight-color: transparent;
+          .hero-content {
+            max-width: 100% !important;
+            margin-top: 0 !important;
+          }
+
+          .hero-couple {
+            position: relative !important;
+            width: 100% !important;
+            right: auto !important;
+            bottom: auto !important;
+            margin-top: 40px !important;
+            max-height: none !important;
+          }
+
+          .hero-stats {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+
+          .bottom-slogan {
+            position: relative !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            margin-top: 34px !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .hero-buttons {
+            width: 100% !important;
+          }
+
+          .hero-buttons a {
+            width: 100% !important;
+          }
+
+          .hero-stats {
+            grid-template-columns: 1fr !important;
           }
         }
       `}</style>
@@ -300,185 +261,201 @@ export default function Home() {
       <Navbar />
 
       <section
+        className="hero-section"
         style={{
-          ...heroWrap,
+          ...hero,
           opacity: loaded ? 1 : 0,
-          transform: loaded ? "translateY(0px)" : "translateY(40px)",
+          transform: loaded ? "translateY(0)" : "translateY(40px)",
           transition: "all 1s ease",
         }}
       >
-        <div>
-          <div style={badgeStyle}>{t.badge}</div>
+        <div style={heroBackground} />
+        <div style={heroOverlay} />
 
-          <h1 style={heroTitle}>{t.heroTitle}</h1>
+        <div style={logoTop}>
+          <img src="/images/fitcouple-logo.png" alt="FitCoupleClub" style={topLogo} />
+        </div>
+
+        <div className="hero-content" style={heroContent}>
+          <div style={heroTag}>{t.badge}</div>
+
+          <h1 style={heroTitle}>
+            {t.heroTitle1}
+            <br />
+            <span style={redText}>{t.heroTitle2}</span>
+          </h1>
 
           <p style={heroText}>{t.heroText}</p>
 
-          <div style={heroButtonRow}>
+          <div className="hero-buttons" style={heroButtons}>
             <a href="/signup" style={primaryButton}>
-              {t.start}
+              {t.start} <span>→</span>
             </a>
-            <a href="#pricing" style={secondaryButton}>
-              {t.viewPlans}
+
+            <a href="#pricing" style={outlineButton}>
+              {t.plans} <span>→</span>
             </a>
           </div>
 
-          <div style={trustRow}>
-            <span>{t.trust1}</span>
-            <span>{t.trust2}</span>
-            <span>{t.trust3}</span>
+          <div className="hero-stats" style={heroStats}>
+            {t.stats.map(([top, bottom]) => (
+              <div key={`${top}-${bottom}`} style={heroStat}>
+                <div style={heroIcon}>▰</div>
+                <div>{top}</div>
+                <strong>{bottom}</strong>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div style={heroImageWrap}>
-          <div style={heroGlow} />
+        <img
+          className="hero-couple"
+          src="/images/couple.png"
+          alt="FitCoupleClub couple"
+          style={heroCouple}
+        />
 
-          <img src="/couple-pictures/DJI-0579.jpg" alt="" style={heroBgImage} />
-
-          <img
-            src="/couple-pictures/DJI-0579.jpg"
-            alt="Fit Couple Club"
-            style={heroMainImage}
-          />
-
-          <div style={imageOverlay}>
-            <div style={overlayTitle}>{t.overlayTitle}</div>
-            <div style={overlayText}>{t.overlayText}</div>
-          </div>
+        <div className="bottom-slogan" style={bottomSlogan}>
+          <span>TRAIN HARD.</span>
+          <span>LIVE BETTER.</span>
+          <span>BE UNSTOPPABLE.</span>
         </div>
       </section>
 
-      <section id="features" style={sectionWrap}>
-        <div style={sectionHeader}>
-          <div style={eyebrow}>{t.how}</div>
-          <h2 style={sectionTitle}>{t.howTitle}</h2>
-        </div>
-
-        <div style={featureGrid}>
-          {t.features.map(([number, title, text]) => (
-            <div key={title} style={featureCard}>
-              <div style={featureNumber}>{number}</div>
-              <h3 style={featureTitle}>{title}</h3>
-              <p style={featureText}>{text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section style={splitSection}>
-        <div style={luxuryImageCard}>
-          <img
-            src="/couple-pictures/DJI-0697.jpg"
-            alt="Niels and Rosanna"
-            style={sectionImage}
-          />
-        </div>
-
-        <div>
-          <div style={eyebrow}>{t.about}</div>
-          <h2 style={sectionTitle}>{t.aboutTitle}</h2>
-          <p style={sectionText}>{t.aboutText1}</p>
-          <p style={sectionText}>{t.aboutText2}</p>
-          <p style={sectionText}>{t.aboutText3}</p>
-        </div>
-      </section>
-
-      <section style={sectionWrap}>
+      <section style={section}>
         <div style={sectionHeader}>
           <div style={eyebrow}>{t.goalsEyebrow}</div>
           <h2 style={sectionTitle}>{t.goalsTitle}</h2>
+          <p style={sectionIntro}>{t.goalsText}</p>
         </div>
 
         <div style={goalGrid}>
-          {goalCards[language].map((goal) => (
-            <div key={goal.title} style={goalCard}>
-              <h3 style={goalTitle}>{goal.title}</h3>
-              <p style={goalText}>{goal.text}</p>
+          {t.goals.map(([title, text]) => (
+            <div key={title} style={goalCard}>
+              <h3 style={goalTitle}>{title}</h3>
+              <p style={goalText}>{text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section style={splitSection}>
-        <div>
-          <div style={eyebrow}>{t.coupleEyebrow}</div>
-          <h2 style={sectionTitle}>{t.coupleTitle}</h2>
-          <p style={sectionText}>{t.coupleText1}</p>
-          <p style={sectionText}>{t.coupleText2}</p>
-
-          <div style={miniFeatureGrid}>
-            <div style={miniFeature}>{t.mini1}</div>
-            <div style={miniFeature}>{t.mini2}</div>
-            <div style={miniFeature}>{t.mini3}</div>
-          </div>
+      <section style={split}>
+        <div style={imagePanel}>
+          <img src="/images/background.png" alt="FitCoupleClub gym" style={panelImage} />
         </div>
 
-        <div style={luxuryImageCard}>
-          <img
-            src="/couple-pictures/DJI-0773.jpg"
-            alt="Couple transformation"
-            style={sectionImage}
-          />
+        <div>
+          <div style={eyebrow}>BOOTY BUILDER</div>
+          <h2 style={sectionTitle}>{t.bootyTitle}</h2>
+          <p style={sectionText}>{t.bootyText}</p>
+
+          <div style={pillGrid}>
+            {t.bootyPoints.map((point) => (
+              <div key={point} style={redPill}>
+                ✓ {point}
+              </div>
+            ))}
+          </div>
+
+          <a href="/signup" style={inlineButton}>
+            Start Booty Training
+          </a>
         </div>
       </section>
 
-      <section id="pricing" style={sectionWrap}>
-  <div style={sectionHeader}>
-    <div style={eyebrow}>{t.membership}</div>
-
-    <h2 style={sectionTitle}>{t.membershipTitle}</h2>
-
-    <p style={sectionIntro}>{t.membershipIntro}</p>
-
-    <p style={digitalDeliveryText}>{t.digitalDelivery}</p>
-  </div>
-
-  <div style={pricingGrid}>
-    {pricingPlans.map((plan) => (
-      <div
-        key={plan.name}
-        style={{
-          ...pricingCard,
-          ...(plan.featured ? pricingCardFeatured : {}),
-        }}
-      >
-        {plan.featured && (
-          <div style={bestValue}>{t.bestValue}</div>
-        )}
-
-        <div>
-          <h3 style={pricingTitle}>{plan.name}</h3>
-
-          <div style={pricingPrice}>{plan.price}</div>
-
-          <div style={pricingSubtext}>
-            {language === "nl"
-              ? "Eenmalige betaling. Geen maandabonnement."
-              : "One-time payment. No monthly subscription."}
+      <section style={section}>
+        <div style={redBox}>
+          <div>
+            <div style={eyebrow}>SMART NUTRITION</div>
+            <h2 style={sectionTitle}>{t.nutritionTitle}</h2>
+            <p style={sectionText}>{t.nutritionText}</p>
           </div>
 
-          <ul style={pricingList}>
-            {plan.points.map((point) => (
-              <li key={point}>• {point}</li>
+          <div style={nutritionGrid}>
+            {t.nutritionCards.map((item) => (
+              <div key={item} style={nutritionCard}>
+                {item}
+              </div>
             ))}
-          </ul>
+          </div>
+        </div>
+      </section>
+
+      <section style={split}>
+        <div>
+          <div style={eyebrow}>INSIDE THE APP</div>
+          <h2 style={sectionTitle}>{t.appTitle}</h2>
+          <p style={sectionText}>{t.appText}</p>
+
+          <div style={appGrid}>
+            {t.appCards.map(([title, text]) => (
+              <div key={title} style={appCard}>
+                <strong>{title}</strong>
+                <span>{text}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <a
-          href="/signup"
-          style={{
-            ...pricingButton,
-            ...(plan.featured
-              ? pricingButtonFeatured
-              : {}),
-          }}
-        >
-          {plan.cta}
-        </a>
-      </div>
-    ))}
-  </div>
-</section>
+        <div style={dashboardMockup}>
+          <div style={mockupTop} />
+          <div style={mockupBody}>
+            <img src="/images/fitcouple-logo.png" alt="" style={mockupLogo} />
+            <h3 style={mockupTitle}>Member Dashboard</h3>
+
+            <div style={mockupRows}>
+              <div style={mockupRow}>Nutrition System</div>
+              <div style={mockupRow}>Booty Builder</div>
+              <div style={mockupRow}>Workout Library</div>
+              <div style={mockupRow}>Progress Tracking</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" style={section}>
+        <div style={sectionHeader}>
+          <div style={eyebrow}>MEMBERSHIP</div>
+          <h2 style={sectionTitle}>{t.pricingTitle}</h2>
+          <p style={sectionIntro}>{t.pricingText}</p>
+        </div>
+
+        <div style={pricingGrid}>
+          {t.plansData.map((plan) => (
+            <div
+              key={plan.name}
+              style={{
+                ...pricingCard,
+                ...(plan.featured ? pricingCardFeatured : {}),
+              }}
+            >
+              {plan.featured && <div style={bestBadge}>{t.best}</div>}
+
+              <div>
+                <h3 style={pricingName}>{plan.name}</h3>
+                <div style={price}>{plan.price}</div>
+                <div style={priceSub}>{t.pricingText}</div>
+
+                <ul style={pricingList}>
+                  {plan.points.map((point) => (
+                    <li key={point}>✓ {point}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <a
+                href="/signup"
+                style={{
+                  ...pricingButton,
+                  ...(plan.featured ? pricingButtonFeatured : {}),
+                }}
+              >
+                {plan.cta}
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <footer style={footer}>
         <div>{t.footer}</div>
@@ -501,250 +478,214 @@ export default function Home() {
 
 const main = {
   minHeight: "100vh",
-  background: "#050505",
+  background: "#020202",
   color: "white",
+  overflowX: "hidden",
 };
 
-const heroWrap = {
-  maxWidth: "1220px",
-  margin: "0 auto",
-  padding: "clamp(56px, 10vw, 100px) clamp(14px, 4vw, 24px) clamp(70px, 10vw, 110px)",
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
-  gap: "clamp(28px, 6vw, 54px)",
+const hero = {
+  position: "relative",
+  minHeight: "calc(100vh - 80px)",
+  overflow: "hidden",
+  background: "#020202",
+  display: "flex",
   alignItems: "center",
+  padding: "clamp(80px, 9vw, 120px) clamp(18px, 5vw, 84px)",
 };
 
-const badgeStyle = {
-  display: "inline-block",
-  padding: "10px 16px",
-  border: "1px solid rgba(250,204,21,0.35)",
-  borderRadius: "999px",
-  color: "#facc15",
-  fontSize: "13px",
-  fontWeight: "800",
-  marginBottom: "22px",
+const heroBackground = {
+  position: "absolute",
+  inset: 0,
+  backgroundImage: "url('/images/background.png')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  filter: "grayscale(1) brightness(0.42) contrast(1.15)",
+  transform: "scale(1.02)",
+};
+
+const heroOverlay = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(90deg, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.78) 36%, rgba(0,0,0,0.34) 68%, rgba(0,0,0,0.88) 100%), linear-gradient(0deg, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.20) 42%, rgba(0,0,0,0.72) 100%)",
+};
+
+const logoTop = {
+  position: "absolute",
+  top: "24px",
+  left: "clamp(18px, 5vw, 78px)",
+  zIndex: 5,
+};
+
+const topLogo = {
+  width: "clamp(130px, 16vw, 230px)",
+  height: "auto",
+  filter: "drop-shadow(0 18px 42px rgba(0,0,0,0.8))",
+};
+
+const heroContent = {
+  position: "relative",
+  zIndex: 4,
+  maxWidth: "690px",
+  marginTop: "80px",
+};
+
+const heroTag = {
+  color: "rgba(255,255,255,0.55)",
+  fontSize: "clamp(14px, 2vw, 22px)",
+  fontWeight: "950",
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+  marginBottom: "18px",
 };
 
 const heroTitle = {
-  fontSize: "clamp(42px, 12vw, 82px)",
-  lineHeight: 0.98,
-  letterSpacing: "-0.04em",
-  margin: "0 0 24px",
+  margin: 0,
+  fontSize: "clamp(58px, 12vw, 145px)",
+  lineHeight: 0.82,
+  letterSpacing: "-0.06em",
   fontWeight: "950",
+  textTransform: "uppercase",
+  color: "white",
+};
+
+const redText = {
+  color: "#b00000",
 };
 
 const heroText = {
-  fontSize: "clamp(17px, 4vw, 20px)",
-  lineHeight: 1.75,
-  color: "rgba(255,255,255,0.72)",
-  maxWidth: "720px",
-  marginBottom: "34px",
+  marginTop: "28px",
+  maxWidth: "520px",
+  color: "rgba(255,255,255,0.78)",
+  fontSize: "clamp(16px, 2vw, 20px)",
+  lineHeight: 1.7,
 };
 
-const heroButtonRow = {
+const heroButtons = {
   display: "flex",
-  gap: "14px",
+  gap: "18px",
   flexWrap: "wrap",
-  marginBottom: "24px",
+  marginTop: "32px",
 };
 
 const primaryButton = {
-  background: "#facc15",
-  color: "black",
-  padding: "16px 26px",
-  borderRadius: "14px",
-  textDecoration: "none",
-  fontWeight: "900",
-  textAlign: "center",
-};
-
-const secondaryButton = {
-  border: "1px solid rgba(255,255,255,0.18)",
+  minWidth: "220px",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "18px",
+  background: "#b00000",
   color: "white",
-  padding: "16px 26px",
-  borderRadius: "14px",
+  padding: "18px 26px",
+  borderRadius: "0px",
   textDecoration: "none",
-  fontWeight: "800",
-  background: "rgba(255,255,255,0.04)",
-  textAlign: "center",
+  fontWeight: "950",
+  letterSpacing: "0.04em",
+  boxShadow: "0 20px 60px rgba(176,0,0,0.35)",
 };
 
-const trustRow = {
-  display: "flex",
-  gap: "12px",
-  flexWrap: "wrap",
-  color: "rgba(255,255,255,0.62)",
+const outlineButton = {
+  minWidth: "220px",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "18px",
+  background: "rgba(0,0,0,0.35)",
+  color: "white",
+  border: "1px solid rgba(255,255,255,0.35)",
+  padding: "18px 26px",
+  borderRadius: "0px",
+  textDecoration: "none",
+  fontWeight: "950",
+  letterSpacing: "0.04em",
+};
+
+const heroStats = {
+  display: "grid",
+  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+  gap: "18px",
+  marginTop: "44px",
+  maxWidth: "760px",
+};
+
+const heroStat = {
+  borderRight: "1px solid rgba(185,0,0,0.65)",
+  paddingRight: "18px",
+  color: "rgba(255,255,255,0.78)",
   fontSize: "14px",
+  fontWeight: "850",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
 };
 
-const heroImageWrap = {
-  height: "clamp(380px, 76vw, 560px)",
-  borderRadius: "34px",
-  overflow: "hidden",
-  position: "relative",
-  border: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 30px 100px rgba(0,0,0,0.55)",
-  background:
-    "radial-gradient(circle at center, rgba(250,204,21,0.1), transparent 70%)",
-};
-
-const heroGlow = {
-  position: "absolute",
-  inset: 0,
-  background:
-    "radial-gradient(circle at 50% 45%, rgba(250,204,21,0.18), transparent 48%)",
-  animation: "softGlow 5s ease-in-out infinite",
-  zIndex: 1,
-};
-
-const heroBgImage = {
-  position: "absolute",
-  inset: 0,
-  width: "100%",
-  height: "100%",
-  objectFit: "cover",
-  filter: "blur(32px) brightness(0.55)",
-  transform: "scale(1.22)",
-  zIndex: 0,
-};
-
-const heroMainImage = {
-  position: "relative",
-  zIndex: 2,
-  width: "78%",
-  height: "88%",
-  objectFit: "cover",
-  borderRadius: "26px",
-  margin: "34px auto 0",
-  display: "block",
-  boxShadow: "0 24px 70px rgba(0,0,0,0.65)",
-  animation: "floatImage 6s ease-in-out infinite",
-};
-
-const imageOverlay = {
-  position: "absolute",
-  zIndex: 3,
-  left: "22px",
-  right: "22px",
-  bottom: "22px",
-  padding: "18px",
-  borderRadius: "20px",
-  background: "rgba(0,0,0,0.58)",
-  border: "1px solid rgba(255,255,255,0.14)",
-  backdropFilter: "blur(10px)",
-};
-
-const overlayTitle = {
+const heroIcon = {
+  color: "#c40000",
   fontSize: "22px",
-  fontWeight: "900",
-  marginBottom: "6px",
+  marginBottom: "10px",
 };
 
-const overlayText = {
-  color: "rgba(255,255,255,0.72)",
-  lineHeight: 1.6,
+const heroCouple = {
+  position: "absolute",
+  right: "clamp(-70px, -2vw, 20px)",
+  bottom: "0",
+  zIndex: 3,
+  width: "clamp(420px, 58vw, 980px)",
+  maxHeight: "92vh",
+  objectFit: "contain",
+  filter:
+    "grayscale(1) contrast(1.1) drop-shadow(-30px 20px 70px rgba(0,0,0,0.9))",
 };
 
-const sectionWrap = {
+const bottomSlogan = {
+  position: "absolute",
+  left: "clamp(18px, 5vw, 84px)",
+  right: "clamp(18px, 5vw, 84px)",
+  bottom: "26px",
+  zIndex: 5,
+  display: "flex",
+  justifyContent: "space-between",
+  gap: "20px",
+  color: "rgba(255,255,255,0.30)",
+  fontSize: "clamp(18px, 3vw, 34px)",
+  fontWeight: "950",
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+};
+
+const section = {
   maxWidth: "1220px",
   margin: "0 auto",
-  padding: "0 clamp(14px, 4vw, 24px) clamp(70px, 10vw, 110px)",
+  padding: "0 clamp(16px, 4vw, 28px) clamp(80px, 10vw, 120px)",
 };
 
 const sectionHeader = {
-  maxWidth: "850px",
+  maxWidth: "860px",
   marginBottom: "34px",
 };
 
 const eyebrow = {
+  color: "#ef4444",
   fontSize: "13px",
-  textTransform: "uppercase",
   letterSpacing: "0.18em",
-  color: "rgba(255,255,255,0.45)",
+  textTransform: "uppercase",
+  fontWeight: "950",
   marginBottom: "10px",
 };
 
 const sectionTitle = {
-  fontSize: "clamp(32px, 8vw, 52px)",
-  lineHeight: 1.05,
   margin: 0,
+  fontSize: "clamp(34px, 7vw, 58px)",
+  lineHeight: 1,
+  letterSpacing: "-0.045em",
   fontWeight: "950",
-  letterSpacing: "-0.03em",
+  textTransform: "uppercase",
 };
 
 const sectionIntro = {
   color: "rgba(255,255,255,0.68)",
   lineHeight: 1.8,
-  marginTop: "16px",
   fontSize: "18px",
-};
-
-const digitalDeliveryText = {
-  marginTop: "14px",
-  color: "rgba(255,255,255,0.6)",
-  fontSize: "14px",
-  lineHeight: 1.6,
-  maxWidth: "700px",
-};
-
-const featureGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
-  gap: "20px",
-};
-
-const featureCard = {
-  background:
-    "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "26px",
-  padding: "28px",
-};
-
-const featureNumber = {
-  color: "#facc15",
-  fontSize: "13px",
-  fontWeight: "900",
-  letterSpacing: "0.14em",
-  marginBottom: "18px",
-};
-
-const featureTitle = {
-  fontSize: "24px",
-  margin: "0 0 12px",
-  fontWeight: "900",
-};
-
-const featureText = {
-  color: "rgba(255,255,255,0.68)",
-  lineHeight: 1.75,
-  margin: 0,
-};
-
-const splitSection = {
-  maxWidth: "1220px",
-  margin: "0 auto",
-  padding: "0 clamp(14px, 4vw, 24px) clamp(70px, 10vw, 110px)",
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
-  gap: "clamp(28px, 5vw, 46px)",
-  alignItems: "center",
-};
-
-const luxuryImageCard = {
-  height: "clamp(340px, 70vw, 500px)",
-  borderRadius: "34px",
-  overflow: "hidden",
-  border: "1px solid rgba(255,255,255,0.12)",
-  boxShadow: "0 24px 80px rgba(0,0,0,0.38)",
-};
-
-const sectionImage = {
-  width: "100%",
-  height: "100%",
-  objectFit: "cover",
-  display: "block",
+  marginTop: "16px",
 };
 
 const sectionText = {
@@ -755,22 +696,25 @@ const sectionText = {
 
 const goalGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
   gap: "20px",
 };
 
 const goalCard = {
-  background: "rgba(255,255,255,0.04)",
+  background:
+    "linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025))",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "26px",
-  padding: "28px",
-  minHeight: "180px",
+  borderTop: "3px solid #dc2626",
+  borderRadius: "24px",
+  padding: "26px",
+  minHeight: "200px",
 };
 
 const goalTitle = {
-  fontSize: "24px",
-  fontWeight: "900",
   margin: "0 0 12px",
+  fontSize: "25px",
+  fontWeight: "950",
+  textTransform: "uppercase",
 };
 
 const goalText = {
@@ -779,110 +723,221 @@ const goalText = {
   margin: 0,
 };
 
-const miniFeatureGrid = {
+const split = {
+  maxWidth: "1220px",
+  margin: "0 auto",
+  padding: "0 clamp(16px, 4vw, 28px) clamp(80px, 10vw, 120px)",
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,180px),1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
+  gap: "clamp(30px, 5vw, 50px)",
+  alignItems: "center",
+};
+
+const imagePanel = {
+  height: "clamp(360px, 70vw, 520px)",
+  borderRadius: "28px",
+  overflow: "hidden",
+  border: "1px solid rgba(255,255,255,0.12)",
+  boxShadow: "0 30px 90px rgba(0,0,0,0.5)",
+};
+
+const panelImage = {
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  display: "block",
+};
+
+const pillGrid = {
+  display: "flex",
+  flexWrap: "wrap",
   gap: "12px",
   marginTop: "22px",
 };
 
-const miniFeature = {
-  background: "rgba(250,204,21,0.08)",
-  border: "1px solid rgba(250,204,21,0.22)",
-  borderRadius: "14px",
+const redPill = {
+  background: "rgba(220,38,38,0.12)",
+  border: "1px solid rgba(220,38,38,0.35)",
+  color: "rgba(255,255,255,0.9)",
   padding: "12px 14px",
-  color: "rgba(255,255,255,0.86)",
-  fontWeight: "800",
+  borderRadius: "12px",
+  fontWeight: "900",
+};
+
+const inlineButton = {
+  display: "inline-flex",
+  marginTop: "28px",
+  background: "#dc2626",
+  color: "white",
+  padding: "15px 24px",
+  borderRadius: "0px",
+  textDecoration: "none",
+  fontWeight: "950",
+};
+
+const redBox = {
+  background:
+    "linear-gradient(135deg, rgba(127,29,29,0.38), rgba(255,255,255,0.035))",
+  border: "1px solid rgba(220,38,38,0.28)",
+  borderRadius: "30px",
+  padding: "clamp(24px, 5vw, 38px)",
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+  gap: "28px",
+  alignItems: "center",
+};
+
+const nutritionGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 150px), 1fr))",
+  gap: "12px",
+};
+
+const nutritionCard = {
+  background: "rgba(0,0,0,0.38)",
+  border: "1px solid rgba(255,255,255,0.10)",
+  borderRadius: "16px",
+  padding: "18px",
+  textAlign: "center",
+  fontWeight: "950",
+};
+
+const appGrid = {
+  display: "grid",
+  gap: "14px",
+  marginTop: "24px",
+};
+
+const appCard = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderLeft: "3px solid #dc2626",
+  borderRadius: "16px",
+  padding: "18px",
+  display: "grid",
+  gap: "6px",
+};
+
+const dashboardMockup = {
+  background: "#080808",
+  border: "1px solid rgba(255,255,255,0.12)",
+  borderRadius: "28px",
+  overflow: "hidden",
+  boxShadow: "0 30px 90px rgba(0,0,0,0.5)",
+};
+
+const mockupTop = {
+  height: "48px",
+  background: "rgba(255,255,255,0.05)",
+};
+
+const mockupBody = {
+  padding: "30px",
+};
+
+const mockupLogo = {
+  width: "140px",
+  marginBottom: "18px",
+};
+
+const mockupTitle = {
+  margin: "0 0 22px",
+  fontSize: "34px",
+  fontWeight: "950",
+  textTransform: "uppercase",
+};
+
+const mockupRows = {
+  display: "grid",
+  gap: "12px",
+};
+
+const mockupRow = {
+  padding: "16px",
+  borderRadius: "14px",
+  background: "rgba(255,255,255,0.05)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  fontWeight: "900",
 };
 
 const pricingGrid = {
   display: "grid",
-  gridTemplateColumns:
-    "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
   gap: "28px",
-  alignItems: "stretch",
 };
 
 const pricingCard = {
-  background: "#050505",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "30px",
-  padding: "40px",
-  minHeight: "640px",
-  position: "relative",
+  background: "#060606",
+  border: "1px solid rgba(255,255,255,0.09)",
+  borderRadius: "28px",
+  padding: "38px",
+  minHeight: "620px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
-  boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
+  position: "relative",
 };
 
 const pricingCardFeatured = {
-  background: "rgba(250,204,21,0.06)",
-  border: "2px solid #facc15",
+  border: "2px solid #dc2626",
+  background: "linear-gradient(180deg, rgba(127,29,29,0.25), #060606)",
 };
 
-const bestValue = {
+const bestBadge = {
   position: "absolute",
   top: "-14px",
   right: "18px",
-  background: "#facc15",
-  color: "black",
-  fontSize: "13px",
-  fontWeight: "900",
+  background: "#dc2626",
+  color: "white",
   padding: "10px 14px",
   borderRadius: "12px",
+  fontWeight: "950",
 };
 
-const pricingTitle = {
-  fontSize: "clamp(34px, 5vw, 50px)",
+const pricingName = {
   margin: "0 0 18px",
+  fontSize: "clamp(36px, 5vw, 52px)",
+  fontWeight: "950",
+  textTransform: "uppercase",
+};
+
+const price = {
+  fontSize: "clamp(60px, 8vw, 82px)",
   fontWeight: "950",
   lineHeight: 1,
 };
 
-const pricingPrice = {
-  fontSize: "clamp(62px, 9vw, 84px)",
-  fontWeight: "950",
-  marginBottom: "8px",
-  lineHeight: 1,
-};
-
-const pricingSubtext = {
+const priceSub = {
+  marginTop: "10px",
   color: "rgba(255,255,255,0.62)",
-  fontWeight: "800",
-  marginBottom: "28px",
-  fontSize: "18px",
+  fontWeight: "850",
 };
 
 const pricingList = {
-  paddingLeft: "22px",
+  paddingLeft: 0,
+  listStyle: "none",
   lineHeight: 2,
-  marginTop: "30px",
-  marginBottom: "34px",
+  marginTop: "28px",
   color: "rgba(255,255,255,0.82)",
-  fontSize: "clamp(16px, 2vw, 19px)",
+  fontSize: "17px",
 };
 
 const pricingButton = {
   display: "block",
-  width: "100%",
   textAlign: "center",
   textDecoration: "none",
-  padding: "20px 18px",
-  borderRadius: "18px",
+  background: "#dc2626",
+  color: "white",
+  padding: "18px",
+  borderRadius: "0px",
   fontWeight: "950",
-  fontSize: "clamp(20px, 2vw, 24px)",
-  background: "#facc15",
-  color: "black",
-  marginTop: "34px",
-  boxSizing: "border-box",
-  transition: "all 0.25s ease",
+  fontSize: "20px",
 };
 
 const pricingButtonFeatured = {
   background: "white",
+  color: "black",
 };
-
 
 const footer = {
   borderTop: "1px solid rgba(255,255,255,0.08)",
@@ -894,8 +949,6 @@ const footer = {
 const footerLinks = {
   display: "flex",
   justifyContent: "center",
-  overflowWrap: "break-word",
-  wordBreak: "break-word",
   gap: "18px",
   flexWrap: "wrap",
   marginTop: "14px",
@@ -904,6 +957,5 @@ const footerLinks = {
 const footerLink = {
   color: "rgba(255,255,255,0.72)",
   textDecoration: "none",
-  fontSize: "14px",
-  fontWeight: "700",
+  fontWeight: "800",
 };
