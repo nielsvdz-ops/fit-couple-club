@@ -123,17 +123,25 @@ function buildWelcomeEmail({ plan, email }) {
               <table width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background:#0b0b0b;border:1px solid rgba(255,255,255,0.10);border-radius:26px;overflow:hidden;">
                 
                 <tr>
-                  <td style="padding:34px 28px;background:linear-gradient(135deg,#050505,#111111 55%,rgba(250,204,21,0.14));">
-                    <div style="display:inline-block;padding:8px 13px;border-radius:999px;background:rgba(250,204,21,0.14);border:1px solid rgba(250,204,21,0.35);color:#facc15;font-size:12px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;">
+                  <td style="padding:34px 28px;
+<div style="margin-bottom:26px;">
+  <img
+    src="https://fitcoupleclub.com/images/fitcouple-logo.png"
+    alt="Fit Couple Club"
+    style="width:180px;max-width:100%;"
+  />
+</div>
+background:linear-gradient(135deg,#050505,#0b0b0b 55%,rgba(176,0,0,0.24));">
+                    <div style="display:inline-block;padding:8px 13px;border-radius:999px;background:rgba(176,0,0,0.18); border:1px solid rgba(176,0,0,0.38);color:#ef4444;font-size:12px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;">
                       ${escapeHtml(details.badge)}
                     </div>
 
                     <h1 style="margin:22px 0 12px;font-size:38px;line-height:1.02;color:#ffffff;font-weight:950;">
-                      Welcome to the Fit Couple Club team.
+                      Your transformation starts now.
                     </h1>
 
                     <p style="margin:0;color:rgba(255,255,255,0.74);font-size:17px;line-height:1.7;">
-                      We’re happy to have you with us. Your purchase is confirmed and your access is now being unlocked inside your member dashboard.
+                      You officially joined Fit Couple Club. Your dashboard, programs, nutrition system and transformation tools are now unlocked. Your purchase is confirmed and your access is now being unlocked inside your member dashboard.
                     </p>
                   </td>
                 </tr>
@@ -163,7 +171,8 @@ function buildWelcomeEmail({ plan, email }) {
                     </table>
 
                     <div style="text-align:center;margin:32px 0 10px;">
-                      <a href="${dashboardUrl}" style="display:inline-block;background:#facc15;color:#000000;text-decoration:none;font-weight:950;font-size:16px;padding:16px 26px;border-radius:16px;">
+                      <a href="${dashboardUrl}" style="display:inline-block;background:#b00000;
+color:#ffffff;text-decoration:none;font-weight:950;font-size:16px;padding:16px 26px;border-radius:16px;">
                         Open Your Dashboard
                       </a>
                     </div>
