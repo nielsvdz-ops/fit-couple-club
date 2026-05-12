@@ -766,27 +766,29 @@ function NoteCard({ label, value }) {
 
 const layout = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,320px),1fr))",
-  gap: "22px",
+  gridTemplateColumns: "minmax(300px, 420px) 1fr",
+  gap: "24px",
   width: "100%",
   maxWidth: "100%",
   overflowX: "hidden",
 };
 
 const sidebarCard = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "22px",
-  padding: "clamp(18px, 4vw, 22px)",
+  background:
+    "linear-gradient(180deg, rgba(176,0,0,0.14), rgba(255,255,255,0.025))",
+  border: "1px solid rgba(176,0,0,0.24)",
+  borderLeft: "3px solid #b00000",
+  padding: "clamp(20px, 4vw, 28px)",
   alignSelf: "start",
   minWidth: 0,
 };
 
 const contentCard = {
-  background: "rgba(255,255,255,0.04)",
+  background:
+    "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "22px",
-  padding: "clamp(18px, 4vw, 22px)",
+  borderLeft: "3px solid rgba(176,0,0,0.45)",
+  padding: "clamp(20px, 4vw, 28px)",
   minHeight: "500px",
   minWidth: 0,
 };
@@ -794,16 +796,21 @@ const contentCard = {
 const eyebrow = {
   fontSize: "12px",
   textTransform: "uppercase",
-  letterSpacing: "0.16em",
-  color: "rgba(255,255,255,0.45)",
-  marginBottom: "10px",
+  letterSpacing: "0.18em",
+  color: "#ef4444",
+  marginBottom: "12px",
+  fontWeight: "950",
 };
 
 const label = {
   display: "block",
-  marginTop: "14px",
+  marginTop: "16px",
   marginBottom: "8px",
-  fontWeight: "700",
+  fontWeight: "950",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
+  fontSize: "12px",
+  color: "rgba(255,255,255,0.68)",
 };
 
 const labelStyle = label;
@@ -811,12 +818,13 @@ const labelStyle = label;
 const input = {
   width: "100%",
   boxSizing: "border-box",
-  padding: "13px 14px",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.14)",
-  background: "#111",
+  padding: "15px 16px",
+  border: "1px solid rgba(255,255,255,0.12)",
+  background: "rgba(255,255,255,0.05)",
   color: "white",
   fontSize: "16px",
+  fontWeight: "800",
+  outline: "none",
 };
 
 const optionStyle = {
@@ -833,67 +841,69 @@ const variationWrap = {
 
 const variationButton = {
   flex: "1 1 70px",
-  padding: "11px 14px",
-  borderRadius: "10px",
+  padding: "12px 14px",
   border: "1px solid rgba(255,255,255,0.14)",
-  fontWeight: "800",
+  fontWeight: "950",
 };
 
 const recommendedBox = {
-  marginTop: "18px",
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "14px",
-  padding: "14px",
+  marginTop: "20px",
+  background: "rgba(0,0,0,0.24)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderLeft: "3px solid #b00000",
+  padding: "16px",
 };
 
 const smallLabel = {
   fontSize: "12px",
   textTransform: "uppercase",
   letterSpacing: "0.12em",
-  color: "rgba(255,255,255,0.5)",
+  color: "rgba(255,255,255,0.52)",
   marginBottom: "8px",
+  fontWeight: "900",
 };
 
 const recommendedText = {
-  color: "rgba(255,255,255,0.82)",
+  color: "rgba(255,255,255,0.84)",
   lineHeight: 1.7,
-  marginBottom: "10px",
+  marginBottom: "12px",
 };
 
 const secondarySmallButton = {
   width: "100%",
-  padding: "12px 14px",
-  borderRadius: "10px",
-  border: "1px solid rgba(255,255,255,0.14)",
-  background: "rgba(255,255,255,0.05)",
+  padding: "13px 14px",
+  border: "1px solid rgba(176,0,0,0.34)",
+  background: "rgba(176,0,0,0.14)",
   color: "white",
-  fontWeight: "800",
+  fontWeight: "950",
   cursor: "pointer",
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
 };
 
 const generateButton = {
-  marginTop: "18px",
+  marginTop: "20px",
   width: "100%",
-  padding: "15px 16px",
-  borderRadius: "12px",
+  padding: "16px 18px",
   border: "none",
-  background: "white",
-  color: "black",
-  fontWeight: "900",
+  background: "#b00000",
+  color: "white",
+  fontWeight: "950",
   cursor: "pointer",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
 };
 
 const saveInfo = {
-  marginTop: "10px",
-  color: "rgba(255,255,255,0.72)",
+  marginTop: "12px",
+  color: "rgba(255,255,255,0.74)",
   lineHeight: 1.6,
 };
 
 const smallNote = {
-  marginTop: "14px",
+  marginTop: "16px",
   color: "rgba(255,255,255,0.62)",
-  lineHeight: 1.7,
+  lineHeight: 1.75,
   fontSize: "14px",
 };
 
@@ -905,120 +915,130 @@ const emptyState = {
 };
 
 const emptyTitle = {
-  fontSize: "clamp(26px, 6vw, 34px)",
-  fontWeight: "900",
-  marginBottom: "10px",
+  fontSize: "clamp(32px, 7vw, 54px)",
+  fontWeight: "950",
+  marginBottom: "12px",
+  textTransform: "uppercase",
+  letterSpacing: "-0.05em",
 };
 
 const emptyText = {
   color: "rgba(255,255,255,0.68)",
-  maxWidth: "560px",
-  lineHeight: 1.8,
+  maxWidth: "620px",
+  lineHeight: 1.85,
 };
 
 const planHeader = {
   display: "flex",
   justifyContent: "space-between",
-  gap: "14px",
+  gap: "16px",
   alignItems: "start",
   flexWrap: "wrap",
-  marginBottom: "20px",
+  marginBottom: "24px",
 };
 
 const planTitle = {
-  fontSize: "clamp(26px, 6vw, 34px)",
-  fontWeight: "900",
-  margin: "0 0 8px 0",
-  lineHeight: 1.1,
+  fontSize: "clamp(34px, 7vw, 58px)",
+  fontWeight: "950",
+  margin: "0 0 10px 0",
+  lineHeight: 0.95,
+  letterSpacing: "-0.055em",
+  textTransform: "uppercase",
 };
 
 const planText = {
   color: "rgba(255,255,255,0.72)",
   margin: 0,
-  lineHeight: 1.7,
+  lineHeight: 1.75,
 };
 
 const badge = {
-  padding: "10px 14px",
-  borderRadius: "999px",
-  background: "rgba(255,255,255,0.08)",
-  border: "1px solid rgba(255,255,255,0.12)",
-  fontWeight: "800",
+  padding: "12px 16px",
+  background: "rgba(176,0,0,0.18)",
+  border: "1px solid rgba(176,0,0,0.35)",
+  color: "white",
+  fontWeight: "950",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
 };
 
 const summaryGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))",
-  gap: "12px",
-  marginBottom: "18px",
+  gap: "14px",
+  marginBottom: "20px",
 };
 
 const infoCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.05)",
-  borderRadius: "14px",
-  padding: "14px",
+  background: "rgba(0,0,0,0.24)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderLeft: "3px solid rgba(176,0,0,0.45)",
+  padding: "16px",
   minWidth: 0,
 };
 
 const infoValue = {
-  color: "rgba(255,255,255,0.82)",
-  lineHeight: 1.7,
+  color: "rgba(255,255,255,0.84)",
+  lineHeight: 1.75,
   overflowWrap: "anywhere",
+  fontWeight: "800",
 };
 
 const noteGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))",
-  gap: "12px",
-  marginBottom: "18px",
+  gap: "14px",
+  marginBottom: "20px",
 };
 
 const noteCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.05)",
-  borderRadius: "14px",
-  padding: "14px",
+  background: "rgba(0,0,0,0.22)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderLeft: "3px solid rgba(176,0,0,0.35)",
+  padding: "16px",
   minWidth: 0,
 };
 
 const noteText = {
   color: "rgba(255,255,255,0.76)",
-  lineHeight: 1.75,
+  lineHeight: 1.8,
   overflowWrap: "anywhere",
 };
 
 const dayGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,270px),1fr))",
-  gap: "16px",
+  gap: "18px",
 };
 
 const dayCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "18px",
-  padding: "18px",
+  background:
+    "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.018))",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderLeft: "3px solid rgba(176,0,0,0.45)",
+  padding: "20px",
   minWidth: 0,
 };
 
 const dayTop = {
-  marginBottom: "14px",
+  marginBottom: "16px",
 };
 
 const dayLabel = {
-  color: "rgba(255,255,255,0.5)",
+  color: "rgba(255,255,255,0.52)",
   fontSize: "12px",
   textTransform: "uppercase",
   letterSpacing: "0.12em",
   marginBottom: "8px",
+  fontWeight: "900",
 };
 
 const dayTitle = {
-  fontSize: "22px",
-  fontWeight: "900",
+  fontSize: "24px",
+  fontWeight: "950",
   margin: "0",
   overflowWrap: "anywhere",
+  textTransform: "uppercase",
 };
 
 const exerciseList = {
@@ -1027,16 +1047,15 @@ const exerciseList = {
 };
 
 const exerciseRow = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.05)",
-  borderRadius: "12px",
-  padding: "12px",
+  background: "rgba(255,255,255,0.035)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  padding: "14px",
   minWidth: 0,
 };
 
 const exerciseName = {
-  fontWeight: "800",
-  marginBottom: "6px",
+  fontWeight: "950",
+  marginBottom: "8px",
   overflowWrap: "anywhere",
 };
 
@@ -1049,41 +1068,44 @@ const exerciseMeta = {
 };
 
 const lockedBox = {
-  marginTop: "22px",
-  background: "rgba(255,255,255,0.03)",
-  border: "1px dashed rgba(255,255,255,0.2)",
-  borderRadius: "18px",
-  padding: "22px",
+  marginTop: "24px",
+  background:
+    "linear-gradient(135deg, rgba(176,0,0,0.14), rgba(255,255,255,0.025))",
+  border: "1px dashed rgba(176,0,0,0.38)",
+  borderLeft: "3px solid #b00000",
+  padding: "24px",
   textAlign: "center",
 };
 
 const lockedTitle = {
-  fontSize: "24px",
-  fontWeight: "900",
-  marginBottom: "8px",
+  fontSize: "28px",
+  fontWeight: "950",
+  marginBottom: "10px",
+  textTransform: "uppercase",
 };
 
 const lockedText = {
   color: "rgba(255,255,255,0.68)",
-  lineHeight: 1.8,
+  lineHeight: 1.85,
   maxWidth: "620px",
-  margin: "0 auto 12px auto",
+  margin: "0 auto 14px auto",
 };
 
 const lockedList = {
   textAlign: "left",
   maxWidth: "420px",
-  margin: "0 auto 18px auto",
+  margin: "0 auto 20px auto",
   lineHeight: 1.9,
   color: "rgba(255,255,255,0.74)",
 };
 
 const unlockButton = {
   display: "inline-block",
-  padding: "14px 18px",
-  background: "white",
-  color: "black",
-  borderRadius: "12px",
-  fontWeight: "900",
+  padding: "15px 20px",
+  background: "#b00000",
+  color: "white",
+  fontWeight: "950",
   textDecoration: "none",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
 };
