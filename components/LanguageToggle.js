@@ -7,19 +7,11 @@ export default function LanguageToggle() {
 
   return (
     <div style={wrap}>
-      <button
-        type="button"
-        onClick={() => changeLanguage("en")}
-        style={language === "en" ? activeButton : button}
-      >
+      <button type="button" onClick={() => changeLanguage("en")} style={btn(language === "en")}>
         EN
       </button>
 
-      <button
-        type="button"
-        onClick={() => changeLanguage("nl")}
-        style={language === "nl" ? activeButton : button}
-      >
+      <button type="button" onClick={() => changeLanguage("nl")} style={btn(language === "nl")}>
         NL
       </button>
     </div>
@@ -27,27 +19,25 @@ export default function LanguageToggle() {
 }
 
 const wrap = {
-  display: "flex",
+  display: "inline-flex",
   alignItems: "center",
   gap: "6px",
   padding: "4px",
-  borderRadius: "999px",
-  background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background: "rgba(0,0,0,0.65)",
+  border: "1px solid rgba(176,0,0,0.45)",
+  position: "relative",
+  zIndex: 999,
 };
 
-const button = {
-  border: "none",
-  background: "transparent",
-  color: "rgba(255,255,255,0.65)",
-  padding: "7px 10px",
-  borderRadius: "999px",
-  fontWeight: "900",
+const btn = (active) => ({
+  border: active
+    ? "1px solid rgba(176,0,0,0.95)"
+    : "1px solid rgba(255,255,255,0.12)",
+  background: active ? "#b00000" : "rgba(255,255,255,0.06)",
+  color: "white",
+  padding: "8px 11px",
+  fontWeight: "950",
   cursor: "pointer",
-};
-
-const activeButton = {
-  ...button,
-  background: "white",
-  color: "black",
-};
+  fontSize: "12px",
+  letterSpacing: "0.08em",
+});
