@@ -310,11 +310,12 @@ const sidebar = {
   position: "sticky",
   top: 0,
   height: "100vh",
+  maxHeight: "100vh",
   padding: "28px 18px",
-  borderRight:
-    "1px solid rgba(255,255,255,0.08)",
+  borderRight: "1px solid rgba(255,255,255,0.08)",
   background: "#050505",
-  overflow: "hidden",
+  overflowY: "auto",
+  overflowX: "hidden",
 };
 
 const sidebarOverlay = {
@@ -376,7 +377,8 @@ const nav = {
   position: "relative",
   zIndex: 2,
   display: "grid",
-  gap: "12px",
+  gap: "10px",
+  paddingBottom: "40px",
 };
 
 const navLink = {
