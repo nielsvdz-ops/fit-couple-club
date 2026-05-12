@@ -16,6 +16,12 @@ const copy = {
     preferencesText:
       "Update your goal, diet style, allergies, fasting setup, training location, experience level, and Booty Builder focus anytime.",
     preferencesButton: "Edit Preferences",
+
+    dashboard: "Open Dashboard",
+    dashboardText:
+      "Continue to your workouts, nutrition, recipes, progress, and programs.",
+    dashboardButton: "Go to Dashboard",
+
     notSet: "Not set",
     free: "Free",
     nutrition: "Nutrition",
@@ -34,6 +40,12 @@ const copy = {
     preferencesText:
       "Pas je doel, dieetstijl, allergieën, fasting setup, trainingslocatie, ervaring en Booty Builder focus altijd aan.",
     preferencesButton: "Voorkeuren Aanpassen",
+
+    dashboard: "Open Dashboard",
+    dashboardText:
+      "Ga verder naar je workouts, voeding, recepten, progressie en programma’s.",
+    dashboardButton: "Naar Dashboard",
+
     notSet: "Niet ingesteld",
     free: "Gratis",
     nutrition: "Nutrition",
@@ -112,6 +124,18 @@ export default async function AccountPage() {
 
             <a href="/preferences" style={preferenceButton}>
               {t.preferencesButton}
+            </a>
+          </section>
+
+          <section style={dashboardCard}>
+            <div>
+              <div style={cardLabel}>{t.dashboard}</div>
+              <h2 style={preferenceTitle}>{t.dashboard}</h2>
+              <p style={preferenceText}>{t.dashboardText}</p>
+            </div>
+
+            <a href="/dashboard" style={dashboardButton}>
+              {t.dashboardButton}
             </a>
           </section>
         </div>
@@ -261,6 +285,20 @@ const preferenceCard = {
   flexWrap: "wrap",
 };
 
+const dashboardCard = {
+  gridColumn: "1 / -1",
+  background:
+    "linear-gradient(135deg, rgba(176,0,0,0.18), rgba(255,255,255,0.025))",
+  border: "1px solid rgba(176,0,0,0.28)",
+  borderLeft: "3px solid #d00000",
+  padding: "clamp(24px, 5vw, 34px)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: "24px",
+  flexWrap: "wrap",
+};
+
 const preferenceTitle = {
   margin: "8px 0 10px",
   fontSize: "clamp(28px, 5vw, 44px)",
@@ -283,6 +321,19 @@ const preferenceButton = {
   justifyContent: "center",
   padding: "16px 22px",
   background: "#b00000",
+  color: "white",
+  textDecoration: "none",
+  fontWeight: "950",
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
+};
+
+const dashboardButton = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "16px 22px",
+  background: "#d00000",
   color: "white",
   textDecoration: "none",
   fontWeight: "950",
