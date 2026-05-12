@@ -129,59 +129,77 @@ export default function ProgressClient() {
 
   const averageConsistency = useMemo(() => {
     if (!history.length) return null;
+
     const values = history.map(
       (item) =>
         (Number(item.training_adherence || 0) +
           Number(item.nutrition_adherence || 0)) /
         2
     );
+
     const avg = values.reduce((sum, v) => sum + v, 0) / values.length;
+
     return `${Math.round(avg)}%`;
   }, [history]);
 
   const latestRecovery = useMemo(() => {
     if (!latest) return null;
+
     const avg =
       (Number(latest.energy_score || 0) +
         Number(latest.mood_score || 0) +
         Number(latest.sleep_score || 0)) /
       3;
+
     return `${avg.toFixed(1)}/10`;
   }, [latest]);
 
   return (
     <div style={wrap}>
       <section style={heroCard}>
-        <div style={eyebrow}>Weekly Check-In System</div>
-        <h2 style={heroTitle}>Track what is actually changing</h2>
-        <p style={heroText}>
-          Log weekly check-ins for body measurements, recovery, adherence, and
-          notes. Use the history below to see if your momentum is moving in the
-          right direction.
-        </p>
+        <div style={heroOverlay} />
 
-        <div style={statsGrid}>
-          <StatCard
-            label="Latest Weight"
-            value={latest?.weight_kg ? `${latest.weight_kg} kg` : "—"}
-          />
-          <StatCard
-            label="Latest Waist"
-            value={latest?.waist_cm ? `${latest.waist_cm} cm` : "—"}
-          />
-          <StatCard label="Avg Consistency" value={averageConsistency || "—"} />
-          <StatCard label="Recovery Score" value={latestRecovery || "—"} />
-        </div>
+        <div style={heroContent}>
+          <div style={eyebrow}>Weekly Check-In System</div>
 
-        {trend && (
-          <div style={trendBox}>
-            <div style={miniLabel}>Latest trend vs previous check-in</div>
-            <div style={trendText}>
-              Weight: {formatDelta(trend.weightDelta, "kg")} · Waist:{" "}
-              {formatDelta(trend.waistDelta, "cm")}
-            </div>
+          <h2 style={heroTitle}>Track what is actually changing</h2>
+
+          <p style={heroText}>
+            Log weekly check-ins for body measurements, recovery, adherence and
+            notes. Use your history to see if your momentum is moving in the
+            right direction.
+          </p>
+
+          <div style={statsGrid}>
+            <StatCard
+              label="Latest Weight"
+              value={latest?.weight_kg ? `${latest.weight_kg} kg` : "—"}
+            />
+
+            <StatCard
+              label="Latest Waist"
+              value={latest?.waist_cm ? `${latest.waist_cm} cm` : "—"}
+            />
+
+            <StatCard
+              label="Avg Consistency"
+              value={averageConsistency || "—"}
+            />
+
+            <StatCard label="Recovery Score" value={latestRecovery || "—"} />
           </div>
-        )}
+
+          {trend && (
+            <div style={trendBox}>
+              <div style={miniLabel}>Latest trend vs previous check-in</div>
+
+              <div style={trendText}>
+                Weight: {formatDelta(trend.weightDelta, "kg")} · Waist:{" "}
+                {formatDelta(trend.waistDelta, "cm")}
+              </div>
+            </div>
+          )}
+        </div>
       </section>
 
       <div style={mainGrid}>
@@ -311,7 +329,7 @@ export default function ProgressClient() {
               />
             </Field>
 
-            <div style={{ gridColumn: "1 / -1" }}>
+            <div style={fullWidth}>
               <Field label="Weekly Notes">
                 <textarea
                   value={form.notes}
@@ -324,17 +342,13 @@ export default function ProgressClient() {
               </Field>
             </div>
 
-            <div style={{ gridColumn: "1 / -1" }}>
+            <div style={fullWidth}>
               <button type="submit" style={button} disabled={saving}>
                 {saving ? "Saving..." : "Save Weekly Check-In"}
               </button>
             </div>
 
-            {message ? (
-              <div style={{ gridColumn: "1 / -1", color: "rgba(255,255,255,0.72)" }}>
-                {message}
-              </div>
-            ) : null}
+            {message ? <div style={messageStyle}>{message}</div> : null}
           </form>
         </section>
 
@@ -353,7 +367,7 @@ export default function ProgressClient() {
               No check-ins yet. Save your first weekly progress entry.
             </div>
           ) : (
-            <div style={{ display: "grid", gap: "14px" }}>
+            <div style={historyList}>
               {history.map((item) => (
                 <div key={item.id} style={historyCard}>
                   <div style={historyTop}>
@@ -361,12 +375,16 @@ export default function ProgressClient() {
                       <div style={miniLabel}>Check-In Date</div>
                       <div style={historyDate}>{item.checkin_date}</div>
                     </div>
+
                     <div style={pillRow}>
                       <span style={pill}>
-                        Weight: {item.weight_kg ?? "—"} {item.weight_kg != null ? "kg" : ""}
+                        Weight: {item.weight_kg ?? "—"}{" "}
+                        {item.weight_kg != null ? "kg" : ""}
                       </span>
+
                       <span style={pill}>
-                        Waist: {item.waist_cm ?? "—"} {item.waist_cm != null ? "cm" : ""}
+                        Waist: {item.waist_cm ?? "—"}{" "}
+                        {item.waist_cm != null ? "cm" : ""}
                       </span>
                     </div>
                   </div>
@@ -415,7 +433,7 @@ function scoreOptions() {
 
 function Field({ label, children }) {
   return (
-    <div style={{ display: "grid", gap: "8px" }}>
+    <div style={fieldWrap}>
       <div style={miniLabel}>{label}</div>
       {children}
     </div>
@@ -443,21 +461,40 @@ function Metric({ label, value }) {
 function formatDelta(value, suffix) {
   if (value == null || Number.isNaN(value)) return "—";
   if (value === 0) return `0 ${suffix}`;
+
   const rounded = Math.round(value * 10) / 10;
+
   return `${rounded > 0 ? "+" : ""}${rounded} ${suffix}`;
 }
 
 const wrap = {
   display: "grid",
-  gap: "22px",
+  gap: "24px",
 };
 
 const heroCard = {
+  position: "relative",
+  overflow: "hidden",
   background:
-    "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: "24px",
-  padding: "28px",
+    "linear-gradient(135deg, rgba(176,0,0,0.22), rgba(255,255,255,0.035))",
+  border: "1px solid rgba(176,0,0,0.30)",
+  borderLeft: "3px solid #b00000",
+  borderRadius: "0px",
+  minHeight: "360px",
+};
+
+const heroOverlay = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "radial-gradient(circle at 85% 20%, rgba(176,0,0,0.24), transparent 38%)",
+  pointerEvents: "none",
+};
+
+const heroContent = {
+  position: "relative",
+  zIndex: 2,
+  padding: "clamp(24px, 5vw, 42px)",
 };
 
 const mainGrid = {
@@ -467,41 +504,50 @@ const mainGrid = {
 };
 
 const panel = {
-  background: "rgba(255,255,255,0.04)",
+  background:
+    "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.025))",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "22px",
-  padding: "22px",
+  borderLeft: "3px solid rgba(176,0,0,0.45)",
+  borderRadius: "0px",
+  padding: "clamp(20px, 4vw, 26px)",
 };
 
 const eyebrow = {
   fontSize: "12px",
   textTransform: "uppercase",
   letterSpacing: "0.16em",
-  color: "rgba(255,255,255,0.45)",
+  color: "#ef4444",
   marginBottom: "8px",
+  fontWeight: "950",
 };
 
 const heroTitle = {
   margin: 0,
-  fontSize: "34px",
-  fontWeight: "900",
+  fontSize: "clamp(38px, 7vw, 68px)",
+  fontWeight: "950",
+  lineHeight: 0.92,
+  letterSpacing: "-0.055em",
+  textTransform: "uppercase",
 };
 
 const heroText = {
-  marginTop: "12px",
+  marginTop: "16px",
   color: "rgba(255,255,255,0.72)",
   lineHeight: 1.8,
   maxWidth: "940px",
 };
 
 const sectionHeader = {
-  marginBottom: "18px",
+  marginBottom: "20px",
 };
 
 const sectionTitle = {
   margin: 0,
-  fontSize: "26px",
-  fontWeight: "800",
+  fontSize: "clamp(28px, 5vw, 42px)",
+  fontWeight: "950",
+  lineHeight: 0.95,
+  letterSpacing: "-0.04em",
+  textTransform: "uppercase",
 };
 
 const formGrid = {
@@ -510,66 +556,91 @@ const formGrid = {
   gap: "14px",
 };
 
+const fieldWrap = {
+  display: "grid",
+  gap: "8px",
+};
+
 const input = {
   width: "100%",
-  background: "#111111",
+  background: "rgba(255,255,255,0.05)",
   color: "white",
   border: "1px solid rgba(255,255,255,0.12)",
-  borderRadius: "12px",
-  padding: "12px 14px",
-  fontWeight: "700",
+  borderRadius: "0px",
+  padding: "14px 15px",
+  fontWeight: "800",
+  boxSizing: "border-box",
+  outline: "none",
+  fontSize: "16px",
 };
 
 const textarea = {
   width: "100%",
   minHeight: "120px",
   resize: "vertical",
-  background: "#111111",
+  background: "rgba(255,255,255,0.05)",
   color: "white",
   border: "1px solid rgba(255,255,255,0.12)",
-  borderRadius: "12px",
-  padding: "12px 14px",
-  fontWeight: "500",
+  borderRadius: "0px",
+  padding: "14px 15px",
+  fontWeight: "600",
   fontFamily: "inherit",
+  boxSizing: "border-box",
+  outline: "none",
+  fontSize: "16px",
 };
 
 const button = {
   width: "100%",
-  padding: "14px 18px",
-  background: "white",
-  color: "black",
-  borderRadius: "12px",
-  fontWeight: "800",
+  padding: "16px 18px",
+  background: "#b00000",
+  color: "white",
+  borderRadius: "0px",
+  fontWeight: "950",
   border: "none",
   cursor: "pointer",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
+};
+
+const fullWidth = {
+  gridColumn: "1 / -1",
+};
+
+const messageStyle = {
+  gridColumn: "1 / -1",
+  color: "rgba(255,255,255,0.78)",
+  lineHeight: 1.7,
 };
 
 const statsGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
   gap: "12px",
-  marginTop: "18px",
+  marginTop: "24px",
 };
 
 const statCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.05)",
-  borderRadius: "14px",
-  padding: "14px",
+  background: "rgba(0,0,0,0.30)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderLeft: "3px solid #b00000",
+  borderRadius: "0px",
+  padding: "16px",
 };
 
 const statValue = {
   color: "white",
-  fontSize: "24px",
-  fontWeight: "800",
+  fontSize: "26px",
+  fontWeight: "950",
 };
 
 const trendBox = {
-  marginTop: "16px",
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.05)",
-  borderRadius: "14px",
-  padding: "14px",
+  marginTop: "18px",
+  background: "rgba(0,0,0,0.30)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderLeft: "3px solid #b00000",
+  borderRadius: "0px",
+  padding: "16px",
 };
 
 const trendText = {
@@ -585,10 +656,17 @@ const emptyState = {
   color: "rgba(255,255,255,0.68)",
 };
 
+const historyList = {
+  display: "grid",
+  gap: "14px",
+};
+
 const historyCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "18px",
+  background:
+    "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02))",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderLeft: "3px solid rgba(176,0,0,0.45)",
+  borderRadius: "0px",
   padding: "18px",
 };
 
@@ -602,8 +680,8 @@ const historyTop = {
 };
 
 const historyDate = {
-  fontSize: "22px",
-  fontWeight: "800",
+  fontSize: "24px",
+  fontWeight: "950",
 };
 
 const pillRow = {
@@ -614,10 +692,10 @@ const pillRow = {
 
 const pill = {
   padding: "10px 12px",
-  borderRadius: "999px",
-  background: "rgba(255,255,255,0.08)",
-  border: "1px solid rgba(255,255,255,0.12)",
-  fontWeight: "700",
+  borderRadius: "0px",
+  background: "rgba(176,0,0,0.16)",
+  border: "1px solid rgba(176,0,0,0.32)",
+  fontWeight: "850",
 };
 
 const metricsGrid = {
@@ -627,22 +705,22 @@ const metricsGrid = {
 };
 
 const metricCard = {
-  background: "rgba(255,255,255,0.025)",
-  border: "1px solid rgba(255,255,255,0.04)",
-  borderRadius: "12px",
+  background: "rgba(255,255,255,0.035)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "0px",
   padding: "12px",
 };
 
 const metricValue = {
-  color: "rgba(255,255,255,0.82)",
-  fontWeight: "800",
+  color: "rgba(255,255,255,0.86)",
+  fontWeight: "950",
 };
 
 const noteBlock = {
   marginTop: "14px",
-  background: "rgba(255,255,255,0.025)",
-  border: "1px solid rgba(255,255,255,0.04)",
-  borderRadius: "12px",
+  background: "rgba(255,255,255,0.035)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "0px",
   padding: "12px",
 };
 
@@ -655,6 +733,7 @@ const miniLabel = {
   fontSize: "12px",
   textTransform: "uppercase",
   letterSpacing: "0.12em",
-  color: "rgba(255,255,255,0.5)",
+  color: "rgba(255,255,255,0.52)",
   marginBottom: "8px",
+  fontWeight: "900",
 };
