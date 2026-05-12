@@ -105,7 +105,7 @@ function buildWelcomeEmail({ plan, email }) {
       (perk) => `
         <tr>
           <td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08);">
-            <span style="color:#facc15;font-weight:900;">✓</span>
+            <span <span style="color:#ef4444;font-weight:900;">✓</span>
             <span style="color:#f5f5f5;margin-left:8px;">${escapeHtml(perk)}</span>
           </td>
         </tr>
@@ -123,14 +123,14 @@ function buildWelcomeEmail({ plan, email }) {
               <table width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background:#0b0b0b;border:1px solid rgba(255,255,255,0.10);border-radius:26px;overflow:hidden;">
                 
                 <tr>
-                  <td style="padding:34px 28px;
-<div style="margin-bottom:26px;">
-  <img
-    src="https://fitcoupleclub.com/images/fitcouple-logo.png"
-    alt="Fit Couple Club"
-    style="width:180px;max-width:100%;"
-  />
-</div>
+                  <td style="padding:34px 28px;background:linear-gradient(135deg,#050505,#0b0b0b 55%,rgba(176,0,0,0.24));">
+  <div style="margin-bottom:26px;">
+    <img
+      src="https://fitcoupleclub.com/images/fitcouple-logo.png"
+      alt="Fit Couple Club"
+      style="width:180px;max-width:100%;"
+    />
+  </div>
 background:linear-gradient(135deg,#050505,#0b0b0b 55%,rgba(176,0,0,0.24));">
                     <div style="display:inline-block;padding:8px 13px;border-radius:999px;background:rgba(176,0,0,0.18); border:1px solid rgba(176,0,0,0.38);color:#ef4444;font-size:12px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;">
                       ${escapeHtml(details.badge)}
