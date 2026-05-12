@@ -2682,62 +2682,71 @@ function capitalize(value) {
 
 const heroCard = {
   background:
-    "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: "24px",
-  padding: "clamp(18px, 4vw, 28px)",
+    "linear-gradient(180deg, rgba(255,0,60,0.16), rgba(0,0,0,0.96))",
+  border: "1px solid rgba(255,0,60,0.18)",
+  borderRadius: "28px",
+  padding: "clamp(18px, 4vw, 32px)",
+  boxShadow: "0 10px 40px rgba(255,0,60,0.12)",
 };
 
 const eyebrow = {
-  fontSize: "12px",
+  fontSize: "11px",
   textTransform: "uppercase",
-  letterSpacing: "0.16em",
-  color: "rgba(255,255,255,0.45)",
-  marginBottom: "8px",
+  letterSpacing: "0.18em",
+  color: "rgba(255,255,255,0.48)",
+  marginBottom: "10px",
+  fontWeight: "700",
 };
 
 const heroTitle = {
   margin: 0,
-  fontSize: "clamp(28px, 5vw, 36px)",
+  fontSize: "clamp(30px, 5vw, 42px)",
   fontWeight: "900",
+  lineHeight: 1.1,
+  color: "white",
 };
 
 const heroText = {
-  marginTop: "12px",
+  marginTop: "14px",
   color: "rgba(255,255,255,0.72)",
-  lineHeight: 1.8,
-  maxWidth: "920px",
+  lineHeight: 1.9,
+  maxWidth: "940px",
+  fontSize: "15px",
 };
 
 const topFilterBlock = {
   display: "grid",
-  gap: "18px",
-  marginTop: "22px",
+  gap: "20px",
+  marginTop: "26px",
 };
 
 const filterGroup = {
   display: "grid",
-  gap: "10px",
+  gap: "12px",
 };
 
 const filterTabs = {
   display: "flex",
-  gap: "10px",
+  gap: "12px",
   flexWrap: "wrap",
 };
 
 const filterButton = {
-  padding: "12px 16px",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.14)",
+  padding: "13px 18px",
+  borderRadius: "14px",
+  border: "1px solid rgba(255,255,255,0.08)",
   fontWeight: "800",
   cursor: "pointer",
+  transition: "all 0.2s ease",
+  background: "rgba(255,255,255,0.04)",
+  color: "white",
+  backdropFilter: "blur(12px)",
 };
 
 const secondaryFilters = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
-  gap: "16px",
+  gap: "18px",
 };
 
 const selectWrap = {
@@ -2751,20 +2760,21 @@ const selectShell = {
 
 const selectInput = {
   width: "100%",
-  background: "#111111",
+  background: "rgba(12,12,12,0.95)",
   color: "white",
-  border: "1px solid rgba(255,255,255,0.12)",
-  borderRadius: "12px",
-  padding: "12px 40px 12px 14px",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "14px",
+  padding: "14px 42px 14px 16px",
   fontWeight: "700",
   outline: "none",
   appearance: "none",
   WebkitAppearance: "none",
   MozAppearance: "none",
+  backdropFilter: "blur(12px)",
 };
 
 const selectOptionStyle = {
-  backgroundColor: "#111111",
+  backgroundColor: "#0a0a0a",
   color: "white",
 };
 
@@ -2775,7 +2785,7 @@ const selectArrow = {
   transform: "translateY(-50%)",
   pointerEvents: "none",
   color: "rgba(255,255,255,0.65)",
-  fontSize: "12px",
+  fontSize: "11px",
 };
 
 const programWrap = {
@@ -2793,38 +2803,40 @@ const programHead = {
 
 const programTitle = {
   margin: 0,
-  fontSize: "28px",
-  fontWeight: "800",
+  fontSize: "32px",
+  fontWeight: "900",
   color: "white",
-  maxWidth: "800px",
+  maxWidth: "820px",
+  lineHeight: 1.2,
 };
 
 const programSubText = {
-  marginTop: "10px",
+  marginTop: "12px",
   color: "rgba(255,255,255,0.68)",
-  lineHeight: 1.7,
+  lineHeight: 1.8,
   maxWidth: "820px",
 };
 
 const programCount = {
-  padding: "10px 14px",
+  padding: "11px 16px",
   borderRadius: "999px",
-  background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  fontWeight: "700",
-  color: "rgba(255,255,255,0.78)",
+  background: "rgba(255,0,60,0.12)",
+  border: "1px solid rgba(255,0,60,0.2)",
+  fontWeight: "800",
+  color: "white",
 };
 
 const variationList = {
   display: "grid",
-  gap: "14px",
+  gap: "16px",
 };
 
 const variationShell = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "22px",
+  background: "rgba(14,14,14,0.96)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "24px",
   overflow: "hidden",
+  boxShadow: "0 6px 24px rgba(0,0,0,0.4)",
 };
 
 const variationSummaryButton = {
@@ -2832,7 +2844,7 @@ const variationSummaryButton = {
   background: "transparent",
   color: "white",
   border: "none",
-  padding: "20px 22px",
+  padding: "22px",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
@@ -2849,82 +2861,83 @@ const variationSummaryLeft = {
 
 const variationSummaryRight = {
   display: "flex",
-  gap: "12px",
+  gap: "10px",
   alignItems: "center",
   flexWrap: "wrap",
   justifyContent: "flex-end",
 };
 
 const summaryMeta = {
-  padding: "8px 10px",
+  padding: "8px 12px",
   borderRadius: "999px",
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  fontSize: "13px",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  fontSize: "12px",
   fontWeight: "700",
   color: "rgba(255,255,255,0.78)",
 };
 
 const summaryArrow = {
-  fontSize: "26px",
+  fontSize: "28px",
   fontWeight: "700",
   lineHeight: 1,
   minWidth: "20px",
   textAlign: "center",
+  color: "#ff003c",
 };
 
 const variationExpanded = {
-  borderTop: "1px solid rgba(255,255,255,0.08)",
-  padding: "20px 22px 22px 22px",
+  borderTop: "1px solid rgba(255,255,255,0.06)",
+  padding: "22px",
 };
 
 const variationOverviewGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
-  gap: "12px",
+  gap: "14px",
 };
 
 const overviewCard = {
   background: "rgba(255,255,255,0.03)",
   border: "1px solid rgba(255,255,255,0.05)",
-  borderRadius: "14px",
-  padding: "14px",
+  borderRadius: "16px",
+  padding: "16px",
 };
 
 const overviewText = {
   color: "rgba(255,255,255,0.78)",
-  lineHeight: 1.7,
+  lineHeight: 1.8,
 };
 
 const tierBadge = {
   display: "inline-block",
-  padding: "6px 10px",
+  padding: "7px 11px",
   borderRadius: "10px",
-  background: "white",
-  color: "black",
-  fontWeight: "800",
+  background: "#ff003c",
+  color: "white",
+  fontWeight: "900",
   marginTop: "2px",
+  boxShadow: "0 4px 14px rgba(255,0,60,0.4)",
 };
 
 const variationTitle = {
   margin: 0,
-  fontSize: "24px",
-  fontWeight: "800",
+  fontSize: "25px",
+  fontWeight: "900",
 };
 
 const variationGoal = {
-  color: "rgba(255,255,255,0.7)",
+  color: "rgba(255,255,255,0.68)",
   lineHeight: 1.7,
   marginTop: "6px",
-  marginBottom: 0,
   maxWidth: "760px",
 };
 
 const dayCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "18px",
-  padding: "18px",
+  background: "rgba(255,255,255,0.025)",
+  border: "1px solid rgba(255,255,255,0.05)",
+  borderRadius: "20px",
+  padding: "20px",
 };
 
 const dayHeaderRow = {
@@ -2932,55 +2945,56 @@ const dayHeaderRow = {
   justifyContent: "space-between",
   gap: "12px",
   alignItems: "start",
-  marginBottom: "12px",
+  marginBottom: "14px",
   flexWrap: "wrap",
 };
 
 const dayTitle = {
   margin: 0,
-  fontSize: "22px",
-  fontWeight: "800",
+  fontSize: "24px",
+  fontWeight: "900",
 };
 
 const dayGoal = {
   marginTop: "6px",
   color: "rgba(255,255,255,0.68)",
-  lineHeight: 1.7,
+  lineHeight: 1.8,
 };
 
 const blockCard = {
-  background: "rgba(255,255,255,0.03)",
+  background: "rgba(255,255,255,0.025)",
   border: "1px solid rgba(255,255,255,0.05)",
-  borderRadius: "14px",
-  padding: "14px",
+  borderRadius: "16px",
+  padding: "16px",
 };
 
 const miniLabel = {
-  fontSize: "12px",
+  fontSize: "11px",
   textTransform: "uppercase",
-  letterSpacing: "0.14em",
-  color: "rgba(255,255,255,0.5)",
+  letterSpacing: "0.16em",
+  color: "rgba(255,255,255,0.48)",
   marginBottom: "8px",
+  fontWeight: "700",
 };
 
 const bulletList = {
   margin: 0,
   paddingLeft: "18px",
-  color: "rgba(255,255,255,0.75)",
-  lineHeight: 1.8,
+  color: "rgba(255,255,255,0.76)",
+  lineHeight: 1.9,
 };
 
 const exerciseGrid = {
   display: "grid",
-  gap: "12px",
-  marginTop: "14px",
+  gap: "14px",
+  marginTop: "16px",
 };
 
 const exerciseCard = {
   background: "rgba(255,255,255,0.03)",
   border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "16px",
-  padding: "16px",
+  borderRadius: "18px",
+  padding: "18px",
 };
 
 const exerciseTop = {
@@ -2989,12 +3003,12 @@ const exerciseTop = {
   gap: "14px",
   alignItems: "start",
   flexWrap: "wrap",
-  marginBottom: "12px",
+  marginBottom: "14px",
 };
 
 const exerciseName = {
-  fontSize: "20px",
-  fontWeight: "800",
+  fontSize: "21px",
+  fontWeight: "900",
   marginBottom: "6px",
 };
 
@@ -3006,22 +3020,22 @@ const exerciseMeta = {
 const targetTag = {
   display: "inline-block",
   marginTop: "10px",
-  padding: "7px 10px",
+  padding: "7px 12px",
   borderRadius: "999px",
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.08)",
+  background: "rgba(255,0,60,0.1)",
+  border: "1px solid rgba(255,0,60,0.18)",
   fontSize: "12px",
-  fontWeight: "700",
-  color: "rgba(255,255,255,0.82)",
+  fontWeight: "800",
+  color: "white",
 };
 
 const mediaBox = {
   width: "120px",
   height: "120px",
-  borderRadius: "14px",
+  borderRadius: "16px",
   overflow: "hidden",
-  background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(255,255,255,0.08)",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.06)",
   flexShrink: 0,
 };
 
@@ -3053,60 +3067,63 @@ const detailGrid = {
 const detailItem = {
   background: "rgba(255,255,255,0.025)",
   border: "1px solid rgba(255,255,255,0.04)",
-  borderRadius: "12px",
-  padding: "12px",
+  borderRadius: "14px",
+  padding: "14px",
 };
 
 const detailLabel = {
-  fontSize: "12px",
+  fontSize: "11px",
   textTransform: "uppercase",
-  letterSpacing: "0.12em",
+  letterSpacing: "0.14em",
   color: "rgba(255,255,255,0.5)",
   marginBottom: "6px",
+  fontWeight: "700",
 };
 
 const detailText = {
   color: "rgba(255,255,255,0.78)",
-  lineHeight: 1.7,
+  lineHeight: 1.8,
 };
 
 const emptyBox = {
   background: "rgba(255,255,255,0.03)",
-  border: "1px dashed rgba(255,255,255,0.18)",
-  borderRadius: "18px",
-  padding: "24px",
-  color: "rgba(255,255,255,0.7)",
+  border: "1px dashed rgba(255,255,255,0.16)",
+  borderRadius: "20px",
+  padding: "26px",
+  color: "rgba(255,255,255,0.72)",
   lineHeight: 1.8,
   textAlign: "center",
 };
 
 const lockedBox = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px dashed rgba(255,255,255,0.2)",
-  borderRadius: "20px",
-  padding: "22px",
+  background:
+    "linear-gradient(180deg, rgba(255,0,60,0.1), rgba(255,255,255,0.02))",
+  border: "1px solid rgba(255,0,60,0.14)",
+  borderRadius: "24px",
+  padding: "26px",
   textAlign: "center",
 };
 
 const lockedTitle = {
-  fontSize: "24px",
-  fontWeight: "800",
-  marginBottom: "8px",
+  fontSize: "28px",
+  fontWeight: "900",
+  marginBottom: "10px",
 };
 
 const lockedText = {
-  color: "rgba(255,255,255,0.68)",
-  lineHeight: 1.8,
+  color: "rgba(255,255,255,0.7)",
+  lineHeight: 1.9,
   maxWidth: "760px",
-  margin: "0 auto 16px auto",
+  margin: "0 auto 18px auto",
 };
 
 const unlockButton = {
   display: "inline-block",
-  padding: "14px 18px",
-  background: "white",
-  color: "black",
-  borderRadius: "12px",
-  fontWeight: "800",
+  padding: "15px 20px",
+  background: "#ff003c",
+  color: "white",
+  borderRadius: "14px",
+  fontWeight: "900",
   textDecoration: "none",
+  boxShadow: "0 10px 30px rgba(255,0,60,0.3)",
 };
