@@ -213,8 +213,12 @@ export default function DashboardLayout({
         {children}
       </main>
 
-      <nav style={bottomNav}>
-        <a href="/dashboard" style={bottomLink}>
+     <nav style={bottomNav}>
+  <a href="/dashboard" style={bottomLink}>
+    Home
+  </a>
+
+  <
           {t.dashboard}
         </a>
 
