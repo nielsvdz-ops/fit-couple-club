@@ -14,7 +14,7 @@ import {
 import { getCurrentUserAndProfile } from "../../lib/getProfile";
 
 export default async function DashboardPage() {
-  const { user, profile } = await getCurrentUserAndProfile();
+  const { user, profile, supabase } = await getCurrentUserAndProfile();
 
   if (!user) {
     redirect("/login");
@@ -27,78 +27,92 @@ export default async function DashboardPage() {
     redirect("/billing");
   }
 
+  const { data: preferences } = await supabase
+    .from("member_preferences")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
   const membershipType = profile?.membership_type || "free";
+  const isNutrition = String(membershipType).toLowerCase() === "nutrition";
+  const hasFitness = canAccessFitnessPages(profile);
 
-  const isNutrition =
-    String(membershipType).toLowerCase() === "nutrition";
-
-  const hasFitness =
-    canAccessFitnessPages(profile);
+  const goal = preferences?.goal || "Set your goal";
+  const dietType = preferences?.diet_type || "Set diet";
+  const fasting =
+    preferences?.fasting_enabled && preferences?.fasting_window
+      ? preferences.fasting_window
+      : "Off";
+  const trainingLocation = preferences?.training_location || "Set training";
+  const bootyFocus = preferences?.booty_focus ? "Enabled" : "Off";
 
   return (
     <DashboardLayout
       title="Dashboard"
-      subtitle="Your transformation system, workouts, nutrition, progress tracking, and coaching tools."
+      subtitle="Your personalized transformation system, nutrition, workouts, progress tracking and coaching tools."
       membershipType={membershipType}
     >
       <div style={wrap}>
         <section style={heroCard}>
-          <div style={heroTop}>
-            <div>
-              <div style={eyebrow}>Fit Couple Club</div>
+          <img src="/images/background.png" alt="" style={heroImage} />
+          <div style={heroOverlay} />
 
-              <h2 style={heroTitle}>
-                Welcome back
-                {user?.email
-                  ? `, ${user.email.split("@")[0]}`
-                  : ""}
-              </h2>
+          <div style={heroContent}>
+            <div style={heroTop}>
+              <div>
+                <div style={eyebrowRed}>FitCoupleClub Dashboard</div>
 
-              <p style={heroText}>
-                Continue your transformation with nutrition systems,
-                workouts, meal plans, progress tracking, Couple Zone,
-                and coaching tools.
-              </p>
-            </div>
+                <h2 style={heroTitle}>
+                  Welcome back
+                  {user?.email ? `, ${user.email.split("@")[0]}` : ""}
+                </h2>
 
-            <div style={membershipPill(hasFitness)}>
-              {String(membershipType)
-                .replace("_", " ")
-                .toUpperCase()}
-            </div>
-          </div>
+                <p style={heroText}>
+                  Your system is now shaped around your goal, diet style,
+                  training setup and lifestyle preferences.
+                </p>
+              </div>
 
-          <div style={statsGrid}>
-            <div style={statCard}>
-              <div style={statLabel}>Membership</div>
-              <div style={statValue}>
-                {String(membershipType).replace("_", " ")}
+              <div style={membershipPill(hasFitness)}>
+                {String(membershipType).replace("_", " ").toUpperCase()}
               </div>
             </div>
 
-            <div style={statCard}>
-              <div style={statLabel}>Status</div>
-              <div style={statValue}>
-                {profile?.is_active ? "Active" : "Inactive"}
+            <div style={personalGrid}>
+              <div style={personalCard}>
+                <div style={statLabel}>Goal</div>
+                <div style={statValue}>{goal}</div>
+              </div>
+
+              <div style={personalCard}>
+                <div style={statLabel}>Diet</div>
+                <div style={statValue}>{dietType}</div>
+              </div>
+
+              <div style={personalCard}>
+                <div style={statLabel}>Fasting</div>
+                <div style={statValue}>{fasting}</div>
+              </div>
+
+              <div style={personalCard}>
+                <div style={statLabel}>Training</div>
+                <div style={statValue}>{trainingLocation}</div>
+              </div>
+
+              <div style={personalCard}>
+                <div style={statLabel}>Booty Focus</div>
+                <div style={statValue}>{bootyFocus}</div>
               </div>
             </div>
 
-            <div style={statCard}>
-              <div style={statLabel}>Nutrition Access</div>
-              <div style={statValue}>
-                {canAccessNutritionPages(profile)
-                  ? "Unlocked"
-                  : "Locked"}
-              </div>
-            </div>
+            <div style={heroActions}>
+              <a href="/preferences" style={redButton}>
+                Edit Preferences
+              </a>
 
-            <div style={statCard}>
-              <div style={statLabel}>Fitness Access</div>
-              <div style={statValue}>
-                {hasFitness
-                  ? "Unlocked"
-                  : "Locked"}
-              </div>
+              <a href="/nutrition" style={darkButton}>
+                Start Nutrition
+              </a>
             </div>
           </div>
         </section>
@@ -106,17 +120,16 @@ export default async function DashboardPage() {
         {isNutrition && (
           <section style={upgradeCard}>
             <div>
-              <div style={eyebrow}>Upgrade</div>
+              <div style={eyebrowRed}>Upgrade</div>
 
               <h3 style={upgradeTitle}>
                 Unlock Full Access for only €10
               </h3>
 
               <p style={upgradeText}>
-                You already own Nutrition.
-                Upgrade once and unlock workouts,
-                programs, plan builder, Couple Zone,
-                progress tracking, and the full fitness platform.
+                You already own Nutrition. Upgrade once and unlock workouts,
+                programs, Plan Builder, Couple Zone, progress tracking and the
+                full fitness platform.
               </p>
             </div>
 
@@ -124,7 +137,7 @@ export default async function DashboardPage() {
               <CheckoutButton
                 plan="upgrade_full_access"
                 label="Upgrade for €10"
-                variant="yellow"
+                variant="red"
               />
             </div>
           </section>
@@ -133,23 +146,21 @@ export default async function DashboardPage() {
         <section style={section}>
           <div style={sectionHeader}>
             <div>
-              <div style={eyebrow}>Main Systems</div>
-              <h3 style={sectionTitle}>
-                Transformation Hub
-              </h3>
+              <div style={eyebrowRed}>Main Systems</div>
+              <h3 style={sectionTitle}>Transformation Hub</h3>
             </div>
           </div>
 
           <div style={grid}>
             <DashboardCard
               title="Nutrition"
-              description="Daily meal systems, macros, recipes, and grocery planning."
+              description="Daily meal systems, macros, recipes and grocery planning based on your preferences."
               href="/nutrition"
             />
 
             <DashboardCard
               title="Recipes"
-              description="Smart recipes generated for your goals and routines."
+              description="Smart recipes filtered around your goal, diet style and allergies."
               href="/recipes"
             />
 
@@ -157,7 +168,7 @@ export default async function DashboardPage() {
               <>
                 <DashboardCard
                   title="Workouts"
-                  description="Structured gym workouts with progression systems."
+                  description="Structured gym and home workouts with progression systems."
                   href="/workouts"
                 />
 
@@ -175,13 +186,13 @@ export default async function DashboardPage() {
 
                 <DashboardCard
                   title="Progress"
-                  description="Track weight, body stats, consistency, and progression."
+                  description="Track weight, body stats, consistency and progression."
                   href="/progress"
                 />
 
                 <DashboardCard
                   title="Couple Zone"
-                  description="Train together, shop together, and stay accountable together."
+                  description="Train together, shop together and stay accountable together."
                   href="/couple-zone"
                 />
               </>
@@ -189,7 +200,7 @@ export default async function DashboardPage() {
 
             <DashboardCard
               title="Coaching"
-              description="Book coaching calls, schedule sessions, and get direct guidance."
+              description="Buy a coaching call, schedule sessions and get direct guidance."
               href="/coaching"
             />
           </div>
@@ -197,38 +208,34 @@ export default async function DashboardPage() {
 
         <section style={bottomGrid}>
           <div style={tipsCard}>
-            <div style={eyebrow}>Quick Tips</div>
+            <div style={eyebrowRed}>Today’s Focus</div>
 
             <h3 style={miniTitle}>
               Stay consistent
             </h3>
 
             <ul style={tipsList}>
-              <li>Track your meals daily</li>
               <li>Hit your protein target</li>
-              <li>Train at least 3x per week</li>
+              <li>Follow your selected diet structure</li>
+              <li>Train according to your location and experience</li>
               <li>Sleep 7–9 hours consistently</li>
               <li>Review your progress weekly</li>
             </ul>
           </div>
 
           <div style={activityCard}>
-            <div style={eyebrow}>System Access</div>
+            <div style={eyebrowRed}>System Access</div>
 
             <h3 style={miniTitle}>
               Unlocked features
             </h3>
 
             <div style={featureList}>
-              <div style={featureItem(
-                canAccessNutritionPages(profile)
-              )}>
+              <div style={featureItem(canAccessNutritionPages(profile))}>
                 Nutrition System
               </div>
 
-              <div style={featureItem(
-                hasFitness
-              )}>
+              <div style={featureItem(hasFitness)}>
                 Workout System
               </div>
 
@@ -240,10 +247,12 @@ export default async function DashboardPage() {
                 Grocery Generator
               </div>
 
-              <div style={featureItem(
-                canAccessCoachingPage(profile)
-              )}>
+              <div style={featureItem(canAccessCoachingPage(profile))}>
                 Coaching Access
+              </div>
+
+              <div style={featureItem(Boolean(preferences?.booty_focus))}>
+                Booty Builder Focus
               </div>
             </div>
           </div>
@@ -255,20 +264,43 @@ export default async function DashboardPage() {
 
 const wrap = {
   display: "grid",
-  gap: "24px",
+  gap: "26px",
   width: "100%",
   maxWidth: "1400px",
   margin: "0 auto",
 };
 
 const heroCard = {
+  position: "relative",
+  overflow: "hidden",
+  border: "1px solid rgba(255,255,255,0.10)",
+  minHeight: "520px",
+  background: "#050505",
+};
+
+const heroImage = {
+  position: "absolute",
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  filter: "grayscale(1) brightness(0.28) contrast(1.18)",
+};
+
+const heroOverlay = {
+  position: "absolute",
+  inset: 0,
   background:
-    "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(250,204,21,0.08))",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "28px",
-  padding: "clamp(20px, 4vw, 34px)",
+    "linear-gradient(90deg, rgba(0,0,0,0.96), rgba(0,0,0,0.78), rgba(100,0,0,0.42))",
+  zIndex: 1,
+};
+
+const heroContent = {
+  position: "relative",
+  zIndex: 2,
+  padding: "clamp(24px, 5vw, 42px)",
   display: "grid",
-  gap: "24px",
+  gap: "28px",
 };
 
 const heroTop = {
@@ -279,95 +311,128 @@ const heroTop = {
   flexWrap: "wrap",
 };
 
-const eyebrow = {
+const eyebrowRed = {
   fontSize: "12px",
   textTransform: "uppercase",
   letterSpacing: "0.18em",
-  color: "rgba(255,255,255,0.45)",
+  color: "#ef4444",
   marginBottom: "10px",
+  fontWeight: "950",
 };
 
 const heroTitle = {
   margin: 0,
-  fontSize: "clamp(32px, 6vw, 56px)",
-  fontWeight: "900",
-  lineHeight: 1,
+  fontSize: "clamp(42px, 8vw, 76px)",
+  fontWeight: "950",
+  lineHeight: 0.92,
+  letterSpacing: "-0.06em",
+  textTransform: "uppercase",
 };
 
 const heroText = {
-  marginTop: "16px",
-  maxWidth: "720px",
+  marginTop: "18px",
+  maxWidth: "760px",
   color: "rgba(255,255,255,0.72)",
   lineHeight: 1.8,
-  fontSize: "clamp(15px, 2vw, 18px)",
+  fontSize: "clamp(16px, 2vw, 19px)",
 };
 
 const membershipPill = (full) => ({
   padding: "12px 18px",
-  borderRadius: "999px",
-  background: full
-    ? "rgba(250,204,21,0.18)"
-    : "rgba(255,255,255,0.08)",
+  background: full ? "rgba(176,0,0,0.24)" : "rgba(255,255,255,0.06)",
   border: full
-    ? "1px solid rgba(250,204,21,0.35)"
+    ? "1px solid rgba(176,0,0,0.45)"
     : "1px solid rgba(255,255,255,0.10)",
-  fontWeight: "900",
+  color: full ? "#fff" : "rgba(255,255,255,0.76)",
+  fontWeight: "950",
   fontSize: "13px",
   letterSpacing: "0.08em",
 });
 
-const statsGrid = {
+const personalGrid = {
   display: "grid",
   gridTemplateColumns:
-    "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
-  gap: "16px",
+    "repeat(auto-fit, minmax(min(100%, 190px), 1fr))",
+  gap: "14px",
 };
 
-const statCard = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  borderRadius: "18px",
+const personalCard = {
+  background: "rgba(0,0,0,0.45)",
+  border: "1px solid rgba(255,255,255,0.10)",
+  borderLeft: "3px solid #b00000",
   padding: "18px",
 };
 
 const statLabel = {
-  color: "rgba(255,255,255,0.45)",
+  color: "rgba(255,255,255,0.48)",
   fontSize: "12px",
   textTransform: "uppercase",
   letterSpacing: "0.14em",
   marginBottom: "10px",
+  fontWeight: "900",
 };
 
 const statValue = {
-  fontSize: "22px",
-  fontWeight: "800",
+  fontSize: "20px",
+  fontWeight: "950",
+  textTransform: "uppercase",
+};
+
+const heroActions = {
+  display: "flex",
+  gap: "14px",
+  flexWrap: "wrap",
+};
+
+const redButton = {
+  display: "inline-flex",
+  padding: "15px 22px",
+  background: "#b00000",
+  color: "white",
+  textDecoration: "none",
+  fontWeight: "950",
+  textTransform: "uppercase",
+};
+
+const darkButton = {
+  display: "inline-flex",
+  padding: "15px 22px",
+  background: "rgba(255,255,255,0.05)",
+  border: "1px solid rgba(255,255,255,0.14)",
+  color: "white",
+  textDecoration: "none",
+  fontWeight: "950",
+  textTransform: "uppercase",
 };
 
 const upgradeCard = {
   background:
-    "linear-gradient(135deg, rgba(250,204,21,0.12), rgba(255,255,255,0.05))",
-  border: "1px solid rgba(250,204,21,0.28)",
-  borderRadius: "24px",
-  padding: "26px",
+    "linear-gradient(135deg, rgba(127,29,29,0.34), rgba(255,255,255,0.035))",
+  border: "1px solid rgba(176,0,0,0.35)",
+  borderLeft: "3px solid #b00000",
+  padding: "clamp(24px, 5vw, 34px)",
   display: "grid",
   gap: "20px",
 };
 
 const upgradeTitle = {
   margin: 0,
-  fontSize: "34px",
-  fontWeight: "900",
+  fontSize: "clamp(30px, 5vw, 46px)",
+  lineHeight: 0.95,
+  fontWeight: "950",
+  textTransform: "uppercase",
+  letterSpacing: "-0.04em",
 };
 
 const upgradeText = {
-  marginTop: "12px",
+  marginTop: "14px",
   color: "rgba(255,255,255,0.74)",
   lineHeight: 1.8,
   maxWidth: "900px",
 };
 
 const upgradeButtonWrap = {
-  maxWidth: "320px",
+  maxWidth: "340px",
 };
 
 const section = {
@@ -385,8 +450,11 @@ const sectionHeader = {
 
 const sectionTitle = {
   margin: 0,
-  fontSize: "clamp(24px, 4vw, 36px)",
-  fontWeight: "900",
+  fontSize: "clamp(30px, 5vw, 48px)",
+  fontWeight: "950",
+  lineHeight: 0.95,
+  textTransform: "uppercase",
+  letterSpacing: "-0.04em",
 };
 
 const grid = {
@@ -405,24 +473,24 @@ const bottomGrid = {
 };
 
 const tipsCard = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "24px",
+  background: "#060606",
+  border: "1px solid rgba(255,255,255,0.09)",
+  borderLeft: "3px solid #b00000",
   padding: "24px",
 };
 
 const activityCard = {
   background:
-    "linear-gradient(135deg, rgba(96,165,250,0.10), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(96,165,250,0.18)",
-  borderRadius: "24px",
+    "linear-gradient(135deg, rgba(127,29,29,0.26), rgba(255,255,255,0.035))",
+  border: "1px solid rgba(176,0,0,0.28)",
   padding: "24px",
 };
 
 const miniTitle = {
   margin: "0 0 18px",
   fontSize: "28px",
-  fontWeight: "900",
+  fontWeight: "950",
+  textTransform: "uppercase",
 };
 
 const tipsList = {
@@ -440,13 +508,12 @@ const featureList = {
 
 const featureItem = (active) => ({
   padding: "12px 14px",
-  borderRadius: "12px",
   background: active
     ? "rgba(34,197,94,0.12)"
-    : "rgba(255,255,255,0.06)",
+    : "rgba(255,255,255,0.05)",
   border: active
     ? "1px solid rgba(34,197,94,0.22)"
     : "1px solid rgba(255,255,255,0.08)",
   color: active ? "#86efac" : "rgba(255,255,255,0.6)",
-  fontWeight: "700",
+  fontWeight: "850",
 });
