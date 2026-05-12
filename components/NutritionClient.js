@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { createClient } from "../lib/supabase/client";
 import nutritionPlans, {
   MEAL_GOALS,
   WEEK_DAYS,
@@ -10,14 +11,13 @@ import { useLanguage } from "../lib/useLanguage";
 
 const ui = {
   en: {
-    pageEyebrow: "Nutrition system",
-    pageTitle: "Personalized meal routines",
+    pageEyebrow: "Personalized nutrition system",
+    pageTitle: "Fuel your transformation.",
     pageSubtitle:
-      "Choose your goal and routine. Every routine is built from the recipe database and turns into a supermarket shopping list.",
+      "Your meal routines, macros, fasting setup, and grocery lists adapt around your goal and preferences.",
     goal: "Goal",
     routine: "Daily routine",
     weekDay: "Day",
-    macros: "Daily macros",
     calories: "Calories",
     protein: "Protein",
     carbs: "Carbs",
@@ -35,20 +35,24 @@ const ui = {
     fullWeek: "Full week",
     grams: "g",
     noPlan: "No plan found for this goal.",
-    routineLocked:
-      "This routine is locked for your current membership.",
+    routineLocked: "This routine is locked for your current membership.",
     accessText:
-      "Nutrition, Full Access, VIP and Coaching memberships unlock all nutrition routines.",
+      "Nutrition and Full Access memberships unlock all nutrition routines.",
+    preferences: "Your setup",
+    fasting: "Fasting",
+    diet: "Diet",
+    allergies: "Allergies",
+    editPreferences: "Edit Preferences",
   },
+
   nl: {
-    pageEyebrow: "Voedingssysteem",
-    pageTitle: "Persoonlijke maaltijd routines",
+    pageEyebrow: "Persoonlijk voedingssysteem",
+    pageTitle: "Fuel je transformatie.",
     pageSubtitle:
-      "Kies je doel en routine. Elke routine is gemaakt vanuit de recepten database en wordt omgezet naar een supermarkt boodschappenlijst.",
+      "Je maaltijdroutines, macro’s, fasting setup en boodschappenlijsten passen zich aan jouw doel en voorkeuren aan.",
     goal: "Doel",
     routine: "Dagelijkse routine",
     weekDay: "Dag",
-    macros: "Dagelijkse macro’s",
     calories: "Calorieën",
     protein: "Eiwitten",
     carbs: "Koolhydraten",
@@ -66,10 +70,14 @@ const ui = {
     fullWeek: "Volledige week",
     grams: "g",
     noPlan: "Geen plan gevonden voor dit doel.",
-    routineLocked:
-      "Deze routine is vergrendeld voor je huidige membership.",
+    routineLocked: "Deze routine is vergrendeld voor je huidige membership.",
     accessText:
-      "Nutrition, Full Access, VIP en Coaching memberships ontgrendelen alle voedingsroutines.",
+      "Nutrition en Full Access memberships ontgrendelen alle voedingsroutines.",
+    preferences: "Jouw setup",
+    fasting: "Fasting",
+    diet: "Dieet",
+    allergies: "Allergieën",
+    editPreferences: "Voorkeuren aanpassen",
   },
 };
 
@@ -109,8 +117,15 @@ function translateDay(day, language) {
 function normalizeGoalValue(value) {
   const clean = String(value || "").toLowerCase().trim();
 
+  if (clean === "lose fat") return "fat-loss";
   if (clean === "lose-fat") return "fat-loss";
+  if (clean === "fat loss") return "fat-loss";
+  if (clean === "build muscle") return "muscle-gain";
   if (clean === "build-muscle") return "muscle-gain";
+  if (clean === "muscle gain") return "muscle-gain";
+  if (clean === "booty builder") return "muscle-gain";
+  if (clean === "tone & shape") return "fat-loss";
+  if (clean === "athletic performance") return "muscle-gain";
 
   return clean || "fat-loss";
 }
@@ -131,7 +146,6 @@ function translateFoodText(text, language) {
     ["Tuna", "tonijn"],
     ["Tofu", "tofu"],
     ["Tempeh", "tempeh"],
-    ["Seitan", "seitan"],
     ["Egg whites", "eiwitten"],
     ["Eggs", "eieren"],
     ["Greek yogurt", "Griekse yoghurt"],
@@ -158,8 +172,6 @@ function translateFoodText(text, language) {
     ["Berries", "bessen"],
     ["Strawberries", "aardbeien"],
     ["Blueberries", "blauwe bessen"],
-    ["Mango", "mango"],
-    ["Pineapple", "ananas"],
     ["Broccoli", "broccoli"],
     ["Spinach", "spinazie"],
     ["Green beans", "groene bonen"],
@@ -262,13 +274,41 @@ function formatAmount(grams, language) {
 
 export default function NutritionClient({ membershipType }) {
   const { language } = useLanguage();
+  const supabase = createClient();
 
+  const [preferences, setPreferences] = useState(null);
   const [selectedGoal, setSelectedGoal] = useState("fat-loss");
   const [selectedRoutine, setSelectedRoutine] = useState(0);
   const [selectedDay, setSelectedDay] = useState(0);
   const [listMode, setListMode] = useState("day");
 
   const copy = ui[language] || ui.en;
+
+  useEffect(() => {
+    async function loadPreferences() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data } = await supabase
+        .from("member_preferences")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (data) {
+        setPreferences(data);
+
+        if (data.goal) {
+          setSelectedGoal(normalizeGoalValue(data.goal));
+        }
+      }
+    }
+
+    loadPreferences();
+  }, [supabase]);
 
   const accessLimit = getMealPlanAccessLimit
     ? getMealPlanAccessLimit(membershipType)
@@ -312,12 +352,48 @@ export default function NutritionClient({ membershipType }) {
     );
   }
 
+  const preferenceBadges = [
+    preferences?.goal ? `Goal: ${preferences.goal}` : null,
+    preferences?.diet_type ? `Diet: ${preferences.diet_type}` : null,
+    preferences?.fasting_enabled
+      ? `Fasting: ${preferences.fasting_window || "On"}`
+      : null,
+    preferences?.gluten_free ? "Gluten Free" : null,
+    preferences?.lactose_free ? "Lactose Free" : null,
+    preferences?.vegan ? "Vegan" : null,
+    preferences?.vegetarian ? "Vegetarian" : null,
+    preferences?.booty_focus ? "Booty Focus" : null,
+  ].filter(Boolean);
+
   return (
     <div style={page}>
       <section style={hero}>
-        <div style={eyebrow}>{copy.pageEyebrow}</div>
-        <h1 style={title}>{copy.pageTitle}</h1>
-        <p style={subtitle}>{copy.pageSubtitle}</p>
+        <img src="/images/background.png" alt="" style={heroImage} />
+        <div style={heroOverlay} />
+
+        <div style={heroContent}>
+          <div style={eyebrowRed}>{copy.pageEyebrow}</div>
+          <h1 style={title}>{copy.pageTitle}</h1>
+          <p style={subtitle}>{copy.pageSubtitle}</p>
+
+          <div style={badgeRow}>
+            {preferenceBadges.length > 0 ? (
+              preferenceBadges.map((badge) => (
+                <span key={badge} style={preferenceBadge}>
+                  {badge}
+                </span>
+              ))
+            ) : (
+              <a href="/preferences" style={preferenceLink}>
+                Complete your preferences
+              </a>
+            )}
+          </div>
+
+          <a href="/preferences" style={editButton}>
+            {copy.editPreferences}
+          </a>
+        </div>
       </section>
 
       <section style={controlsGrid}>
@@ -401,7 +477,7 @@ export default function NutritionClient({ membershipType }) {
           <section style={sectionBlock}>
             <div style={sectionHeader}>
               <div>
-                <div style={eyebrow}>{copy.meals}</div>
+                <div style={eyebrowRed}>{copy.meals}</div>
                 <h2 style={sectionTitle}>
                   {translateDay(currentDay.day, language)}
                 </h2>
@@ -448,7 +524,7 @@ export default function NutritionClient({ membershipType }) {
           <section style={sectionBlock}>
             <div style={sectionHeader}>
               <div>
-                <div style={eyebrow}>
+                <div style={eyebrowRed}>
                   {listMode === "week" ? copy.weeklySupermarket : copy.supermarket}
                 </div>
                 <h2 style={sectionTitle}>
@@ -504,31 +580,96 @@ const page = {
 };
 
 const hero = {
-  display: "grid",
-  gap: "10px",
+  position: "relative",
+  overflow: "hidden",
+  minHeight: "360px",
+  border: "1px solid rgba(255,255,255,0.10)",
+  background: "#050505",
 };
 
-const eyebrow = {
+const heroImage = {
+  position: "absolute",
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  filter: "grayscale(1) brightness(0.28) contrast(1.18)",
+};
+
+const heroOverlay = {
+  position: "absolute",
+  inset: 0,
+  background:
+    "linear-gradient(90deg, rgba(0,0,0,0.96), rgba(0,0,0,0.78), rgba(100,0,0,0.42))",
+  zIndex: 1,
+};
+
+const heroContent = {
+  position: "relative",
+  zIndex: 2,
+  padding: "clamp(24px, 5vw, 42px)",
+};
+
+const eyebrowRed = {
   fontSize: "13px",
   textTransform: "uppercase",
   letterSpacing: "0.18em",
-  color: "rgba(255,255,255,0.48)",
-  fontWeight: "800",
-};
-
-const title = {
-  margin: 0,
-  fontSize: "clamp(40px, 7vw, 86px)",
-  lineHeight: 0.95,
+  color: "#ef4444",
   fontWeight: "950",
 };
 
+const title = {
+  margin: "12px 0 0",
+  fontSize: "clamp(42px, 8vw, 86px)",
+  lineHeight: 0.9,
+  fontWeight: "950",
+  letterSpacing: "-0.06em",
+  textTransform: "uppercase",
+};
+
 const subtitle = {
-  margin: 0,
+  marginTop: "18px",
   maxWidth: "920px",
   color: "rgba(255,255,255,0.72)",
-  fontSize: "clamp(16px, 2.2vw, 24px)",
-  lineHeight: 1.5,
+  fontSize: "clamp(16px, 2.2vw, 21px)",
+  lineHeight: 1.6,
+};
+
+const badgeRow = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "10px",
+  marginTop: "24px",
+};
+
+const preferenceBadge = {
+  background: "rgba(176,0,0,0.18)",
+  border: "1px solid rgba(176,0,0,0.42)",
+  color: "white",
+  padding: "10px 13px",
+  fontWeight: "900",
+  textTransform: "uppercase",
+  fontSize: "12px",
+};
+
+const preferenceLink = {
+  color: "white",
+  background: "#b00000",
+  padding: "12px 16px",
+  textDecoration: "none",
+  fontWeight: "950",
+  textTransform: "uppercase",
+};
+
+const editButton = {
+  display: "inline-flex",
+  marginTop: "22px",
+  background: "#b00000",
+  color: "white",
+  padding: "14px 18px",
+  textDecoration: "none",
+  fontWeight: "950",
+  textTransform: "uppercase",
 };
 
 const controlsGrid = {
@@ -547,33 +688,30 @@ const label = {
   textTransform: "uppercase",
   letterSpacing: "0.16em",
   color: "rgba(255,255,255,0.5)",
-  fontWeight: "800",
+  fontWeight: "900",
 };
 
 const select = {
   width: "100%",
   minHeight: "56px",
-  borderRadius: "16px",
   border: "1px solid rgba(255,255,255,0.14)",
-  background: "#151515",
+  background: "#090909",
   color: "white",
   padding: "0 18px",
   fontSize: "16px",
-  fontWeight: "800",
+  fontWeight: "900",
   outline: "none",
 };
 
 const lockedCard = {
-  border: "1px solid rgba(250,204,21,0.35)",
-  background: "rgba(250,204,21,0.08)",
-  borderRadius: "22px",
+  border: "1px solid rgba(176,0,0,0.35)",
+  background: "rgba(176,0,0,0.12)",
   padding: "22px",
 };
 
 const emptyCard = {
   border: "1px solid rgba(255,255,255,0.12)",
   background: "rgba(255,255,255,0.04)",
-  borderRadius: "22px",
   padding: "22px",
 };
 
@@ -590,9 +728,9 @@ const summaryGrid = {
 };
 
 const summaryCard = {
-  border: "1px solid rgba(255,255,255,0.1)",
-  background: "rgba(255,255,255,0.045)",
-  borderRadius: "20px",
+  border: "1px solid rgba(255,255,255,0.10)",
+  borderLeft: "3px solid #b00000",
+  background: "#060606",
   padding: "20px",
   display: "grid",
   gap: "8px",
@@ -601,12 +739,13 @@ const summaryCard = {
 const smallLabel = {
   color: "rgba(255,255,255,0.56)",
   fontSize: "14px",
+  textTransform: "uppercase",
+  fontWeight: "900",
 };
 
 const sectionBlock = {
-  border: "1px solid rgba(255,255,255,0.1)",
+  border: "1px solid rgba(255,255,255,0.10)",
   background: "rgba(255,255,255,0.035)",
-  borderRadius: "28px",
   padding: "clamp(18px, 3vw, 32px)",
   display: "grid",
   gap: "22px",
@@ -622,8 +761,11 @@ const sectionHeader = {
 
 const sectionTitle = {
   margin: "6px 0 0",
-  fontSize: "clamp(28px, 4vw, 48px)",
-  lineHeight: 1,
+  fontSize: "clamp(30px, 5vw, 52px)",
+  lineHeight: 0.95,
+  fontWeight: "950",
+  textTransform: "uppercase",
+  letterSpacing: "-0.04em",
 };
 
 const mealGrid = {
@@ -633,9 +775,9 @@ const mealGrid = {
 };
 
 const mealCard = {
-  border: "1px solid rgba(255,255,255,0.1)",
-  background: "rgba(255,255,255,0.045)",
-  borderRadius: "24px",
+  border: "1px solid rgba(255,255,255,0.10)",
+  borderTop: "3px solid #b00000",
+  background: "#060606",
   padding: "22px",
   display: "grid",
   gap: "14px",
@@ -643,19 +785,21 @@ const mealCard = {
 
 const time = {
   color: "rgba(255,255,255,0.56)",
-  fontWeight: "800",
+  fontWeight: "900",
 };
 
 const mealTitle = {
   margin: 0,
   fontSize: "clamp(24px, 3vw, 34px)",
-  lineHeight: 1.1,
+  lineHeight: 1.05,
+  fontWeight: "950",
+  textTransform: "uppercase",
 };
 
 const kcalBadge = {
   width: "fit-content",
-  borderRadius: "999px",
-  background: "rgba(255,255,255,0.09)",
+  background: "rgba(176,0,0,0.18)",
+  border: "1px solid rgba(176,0,0,0.35)",
   padding: "8px 14px",
   fontWeight: "950",
   fontSize: "20px",
@@ -670,9 +814,9 @@ const macroLine = {
 const miniLabel = {
   textTransform: "uppercase",
   letterSpacing: "0.16em",
-  color: "rgba(255,255,255,0.5)",
+  color: "#ef4444",
   fontSize: "13px",
-  fontWeight: "900",
+  fontWeight: "950",
 };
 
 const list = {
@@ -696,13 +840,15 @@ const toggleWrap = {
 };
 
 const toggleButton = (active) => ({
-  border: "1px solid rgba(255,255,255,0.14)",
-  background: active ? "white" : "rgba(255,255,255,0.05)",
-  color: active ? "black" : "white",
-  borderRadius: "999px",
+  border: active
+    ? "1px solid rgba(176,0,0,0.75)"
+    : "1px solid rgba(255,255,255,0.14)",
+  background: active ? "#b00000" : "rgba(255,255,255,0.05)",
+  color: "white",
   padding: "10px 14px",
   cursor: "pointer",
-  fontWeight: "900",
+  fontWeight: "950",
+  textTransform: "uppercase",
 });
 
 const shoppingGrid = {
@@ -712,9 +858,9 @@ const shoppingGrid = {
 };
 
 const shoppingItem = {
-  border: "1px solid rgba(255,255,255,0.1)",
-  background: "rgba(255,255,255,0.045)",
-  borderRadius: "18px",
+  border: "1px solid rgba(255,255,255,0.10)",
+  borderLeft: "3px solid #b00000",
+  background: "#060606",
   padding: "16px",
   display: "grid",
   gap: "6px",
