@@ -215,21 +215,25 @@ export default function DashboardLayout({
 
      <nav style={bottomNav}>
   <a href="/dashboard" style={bottomLink}>
-    Home
+    {t.dashboard}
   </a>
 
-  <
-          {t.dashboard}
-        </a>
+  {canAccessNutrition && (
+    <a href="/nutrition" style={bottomLink}>
+      {t.nutrition}
+    </a>
+  )}
 
-        <a href="/billing" style={bottomLinkActive}>
-          {t.upgrade}
-        </a>
+  {canAccessFitness && (
+    <a href="/workouts" style={bottomLink}>
+      {t.workouts}
+    </a>
+  )}
 
-        <a href="/account" style={bottomLink}>
-          {t.account}
-        </a>
-      </nav>
+  <a href="/account" style={bottomLinkActive}>
+    {t.account}
+  </a>
+</nav>
     </div>
   );
 }
