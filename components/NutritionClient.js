@@ -315,9 +315,29 @@ export default function NutritionClient({ membershipType }) {
     : 999;
 
   const normalizedGoal = normalizeGoalValue(selectedGoal);
-  const currentPlans = nutritionPlans?.[normalizedGoal] || [];
-  const selectedPlan = currentPlans?.[selectedRoutine] || currentPlans?.[0] || null;
-  const currentDay = selectedPlan?.days?.[selectedDay] || selectedPlan?.days?.[0] || null;
+
+const preferenceFilters = useMemo(() => {
+  const dietType = String(preferences?.diet_type || "").toLowerCase();
+
+  return {
+    vegan: preferences?.vegan || dietType === "vegan",
+    vegetarian:
+      preferences?.vegetarian ||
+      dietType === "vegetarian" ||
+      dietType === "vegan",
+    gluten_free: preferences?.gluten_free,
+    lactose_free: preferences?.lactose_free,
+    nut_free: preferences?.nut_free || preferences?.nuts_free,
+    shellfish_free: preferences?.shellfish_free,
+  };
+}, [preferences]);
+
+const currentPlans = useMemo(() => {
+  return buildMealPlansForGoal(normalizedGoal, preferenceFilters);
+}, [normalizedGoal, preferenceFilters]);
+
+const selectedPlan =
+  currentPlans?.[selectedRoutine] || currentPlans?.[0] || null;
   const locked = selectedRoutine >= accessLimit;
 
   const dayShoppingList = useMemo(
@@ -353,17 +373,19 @@ export default function NutritionClient({ membershipType }) {
   }
 
   const preferenceBadges = [
-    preferences?.goal ? `Goal: ${preferences.goal}` : null,
-    preferences?.diet_type ? `Diet: ${preferences.diet_type}` : null,
-    preferences?.fasting_enabled
-      ? `Fasting: ${preferences.fasting_window || "On"}`
-      : null,
-    preferences?.gluten_free ? "Gluten Free" : null,
-    preferences?.lactose_free ? "Lactose Free" : null,
-    preferences?.vegan ? "Vegan" : null,
-    preferences?.vegetarian ? "Vegetarian" : null,
-    preferences?.booty_focus ? "Booty Focus" : null,
-  ].filter(Boolean);
+  preferences?.goal ? `Goal: ${preferences.goal}` : null,
+  preferences?.diet_type ? `Diet: ${preferences.diet_type}` : null,
+  preferences?.fasting_enabled
+    ? `Fasting: ${preferences.fasting_window || "On"}`
+    : null,
+  preferences?.gluten_free ? "Gluten Free" : null,
+  preferences?.lactose_free ? "Lactose Free" : null,
+  preferences?.nut_free || preferences?.nuts_free ? "Nut Free" : null,
+  preferences?.shellfish_free ? "Shellfish Free" : null,
+  preferences?.vegan ? "Vegan" : null,
+  preferences?.vegetarian ? "Vegetarian" : null,
+  preferences?.booty_focus ? "Booty Focus" : null,
+].filter(Boolean);
 
   return (
     <div style={page}>
