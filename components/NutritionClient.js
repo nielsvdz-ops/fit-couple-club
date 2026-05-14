@@ -339,7 +339,13 @@ const currentPlans = useMemo(() => {
 
 const selectedPlan =
   currentPlans?.[selectedRoutine] || currentPlans?.[0] || null;
-  const locked = selectedRoutine >= accessLimit;
+
+const currentDay =
+  selectedPlan?.days?.[selectedDay] || selectedPlan?.days?.[0] || null;
+
+const safeMeals = (currentDay?.meals || []).filter(Boolean);
+
+const locked = selectedRoutine >= accessLimit;
 
   const dayShoppingList = useMemo(
     () => buildShoppingListFromDay(currentDay, language),
