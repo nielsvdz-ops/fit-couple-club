@@ -6,6 +6,7 @@ import nutritionPlans, {
   MEAL_GOALS,
   WEEK_DAYS,
   getMealPlanAccessLimit,
+  buildMealPlansForGoal,
 } from "../lib/mealPlans";
 import { useLanguage } from "../lib/useLanguage";
 
