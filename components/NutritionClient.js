@@ -214,7 +214,7 @@ function normalizeIngredientName(raw) {
 function buildShoppingListFromDay(day, language) {
   const map = {};
 
-  (day?.meals || []).forEach((meal) => {
+  (day?.meals || []).filter(Boolean).forEach((meal) => {
     (meal?.ingredients || []).forEach((ingredient) => {
       const grams = safeNumber(ingredient);
       const name = normalizeIngredientName(ingredient);
@@ -507,14 +507,14 @@ const selectedPlan =
             </div>
 
             <div style={mealGrid}>
-              {(currentDay.meals || []).map((meal, index) => (
+              {safeMeals.map((meal, index) => (
                 <article key={`${meal.time}-${meal.mealName}-${index}`} style={mealCard}>
                   <div style={time}>{meal.time}</div>
                   <h3 style={mealTitle}>
                     {translateFoodText(meal.mealName, language)}
                   </h3>
 
-                  <div style={kcalBadge}>{meal.calories}</div>
+                 <div style={kcalBadge}>{meal.calories || "0 kcal"}</div>
 
                   <p style={macroLine}>
                     {copy.protein}: {meal.protein} &nbsp; {copy.carbs}:{" "}
