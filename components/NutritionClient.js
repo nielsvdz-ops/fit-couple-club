@@ -6,6 +6,7 @@ import nutritionPlans, {
   MEAL_GOALS,
   WEEK_DAYS,
   getMealPlanAccessLimit,
+  buildMealPlansForGoal,  // ADD THIS LINE
 } from "../lib/mealPlans";
 import { useLanguage } from "../lib/useLanguage";
 
@@ -321,10 +322,7 @@ const preferenceFilters = useMemo(() => {
 
   return {
     vegan: preferences?.vegan || dietType === "vegan",
-    vegetarian:
-      preferences?.vegetarian ||
-      dietType === "vegetarian" ||
-      dietType === "vegan",
+    vegetarian: preferences?.vegetarian || dietType === "vegetarian" || dietType === "vegan",
     gluten_free: preferences?.gluten_free,
     lactose_free: preferences?.lactose_free,
     nut_free: preferences?.nut_free || preferences?.nuts_free,
@@ -336,33 +334,35 @@ const currentPlans = useMemo(() => {
   return buildMealPlansForGoal(normalizedGoal, preferenceFilters);
 }, [normalizedGoal, preferenceFilters]);
 
-const selectedPlan =
-  currentPlans?.[selectedRoutine] || currentPlans?.[0] || null;
-  const locked = selectedRoutine >= accessLimit;
+const selectedPlan = currentPlans?.[selectedRoutine] || currentPlans?.[0] || null;
 
-  const dayShoppingList = useMemo(
-    () => buildShoppingListFromDay(currentDay, language),
-    [currentDay, language]
-  );
+// ✅ FIX: Define these BEFORE the useMemo hooks that depend on them
+const currentDay = selectedPlan?.days?.[selectedDay] || null;
+const safeMeals = currentDay?.meals || [];
+const locked = selectedRoutine >= accessLimit;
 
-  const weekShoppingList = useMemo(
-    () => buildShoppingListFromWeek(selectedPlan, language),
-    [selectedPlan, language]
-  );
+const dayShoppingList = useMemo(
+  () => buildShoppingListFromDay(currentDay, language),
+  [currentDay, language]
+);
 
-  const activeShoppingList =
-    listMode === "week" ? weekShoppingList : dayShoppingList;
+const weekShoppingList = useMemo(
+  () => buildShoppingListFromWeek(selectedPlan, language),
+  [selectedPlan, language]
+);
 
-  function handleGoalChange(event) {
-    setSelectedGoal(normalizeGoalValue(event.target.value));
-    setSelectedRoutine(0);
-    setSelectedDay(0);
-  }
+const activeShoppingList = listMode === "week" ? weekShoppingList : dayShoppingList;
 
-  function handleRoutineChange(event) {
-    setSelectedRoutine(Number(event.target.value || 0));
-    setSelectedDay(0);
-  }
+function handleGoalChange(event) {
+  setSelectedGoal(normalizeGoalValue(event.target.value));
+  setSelectedRoutine(0);
+  setSelectedDay(0);
+}
+
+function handleRoutineChange(event) {
+  setSelectedRoutine(Number(event.target.value || 0));
+  setSelectedDay(0);
+}
 
   if (!selectedPlan || !currentDay) {
     return (

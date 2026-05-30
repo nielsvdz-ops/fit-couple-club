@@ -5,14 +5,37 @@ import { createClient } from "@supabase/supabase-js";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// ✅ FIX: Only initialize if NOT in build phase
+const isBuilding = process.env.NEXT_PHASE === 'phase-production-build';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization to prevent build-time errors
+let stripe;
+let resend;
+let supabase;
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+function getStripe() {
+  if (!stripe && !isBuilding) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  }
+  return stripe;
+}
+
+function getResend() {
+  if (!resend && !isBuilding && process.env.RESEND_API_KEY) {
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resend;
+}
+
+function getSupabase() {
+  if (!supabase && !isBuilding) {
+    supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
+  }
+  return supabase;
+}
 
 const PLAN_MEMBERSHIP_MAP = {
   nutrition: "nutrition",
@@ -25,24 +48,15 @@ function normalizePlan(plan) {
     .toLowerCase()
     .trim();
 
-  if (
-    clean === "full access" ||
-    clean === "full-access"
-  ) {
+  if (clean === "full access" || clean === "full-access") {
     return "full_access";
   }
 
-  if (
-    clean === "upgrade full access" ||
-    clean === "upgrade-full-access"
-  ) {
+  if (clean === "upgrade full access" || clean === "upgrade-full-access") {
     return "upgrade_full_access";
   }
 
-  if (
-    clean === "coaching call" ||
-    clean === "coaching-call"
-  ) {
+  if (clean === "coaching call" || clean === "coaching-call") {
     return "coaching_call";
   }
 
@@ -55,7 +69,6 @@ function getPlanDetails(plan) {
       name: "Nutrition",
       badge: "Nutrition Member",
       dashboardPath: "/dashboard",
-
       perks: [
         "Daily nutrition routines",
         "Recipe access",
@@ -64,12 +77,10 @@ function getPlanDetails(plan) {
         "Access to the Coaching page",
       ],
     },
-
     full_access: {
       name: "Full Access",
       badge: "Full Access Member",
       dashboardPath: "/dashboard",
-
       perks: [
         "Everything from Nutrition",
         "Workout library",
@@ -80,12 +91,10 @@ function getPlanDetails(plan) {
         "Access to the Coaching page",
       ],
     },
-
     upgrade_full_access: {
       name: "Full Access Upgrade",
       badge: "Full Access Member",
       dashboardPath: "/dashboard",
-
       perks: [
         "Workout library unlocked",
         "Programs unlocked",
@@ -94,12 +103,10 @@ function getPlanDetails(plan) {
         "Couple Zone unlocked",
       ],
     },
-
     coaching_call: {
       name: "Coaching Call",
       badge: "Coaching Call Purchased",
       dashboardPath: "/coaching",
-
       perks: [
         "1 paid coaching call",
         "Choose your preferred date and time",
@@ -109,7 +116,6 @@ function getPlanDetails(plan) {
       ],
     },
   };
-
   return plans[plan] || plans.full_access;
 }
 
@@ -122,19 +128,10 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function buildWelcomeEmail({
-  plan,
-  email,
-}) {
+function buildWelcomeEmail({ plan, email }) {
   const details = getPlanDetails(plan);
-
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    "https://fitcoupleclub.com";
-
-  const dashboardUrl =
-    `${siteUrl}${details.dashboardPath}`;
-
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://fitcoupleclub.com";
+  const dashboardUrl = `${siteUrl}${details.dashboardPath}`;
   const perksHtml = details.perks
     .map(
       (perk) => `
@@ -144,7 +141,7 @@ function buildWelcomeEmail({
             <span style="color:#f5f5f5;margin-left:8px;">
               ${escapeHtml(perk)}
             </span>
-          </td>
+           </td>
         </tr>
       `
     )
@@ -152,86 +149,58 @@ function buildWelcomeEmail({
 
   return {
     subject: `Welcome to Fit Couple Club — ${details.name}`,
-
     html: `
       <div style="margin:0;padding:0;background:#050505;font-family:Arial,Helvetica,sans-serif;color:#ffffff;">
         <table width="100%" cellpadding="0" cellspacing="0" style="background:#050505;padding:32px 14px;">
           <tr>
             <td align="center">
-
               <table width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background:#0b0b0b;border:1px solid rgba(255,255,255,0.10);border-radius:26px;overflow:hidden;">
-
                 <tr>
                   <td style="padding:34px 28px;background:linear-gradient(135deg,#050505,#0b0b0b 55%,rgba(176,0,0,0.24));">
-
                     <div style="margin-bottom:26px;">
-                      <img
-                        src="https://fitcoupleclub.com/images/fitcouple-logo.png"
-                        alt="Fit Couple Club"
-                        style="width:180px;max-width:100%;"
-                      />
+                      <img src="https://fitcoupleclub.com/images/fitcouple-logo.png" alt="Fit Couple Club" style="width:180px;max-width:100%;" />
                     </div>
-
                     <div style="display:inline-block;padding:8px 13px;border-radius:999px;background:rgba(176,0,0,0.18);border:1px solid rgba(176,0,0,0.38);color:#ef4444;font-size:12px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;">
                       ${escapeHtml(details.badge)}
                     </div>
-
                     <h1 style="margin:22px 0 12px;font-size:38px;line-height:1.02;color:#ffffff;font-weight:950;">
                       Your transformation starts now.
                     </h1>
-
                     <p style="margin:0;color:rgba(255,255,255,0.74);font-size:17px;line-height:1.7;">
                       You officially joined Fit Couple Club.
                       Your dashboard, programs, nutrition system and transformation tools are now unlocked.
                     </p>
-
                   </td>
                 </tr>
-
                 <tr>
                   <td style="padding:28px;">
-
                     <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px;">
-
                       <div style="color:rgba(255,255,255,0.48);font-size:12px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px;">
                         You bought
                       </div>
-
                       <div style="font-size:30px;line-height:1.1;font-weight:950;color:#ffffff;">
                         ${escapeHtml(details.name)}
                       </div>
-
                       <div style="margin-top:10px;color:rgba(255,255,255,0.62);font-size:14px;">
                         Account: ${escapeHtml(email)}
                       </div>
-
                     </div>
-
                     <h2 style="margin:28px 0 12px;color:#ffffff;font-size:24px;font-weight:950;">
                       What you unlocked
                     </h2>
-
                     <table width="100%" cellpadding="0" cellspacing="0">
                       ${perksHtml}
                     </table>
-
                     <div style="text-align:center;margin:32px 0 10px;">
-
-                      <a
-                        href="${dashboardUrl}"
-                        style="display:inline-block;background:#b00000;color:#ffffff;text-decoration:none;font-weight:950;font-size:16px;padding:16px 26px;border-radius:16px;"
-                      >
+                      <a href="${dashboardUrl}" style="display:inline-block;background:#b00000;color:#ffffff;text-decoration:none;font-weight:950;font-size:16px;padding:16px 26px;border-radius:16px;">
                         Open Your Dashboard
                       </a>
-
                     </div>
-
                     <p style="margin:24px 0 0;color:rgba(255,255,255,0.68);font-size:15px;line-height:1.7;">
                       Start simple: open your dashboard,
                       choose the section you bought access to,
                       and follow the structure step by step.
                     </p>
-
                     <p style="margin:22px 0 0;color:#ffffff;font-size:15px;line-height:1.7;">
                       Welcome to the team,
                       <br />
@@ -239,22 +208,16 @@ function buildWelcomeEmail({
                       <br />
                       Fit Couple Club
                     </p>
-
                   </td>
                 </tr>
-
                 <tr>
                   <td style="padding:20px 28px;background:#070707;border-top:1px solid rgba(255,255,255,0.08);">
-
                     <p style="margin:0;color:rgba(255,255,255,0.42);font-size:12px;line-height:1.6;text-align:center;">
                       Need help? Reply to this email or contact us through Fit Couple Club.
                     </p>
-
                   </td>
                 </tr>
-
               </table>
-
             </td>
           </tr>
         </table>
@@ -263,24 +226,14 @@ function buildWelcomeEmail({
   };
 }
 
-async function sendWelcomeEmail({
-  plan,
-  email,
-}) {
-  if (
-    !process.env.RESEND_API_KEY ||
-    !email
-  ) {
+async function sendWelcomeEmail({ plan, email }) {
+  if (!process.env.RESEND_API_KEY || !email || isBuilding) {
     return;
   }
-
-  const emailData =
-    buildWelcomeEmail({
-      plan,
-      email,
-    });
-
-  await resend.emails.send({
+  const resendClient = getResend();
+  if (!resendClient) return;
+  const emailData = buildWelcomeEmail({ plan, email });
+  await resendClient.emails.send({
     from: "Fit Couple Club <noreply@fitcoupleclub.com>",
     to: [email],
     subject: emailData.subject,
@@ -288,396 +241,183 @@ async function sendWelcomeEmail({
   });
 }
 
-async function updateProfileAccess({
-  userId,
-  customerId,
-  email,
-  membershipType,
-}) {
-  const normalizedEmail = String(email || "")
-    .toLowerCase()
-    .trim();
-
+async function updateProfileAccess({ userId, customerId, email, membershipType }) {
+  const supabaseClient = getSupabase();
+  if (!supabaseClient) return null;
+  
+  const normalizedEmail = String(email || "").toLowerCase().trim();
   const updateData = {
     membership_type: membershipType,
     is_active: true,
-
-    ...(customerId
-      ? {
-          stripe_customer_id:
-            customerId,
-        }
-      : {}),
-
-    ...(normalizedEmail
-      ? {
-          email:
-            normalizedEmail,
-        }
-      : {}),
+    ...(customerId ? { stripe_customer_id: customerId } : {}),
+    ...(normalizedEmail ? { email: normalizedEmail } : {}),
   };
 
   if (userId) {
-    const { error, count } =
-      await supabase
-        .from("profiles")
-        .update(updateData)
-        .eq("id", userId)
-        .select("*", {
-          count: "exact",
-          head: true,
-        });
-
-    if (!error && count > 0)
-      return null;
-
-    if (error) {
-      console.error(
-        "UPDATE BY USER ID ERROR:",
-        error
-      );
-    }
+    const { error, count } = await supabaseClient
+      .from("profiles")
+      .update(updateData)
+      .eq("id", userId)
+      .select("*", { count: "exact", head: true });
+    if (!error && count > 0) return null;
+    if (error) console.error("UPDATE BY USER ID ERROR:", error);
   }
 
   if (customerId) {
-    const { error, count } =
-      await supabase
-        .from("profiles")
-        .update(updateData)
-        .eq(
-          "stripe_customer_id",
-          customerId
-        )
-        .select("*", {
-          count: "exact",
-          head: true,
-        });
-
-    if (!error && count > 0)
-      return null;
-
-    if (error) {
-      console.error(
-        "UPDATE BY CUSTOMER ID ERROR:",
-        error
-      );
-    }
+    const { error, count } = await supabaseClient
+      .from("profiles")
+      .update(updateData)
+      .eq("stripe_customer_id", customerId)
+      .select("*", { count: "exact", head: true });
+    if (!error && count > 0) return null;
+    if (error) console.error("UPDATE BY CUSTOMER ID ERROR:", error);
   }
 
   if (normalizedEmail) {
-    const { error, count } =
-      await supabase
-        .from("profiles")
-        .update(updateData)
-        .eq(
-          "email",
-          normalizedEmail
-        )
-        .select("*", {
-          count: "exact",
-          head: true,
-        });
-
-    if (!error && count > 0)
-      return null;
-
-    if (error) {
-      console.error(
-        "UPDATE BY EMAIL ERROR:",
-        error
-      );
-    }
+    const { error, count } = await supabaseClient
+      .from("profiles")
+      .update(updateData)
+      .eq("email", normalizedEmail)
+      .select("*", { count: "exact", head: true });
+    if (!error && count > 0) return null;
+    if (error) console.error("UPDATE BY EMAIL ERROR:", error);
   }
 
   if (userId) {
-    const { error } =
-      await supabase
-        .from("profiles")
-        .upsert(
-          {
-            id: userId,
-            email:
-              normalizedEmail,
-            membership_type:
-              membershipType,
-            is_active: true,
-
-            ...(customerId
-              ? {
-                  stripe_customer_id:
-                    customerId,
-                }
-              : {}),
-          },
-          {
-            onConflict: "id",
-          }
-        );
-
-    if (!error) return null;
-
-    console.error(
-      "UPSERT PROFILE ERROR:",
-      error
+    const { error } = await supabaseClient.from("profiles").upsert(
+      {
+        id: userId,
+        email: normalizedEmail,
+        membership_type: membershipType,
+        is_active: true,
+        ...(customerId ? { stripe_customer_id: customerId } : {}),
+      },
+      { onConflict: "id" }
     );
+    if (!error) return null;
+    console.error("UPSERT PROFILE ERROR:", error);
   }
-
-  return new Error(
-    "No matching profile found to update."
-  );
+  return new Error("No matching profile found to update.");
 }
 
-async function createCoachingCallCredit({
-  userId,
-  customerId,
-  email,
-  stripeSessionId,
-}) {
-  const normalizedEmail = String(email || "")
-    .toLowerCase()
-    .trim();
-
-  const { error } =
-    await supabase
-      .from("coaching_calls")
-      .insert({
-        user_id: userId || null,
-
-        email:
-          normalizedEmail ||
-          null,
-
-        stripe_customer_id:
-          customerId || null,
-
-        stripe_session_id:
-          stripeSessionId,
-
-        status:
-          "paid_unscheduled",
-      });
-
+async function createCoachingCallCredit({ userId, customerId, email, stripeSessionId }) {
+  const supabaseClient = getSupabase();
+  if (!supabaseClient) return null;
+  
+  const normalizedEmail = String(email || "").toLowerCase().trim();
+  const { error } = await supabaseClient.from("coaching_calls").insert({
+    user_id: userId || null,
+    email: normalizedEmail || null,
+    stripe_customer_id: customerId || null,
+    stripe_session_id: stripeSessionId,
+    status: "paid_unscheduled",
+  });
   if (error) {
-    console.error(
-      "CREATE COACHING CALL CREDIT ERROR:",
-      error
-    );
-
+    console.error("CREATE COACHING CALL CREDIT ERROR:", error);
     return error;
   }
-
   return null;
 }
 
 export async function POST(req) {
-  const body =
-    await req.text();
+  // ✅ If building, return a mock response
+  if (isBuilding) {
+    return new Response(JSON.stringify({ ok: true, building: true }), {
+      status: 200,
+    });
+  }
 
-  const signature =
-    req.headers.get(
-      "stripe-signature"
-    );
+  const stripeClient = getStripe();
+  if (!stripeClient) {
+    return new Response("Stripe not configured", { status: 500 });
+  }
+
+  const body = await req.text();
+  const signature = req.headers.get("stripe-signature");
 
   if (!signature) {
-    return new Response(
-      "Missing stripe-signature header",
-      { status: 400 }
-    );
+    return new Response("Missing stripe-signature header", { status: 400 });
   }
 
   let event;
-
   try {
-    event =
-      stripe.webhooks.constructEvent(
-        body,
-        signature,
-        process.env
-          .STRIPE_WEBHOOK_SECRET
-      );
+    event = stripeClient.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
   } catch (error) {
-    console.error(
-      "WEBHOOK SIGNATURE ERROR:",
-      error.message
-    );
-
-    return new Response(
-      `Webhook Error: ${error.message}`,
-      { status: 400 }
-    );
+    console.error("WEBHOOK SIGNATURE ERROR:", error.message);
+    return new Response(`Webhook Error: ${error.message}`, { status: 400 });
   }
 
   try {
-    if (
-      event.type ===
-      "checkout.session.completed"
-    ) {
-      const session =
-        event.data.object;
-
-      const customerId = String(
-        session.customer || ""
-      ).trim();
-
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
+      const customerId = String(session.customer || "").trim();
       const email = String(
-        session.customer_email ||
-          session
-            .customer_details
-            ?.email ||
-          session.metadata
-            ?.email ||
-          ""
-      )
-        .toLowerCase()
-        .trim();
+        session.customer_email || session.customer_details?.email || session.metadata?.email || ""
+      ).toLowerCase().trim();
+      const userId = String(session.metadata?.user_id || session.client_reference_id || "").trim();
+      const plan = normalizePlan(session.metadata?.plan);
 
-      const userId = String(
-        session.metadata
-          ?.user_id ||
-          session.client_reference_id ||
-          ""
-      ).trim();
+      console.log("STRIPE ONE-TIME SESSION COMPLETED:", {
+        session: session.id,
+        customerId,
+        userId,
+        email,
+        plan,
+        paymentStatus: session.payment_status,
+      });
 
-      const plan =
-        normalizePlan(
-          session.metadata?.plan
-        );
+      if (session.payment_status !== "paid") {
+        return new Response("Session not paid", { status: 200 });
+      }
 
-      console.log(
-        "STRIPE ONE-TIME SESSION COMPLETED:",
-        {
-          session:
-            session.id,
-          customerId,
+      if (plan === "coaching_call") {
+        const coachingError = await createCoachingCallCredit({
           userId,
+          customerId,
           email,
-          plan,
-          paymentStatus:
-            session.payment_status,
-        }
-      );
-
-      if (
-        session.payment_status !==
-        "paid"
-      ) {
-        return new Response(
-          "Session not paid",
-          { status: 200 }
-        );
-      }
-
-      if (
-        plan ===
-        "coaching_call"
-      ) {
-        const coachingError =
-          await createCoachingCallCredit(
-            {
-              userId,
-              customerId,
-              email,
-              stripeSessionId:
-                session.id,
-            }
-          );
-
+          stripeSessionId: session.id,
+        });
         if (coachingError) {
-          return new Response(
-            "Coaching call credit failed",
-            { status: 500 }
-          );
+          return new Response("Coaching call credit failed", { status: 500 });
         }
-
         try {
-          await sendWelcomeEmail(
-            {
-              plan,
-              email,
-            }
-          );
+          await sendWelcomeEmail({ plan, email });
         } catch (emailError) {
-          console.error(
-            "WELCOME EMAIL ERROR:",
-            emailError
-          );
+          console.error("WELCOME EMAIL ERROR:", emailError);
         }
-
-        return new Response(
-          "ok",
-          { status: 200 }
-        );
+        return new Response("ok", { status: 200 });
       }
 
-      const membershipType =
-        PLAN_MEMBERSHIP_MAP[
-          plan
-        ];
-
+      const membershipType = PLAN_MEMBERSHIP_MAP[plan];
       if (!membershipType) {
-        console.error(
-          "NO MEMBERSHIP TYPE FOUND:",
-          {
-            session:
-              session.id,
-            plan,
-          }
-        );
-
-        return new Response(
-          "No membership type found",
-          { status: 200 }
-        );
+        console.error("NO MEMBERSHIP TYPE FOUND:", { session: session.id, plan });
+        return new Response("No membership type found", { status: 200 });
       }
 
-      const updateError =
-        await updateProfileAccess(
-          {
-            userId,
-            customerId,
-            email,
-            membershipType,
-          }
-        );
-
+      const updateError = await updateProfileAccess({
+        userId,
+        customerId,
+        email,
+        membershipType,
+      });
       if (updateError) {
-        console.error(
-          "SUPABASE UPDATE ERROR:",
-          updateError.message
-        );
-
-        return new Response(
-          "Database update failed",
-          { status: 500 }
-        );
+        console.error("SUPABASE UPDATE ERROR:", updateError.message);
+        return new Response("Database update failed", { status: 500 });
       }
 
       try {
-        await sendWelcomeEmail({
-          plan,
-          email,
-        });
+        await sendWelcomeEmail({ plan, email });
       } catch (emailError) {
-        console.error(
-          "WELCOME EMAIL ERROR:",
-          emailError
-        );
+        console.error("WELCOME EMAIL ERROR:", emailError);
       }
     }
-
-    return new Response(
-      "ok",
-      { status: 200 }
-    );
+    return new Response("ok", { status: 200 });
   } catch (error) {
-    console.error(
-      "WEBHOOK PROCESSING ERROR:",
-      error
-    );
-
-    return new Response(
-      "Webhook handler failed",
-      { status: 500 }
-    );
+    console.error("WEBHOOK PROCESSING ERROR:", error);
+    return new Response("Webhook handler failed", { status: 500 });
   }
 }

@@ -1,0 +1,1 @@
+{"version":1,"functions":{"/api/checkout":{},"/billing":{},"/account":{},"/api/stripe-webhook":{},"/coaching":{},"/couple-zone":{},"/plan-builder":{},"/pricing":{},"/privacy":{},"/dashboard":{},"/nutrition":{},"/programs/[slug]":{},"/refund":{},"/programs":{},"/vip":{},"/workouts":{},"/recipes":{},"/terms":{},"/progress":{}}}

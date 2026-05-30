@@ -14,9 +14,13 @@ export default function Home() {
       heroTitle1: "STRONGER",
       heroTitle2: "TOGETHER.",
       heroText:
-        "FitCoupleClub is more than a fitness platform. It is a system for ambitious people who train together, grow together and build the lifestyle they deserve.",
-      start: "JOIN THE CLUB",
-      plans: "VIEW PLANS",
+        "Start with a smart physique quiz. Your answers create a personal transformation roadmap, timeline, nutrition direction and training path before you create your account.",
+      start: "START THE QUIZ",
+      plans: "VIEW MEMBERSHIPS",
+      quizEyebrow: "SMART ONBOARDING QUIZ",
+      quizTitle: "Your answers become your plan.",
+      quizText: "Choose solo or Couple Mode, body type, stats, target weight, goal, diet style and training preference. The system calculates a realistic transformation timeline and prepares your saved member plan.",
+      quizPoints: ["BMI + body type logic", "Goal timeline", "Nutrition direction", "Training path", "Couple Mode setup", "Saved to your account"],
       stats: [
         ["TRAIN", "TOGETHER"],
         ["STAY", "FOCUSED"],
@@ -25,9 +29,9 @@ export default function Home() {
       ],
 
       goalsEyebrow: "Transformation Systems",
-      goalsTitle: "Choose the body and lifestyle you want.",
+      goalsTitle: "Start with your goal. Get a plan that adapts.",
       goalsText:
-        "No more guessing. Pick your goal and follow a clear system built for consistency, discipline and visible progress.",
+        "Your onboarding choices affect your BMI interpretation, realistic timeline, nutrition direction, training style, calendar intensity and accountability setup.",
       goals: [
         ["Fat Loss", "High-protein meals, calorie structure and training built to drop body fat."],
         ["Booty Builder", "Glute-focused workouts, activation, progressive overload and growth support."],
@@ -44,21 +48,21 @@ export default function Home() {
 
       nutritionTitle: "Nutrition that fits real life.",
       nutritionText:
-        "High-protein meal systems, smart grocery lists and soon: fasting, vegan, lactose-free and gluten-free options.",
+        "High-protein meal systems, smart grocery lists, fasting setup, vegan, lactose-free and gluten-free filters are already built into the nutrition system.",
       nutritionCards: ["High Protein", "16:8 Fasting", "Vegan", "Lactose Free", "Gluten Free", "Smart Groceries"],
 
       appTitle: "Everything inside one member dashboard.",
       appText:
-        "Open your dashboard, follow your meals, train your program, track progress and stay consistent without overthinking.",
+        "After signup your saved onboarding data unlocks your member dashboard with meals, recipes, workouts, programs, progress tracking and Couple Zone.",
       appCards: [
-        ["Nutrition", "Daily routines and recipes."],
-        ["Workouts", "Gym, home and goal-based training."],
-        ["Programs", "Step-by-step transformation plans."],
-        ["Progress", "Track consistency and results."],
+        ["Nutrition", "Personal meal routines, recipes and grocery lists."],
+        ["Workouts", "Gym, home and goal-based workouts."],
+        ["Programs", "Roadmaps based on your onboarding answers."],
+        ["Progress", "Check-ins, body stats and accountability."],
       ],
 
       pricingTitle: "Choose your access.",
-      pricingText: "One-time payment. No monthly subscription.",
+      pricingText: "Start with the free quiz, then choose your access.",
       best: "🔥 Best Value",
       plansData: [
         {
@@ -103,9 +107,13 @@ export default function Home() {
       heroTitle1: "STERKER",
       heroTitle2: "SAMEN.",
       heroText:
-        "FitCoupleClub is meer dan een fitness platform. Het is een systeem voor ambitieuze mensen die samen trainen, samen groeien en de lifestyle bouwen die ze verdienen.",
-      start: "JOIN DE CLUB",
-      plans: "BEKIJK PLANNEN",
+        "Start met een slimme physique quiz. Je antwoorden maken een persoonlijke transformatie roadmap, tijdlijn, voedingsrichting en trainingspad voordat je jouw account aanmaakt.",
+      start: "START DE QUIZ",
+      plans: "BEKIJK MEMBERSHIPS",
+      quizEyebrow: "SLIMME ONBOARDING QUIZ",
+      quizTitle: "Je antwoorden worden je plan.",
+      quizText: "Kies solo of Couple Mode, body type, stats, target gewicht, doel, dieetstijl en training voorkeur. Het systeem berekent een realistische transformatie tijdlijn en bereidt je opgeslagen member plan voor.",
+      quizPoints: ["BMI + body type logica", "Doel tijdlijn", "Voedingsrichting", "Training pad", "Couple Mode setup", "Opgeslagen in je account"],
       stats: [
         ["TRAIN", "SAMEN"],
         ["BLIJF", "GEFOCUST"],
@@ -114,9 +122,9 @@ export default function Home() {
       ],
 
       goalsEyebrow: "Transformatie Systemen",
-      goalsTitle: "Kies het lichaam en de lifestyle die jij wilt.",
+      goalsTitle: "Start met je doel. Krijg een plan dat zich aanpast.",
       goalsText:
-        "Geen gegok meer. Kies je doel en volg een duidelijk systeem voor consistentie, discipline en zichtbaar resultaat.",
+        "Je onboarding keuzes beïnvloeden je BMI interpretatie, realistische tijdlijn, voedingsrichting, trainingstype, kalender-intensiteit en accountability setup.",
       goals: [
         ["Vetverlies", "Eiwitrijke maaltijden, caloriestructuur en training om vet te verliezen."],
         ["Booty Builder", "Glute-focused workouts, activatie, progressive overload en support voor groei."],
@@ -133,21 +141,21 @@ export default function Home() {
 
       nutritionTitle: "Voeding die past in het echte leven.",
       nutritionText:
-        "Eiwitrijke meal systems, slimme boodschappenlijsten en binnenkort: fasting, vegan, lactosevrij en glutenvrij.",
+        "Eiwitrijke meal systems, slimme boodschappenlijsten, fasting setup, vegan, lactosevrij en glutenvrij filters zitten al in het voedingssysteem.",
       nutritionCards: ["High Protein", "16:8 Fasting", "Vegan", "Lactosevrij", "Glutenvrij", "Slimme Boodschappen"],
 
       appTitle: "Alles in één member dashboard.",
       appText:
-        "Open je dashboard, volg je maaltijden, train je programma, track progressie en blijf consistent zonder te overdenken.",
+        "Na signup ontgrendelt je opgeslagen onboarding data jouw member dashboard met maaltijden, recepten, workouts, programma’s, progressie tracking en Couple Zone.",
       appCards: [
-        ["Voeding", "Dagelijkse routines en recepten."],
-        ["Workouts", "Gym, thuis en doelgerichte training."],
-        ["Programma’s", "Stap-voor-stap transformatieplannen."],
-        ["Progressie", "Track consistentie en resultaat."],
+        ["Voeding", "Persoonlijke maaltijdroutines, recepten en boodschappenlijsten."],
+        ["Workouts", "Gym, thuis en doelgerichte workouts."],
+        ["Programma’s", "Roadmaps gebaseerd op je onboarding antwoorden."],
+        ["Progressie", "Check-ins, body stats en accountability."],
       ],
 
       pricingTitle: "Kies je toegang.",
-      pricingText: "Eenmalige betaling. Geen maandabonnement.",
+      pricingText: "Start met de gratis quiz, kies daarna je toegang.",
       best: "🔥 Beste Keuze",
       plansData: [
         {
@@ -288,7 +296,7 @@ export default function Home() {
           <p style={heroText}>{t.heroText}</p>
 
           <div className="hero-buttons" style={heroButtons}>
-            <a href="/signup" style={primaryButton}>
+            <a href="/onboarding" style={primaryButton}>
               {t.start} <span>→</span>
             </a>
 
@@ -319,6 +327,29 @@ export default function Home() {
           <span>TRAIN HARD.</span>
           <span>LIVE BETTER.</span>
           <span>BE UNSTOPPABLE.</span>
+        </div>
+      </section>
+
+
+      <section style={section}>
+        <div style={quizBox}>
+          <div>
+            <div style={eyebrow}>{t.quizEyebrow}</div>
+            <h2 style={sectionTitle}>{t.quizTitle}</h2>
+            <p style={sectionText}>{t.quizText}</p>
+
+            <a href="/onboarding" style={inlineButton}>
+              Start Your Transformation Quiz
+            </a>
+          </div>
+
+          <div style={quizPointGrid}>
+            {t.quizPoints.map((point) => (
+              <div key={point} style={quizPoint}>
+                ✓ {point}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -357,7 +388,7 @@ export default function Home() {
             ))}
           </div>
 
-          <a href="/signup" style={inlineButton}>
+          <a href="/onboarding" style={inlineButton}>
             Start Booty Training
           </a>
         </div>
@@ -404,10 +435,10 @@ export default function Home() {
             <h3 style={mockupTitle}>Member Dashboard</h3>
 
             <div style={mockupRows}>
-              <div style={mockupRow}>Nutrition System</div>
-              <div style={mockupRow}>Booty Builder</div>
-              <div style={mockupRow}>Workout Library</div>
-              <div style={mockupRow}>Progress Tracking</div>
+              <div style={mockupRow}>Saved Onboarding Profile</div>
+              <div style={mockupRow}>Transformation Roadmap</div>
+              <div style={mockupRow}>Nutrition + Grocery System</div>
+              <div style={mockupRow}>Training + Progress Tracking</div>
             </div>
           </div>
         </div>
@@ -444,7 +475,7 @@ export default function Home() {
               </div>
 
               <a
-                href="/signup"
+                href="/onboarding"
                 style={{
                   ...pricingButton,
                   ...(plan.featured ? pricingButtonFeatured : {}),
@@ -773,6 +804,34 @@ const inlineButton = {
   borderRadius: "0px",
   textDecoration: "none",
   fontWeight: "950",
+};
+
+
+const quizBox = {
+  background:
+    "linear-gradient(135deg, rgba(127,29,29,0.34), rgba(255,255,255,0.035))",
+  border: "1px solid rgba(220,38,38,0.28)",
+  borderRadius: "30px",
+  padding: "clamp(26px, 5vw, 44px)",
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+  gap: "28px",
+  alignItems: "center",
+};
+
+const quizPointGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 180px), 1fr))",
+  gap: "14px",
+};
+
+const quizPoint = {
+  background: "rgba(0,0,0,0.38)",
+  border: "1px solid rgba(255,255,255,0.10)",
+  borderRadius: "18px",
+  padding: "18px",
+  fontWeight: "950",
+  lineHeight: 1.35,
 };
 
 const redBox = {
