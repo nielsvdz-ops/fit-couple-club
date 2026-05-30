@@ -1302,7 +1302,7 @@ export default function OnboardingPage() {
         </div>
 
         <button type="button" onClick={handleSave} disabled={loading} style={saveBtn}>
-          {loading ? "Saving..." : "🚀 CREATE MY PLAN → Save 67% today"}
+          {loading ? "Saving..." : "🚀 CREATE MY PLAN"}
         </button>
       </section>
     </main>
