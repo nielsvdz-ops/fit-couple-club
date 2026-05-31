@@ -1,132 +1,163 @@
 // app/onboarding/page.js
-// Put this file in: app/onboarding/page.js
-//
-// Required images:
-// public/images/profile-types/men.png
-// public/images/profile-types/female.png
-// public/images/profile-types/couple.png
-// public/images/body-types/slim.png
-// public/images/body-types/athletic.png
-// public/images/body-types/average.png
-// public/images/body-types/heavy-set.png
-
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { createClient } from "../../lib/supabase/client";
+import { useLanguage, createTranslationObject } from "../../lib/useLanguage";
 
-const PROFILE_TYPES = [
+// ============================================================================
+// BASE DATA WITH TRANSLATIONS
+// ============================================================================
+
+const PROFILE_TYPES_BASE = [
   {
     value: "men",
-    title: "Men",
+    titleTranslations: createTranslationObject("Men", "Mannen"),
     image: "/images/profile-types/men.png",
-    text: "A personal physique plan for men.",
+    textTranslations: createTranslationObject(
+      "A personal physique plan for men.",
+      "Een persoonlijk fysiek plan voor mannen."
+    ),
   },
   {
     value: "female",
-    title: "Female",
+    titleTranslations: createTranslationObject("Female", "Vrouwen"),
     image: "/images/profile-types/female.png",
-    text: "A personal physique plan for women.",
+    textTranslations: createTranslationObject(
+      "A personal physique plan for women.",
+      "Een persoonlijk fysiek plan voor vrouwen."
+    ),
   },
   {
     value: "couple",
-    title: "Couple",
+    titleTranslations: createTranslationObject("Couple", "Koppel"),
     image: "/images/profile-types/couple.png",
-    text: "A shared transformation system for two partners.",
+    textTranslations: createTranslationObject(
+      "A shared transformation system for two partners.",
+      "Een gedeeld transformatiesysteem voor twee partners."
+    ),
   },
 ];
 
-const GOALS = [
+const GOALS_BASE = [
   {
     value: "lose-fat",
-    title: "Lose Fat",
-    text: "Lower body fat, better condition and a leaner look.",
+    titleTranslations: createTranslationObject("Lose Fat", "Vet Verliezen"),
+    textTranslations: createTranslationObject(
+      "Lower body fat, better condition and a leaner look.",
+      "Lagere lichaamsvet, betere conditie en een slankere uitstraling."
+    ),
   },
   {
     value: "build-muscle",
-    title: "Build Muscle",
-    text: "Gain muscle, strength and shape with progressive structure.",
+    titleTranslations: createTranslationObject("Build Muscle", "Spieren Opbouwen"),
+    textTranslations: createTranslationObject(
+      "Gain muscle, strength and shape with progressive structure.",
+      "Spieren, kracht en vorm opbouwen met progressieve structuur."
+    ),
   },
   {
     value: "tone-shape",
-    title: "Tone & Shape",
-    text: "Improve shape, waistline, posture and definition.",
+    titleTranslations: createTranslationObject("Tone & Shape", "Vormgeven & Definiëren"),
+    textTranslations: createTranslationObject(
+      "Improve shape, waistline, posture and definition.",
+      "Verbeter vorm, taille, houding en definitie."
+    ),
   },
   {
     value: "athletic-performance",
-    title: "Athletic Performance",
-    text: "Build fitness, strength, stamina and athletic habits.",
+    titleTranslations: createTranslationObject("Athletic Performance", "Atletische Prestaties"),
+    textTranslations: createTranslationObject(
+      "Build fitness, strength, stamina and athletic habits.",
+      "Bouw fitness, kracht, uithoudingsvermogen en atletische gewoonten op."
+    ),
   },
 ];
 
-const BODY_TYPES = [
+const BODY_TYPES_BASE = [
   {
     value: "slim",
-    title: "Slim",
+    titleTranslations: createTranslationObject("Slim", "Slank"),
     image: "/images/body-types/slim.png",
-    text: "Naturally lighter. Usually needs muscle, shape and healthy structure.",
+    textTranslations: createTranslationObject(
+      "Naturally lighter. Usually needs muscle, shape and healthy structure.",
+      "Natuurlijk lichter. Heeft meestal spiermassa, vorm en gezonde structuur nodig."
+    ),
     bmiOffset: -1.2,
     timelineMultiplier: 1.05,
   },
   {
     value: "athletic",
-    title: "Athletic",
+    titleTranslations: createTranslationObject("Athletic", "Atletisch"),
     image: "/images/body-types/athletic.png",
-    text: "Sporty or muscular. BMI can look higher because muscle weighs more.",
+    textTranslations: createTranslationObject(
+      "Sporty or muscular. BMI can look higher because muscle weighs more.",
+      "Sportief of gespierd. BMI kan hoger lijken omdat spieren meer wegen."
+    ),
     bmiOffset: -2.2,
     timelineMultiplier: 0.9,
   },
   {
     value: "average",
-    title: "Average",
+    titleTranslations: createTranslationObject("Average", "Gemiddeld"),
     image: "/images/body-types/average.png",
-    text: "Normal starting point. Good for fat loss, tone or muscle goals.",
+    textTranslations: createTranslationObject(
+      "Normal starting point. Good for fat loss, tone or muscle goals.",
+      "Normaal startpunt. Goed voor vetverlies, vorm of spierdoelen."
+    ),
     bmiOffset: 0,
     timelineMultiplier: 1,
   },
   {
     value: "heavy-set",
-    title: "Heavy Set",
+    titleTranslations: createTranslationObject("Heavy Set", "Zwaar Gebouwd"),
     image: "/images/body-types/heavy-set.png",
-    text: "Higher body fat/bodyweight. Plan starts safer and more gradual.",
+    textTranslations: createTranslationObject(
+      "Higher body fat/bodyweight. Plan starts safer and more gradual.",
+      "Hoger lichaamsvet/lichaamsgewicht. Plan start veiliger en geleidelijker."
+    ),
     bmiOffset: 1.5,
     timelineMultiplier: 1.15,
   },
 ];
 
-const DIETS = [
-  { value: "balanced", title: "Balanced" },
-  { value: "high-protein", title: "High Protein" },
-  { value: "vegan", title: "Vegan" },
-  { value: "vegetarian", title: "Vegetarian" },
+const DIETS_BASE = [
+  { value: "balanced", titleTranslations: createTranslationObject("Balanced", "Gebalanceerd") },
+  { value: "high-protein", titleTranslations: createTranslationObject("High Protein", "Hoog Eiwit") },
+  { value: "vegan", titleTranslations: createTranslationObject("Vegan", "Veganistisch") },
+  { value: "vegetarian", titleTranslations: createTranslationObject("Vegetarian", "Vegetarisch") },
 ];
 
-const ALLERGIES = [
-  { value: "gluten_free", title: "Gluten Free" },
-  { value: "lactose_free", title: "Lactose Free" },
-  { value: "nut_free", title: "Nut Free" },
-  { value: "shellfish_free", title: "Shellfish Free" },
+const ALLERGIES_BASE = [
+  { value: "gluten_free", titleTranslations: createTranslationObject("Gluten Free", "Glutenvrij") },
+  { value: "lactose_free", titleTranslations: createTranslationObject("Lactose Free", "Lactosevrij") },
+  { value: "nut_free", titleTranslations: createTranslationObject("Nut Free", "Notenvrij") },
+  { value: "shellfish_free", titleTranslations: createTranslationObject("Shellfish Free", "Schaladierenvrij") },
 ];
 
-const WORKOUT_TYPES = [
-  { value: "training-food", title: "Training + Food" },
-  { value: "food-only", title: "Food Only" },
-  { value: "training-only", title: "Training Only" },
+const WORKOUT_TYPES_BASE = [
+  { value: "training-food", titleTranslations: createTranslationObject("Training + Food", "Training + Voeding") },
+  { value: "food-only", titleTranslations: createTranslationObject("Food Only", "Alleen Voeding") },
+  { value: "training-only", titleTranslations: createTranslationObject("Training Only", "Alleen Training") },
 ];
 
-const TRAINING_LOCATIONS = ["Gym", "Home", "Hybrid"];
-const EXPERIENCE_LEVELS = ["Beginner", "Intermediate", "Advanced"];
+const TRAINING_LOCATIONS_BASE = [
+  { value: "Gym", titleTranslations: createTranslationObject("Gym", "Sportschool") },
+  { value: "Home", titleTranslations: createTranslationObject("Home", "Thuis") },
+  { value: "Hybrid", titleTranslations: createTranslationObject("Hybrid", "Hybride") },
+];
+
+const EXPERIENCE_LEVELS_BASE = [
+  { value: "Beginner", titleTranslations: createTranslationObject("Beginner", "Beginner") },
+  { value: "Intermediate", titleTranslations: createTranslationObject("Intermediate", "Gevorderd") },
+  { value: "Advanced", titleTranslations: createTranslationObject("Advanced", "Expert") },
+];
+
 const FASTING_WINDOWS = ["12:12", "14:10", "16:8", "18:6", "20:4"];
 
-const WEEK_DAYS = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
 
 function numberValue(value) {
   const number = Number(String(value || "").replace(",", "."));
@@ -137,101 +168,17 @@ function round1(value) {
   return Math.round(Number(value || 0) * 10) / 10;
 }
 
-function getTitle(options, value) {
-  return options.find((item) => item.value === value)?.title || value || "";
-}
-
 function calculateBmi(weightKg, heightCm) {
   const weight = numberValue(weightKg);
   const height = numberValue(heightCm) / 100;
-
   if (!weight || !height) return null;
-
   return round1(weight / (height * height));
 }
 
 function getAdjustedBmi(rawBmi, bodyType) {
   if (!rawBmi) return null;
-  const type = BODY_TYPES.find((item) => item.value === bodyType);
+  const type = BODY_TYPES_BASE.find((item) => item.value === bodyType);
   return round1(rawBmi + (type?.bmiOffset || 0));
-}
-
-function getBmiLabel(rawBmi, bodyType) {
-  const adjusted = getAdjustedBmi(rawBmi, bodyType);
-  const value = adjusted || rawBmi;
-
-  if (!value) return "Complete weight and height";
-
-  if (bodyType === "athletic") {
-    if (value < 20) return "Lean athletic range";
-    if (value < 26) return "Athletic / muscular range";
-    if (value < 29) return "High muscle or body mass";
-    return "Very high body mass";
-  }
-
-  if (bodyType === "slim") {
-    if (value < 18.5) return "Very slim range";
-    if (value < 24) return "Slim healthy range";
-    return "This may not match Slim well";
-  }
-
-  if (bodyType === "heavy-set") {
-    if (value < 23) return "This may not match Heavy Set well";
-    if (value < 30) return "Higher bodyweight range";
-    return "High bodyweight range";
-  }
-
-  if (value < 18.5) return "Lean / underweight range";
-  if (value < 25) return "Healthy range";
-  if (value < 30) return "Overweight range";
-  return "High bodyweight range";
-}
-
-function getBodyTypeWarning(bodyType, rawBmi) {
-  if (!bodyType || !rawBmi) return "";
-
-  if (bodyType === "slim" && rawBmi >= 27) {
-    return "Slim usually does not match this BMI. Check weight/height or choose Average/Athletic.";
-  }
-
-  if (bodyType === "athletic" && rawBmi >= 32) {
-    return "Athletic can have a higher BMI, but this is very high. Check stats or choose another body type.";
-  }
-
-  if (bodyType === "heavy-set" && rawBmi < 23) {
-    return "Heavy Set usually does not match this BMI. Check stats or choose another body type.";
-  }
-
-  return "";
-}
-
-function getGoalConflictMessage({ goal, weight, targetWeight }) {
-  if (!goal) return "";
-
-  const current = numberValue(weight);
-  const target = numberValue(targetWeight);
-
-  if (!current || !target) return "";
-
-  const difference = round1(Math.abs(target - current));
-
-  if (goal === "lose-fat" && target >= current) {
-    return `Your target is ${difference} kg higher than your current weight. That does not usually match Lose Fat. Keep this target if you want, but Build Muscle, Tone & Shape or Athletic Performance fits it better.`;
-  }
-
-  if (goal === "build-muscle" && target <= current) {
-    return `Your target is ${difference} kg lower than your current weight. That does not usually match Build Muscle. Keep this target if you want, but Lose Fat or Tone & Shape fits it better.`;
-  }
-
-  if (goal === "tone-shape" && difference > 12) {
-    return "Tone & Shape is normally a recomposition goal. Your target change is large, so the roadmap becomes longer and more gradual.";
-  }
-
-  if (goal === "athletic-performance" && difference > 10) {
-    return "Athletic Performance is mostly about strength, cardio and habits. Because your target change is large, the roadmap will combine performance with body composition.";
-  }
-
-  return "";
 }
 
 function getExperienceMultiplier(experience) {
@@ -247,7 +194,7 @@ function getWorkoutMultiplier(workoutType) {
 }
 
 function getBodyMultiplier(bodyType) {
-  return BODY_TYPES.find((item) => item.value === bodyType)?.timelineMultiplier || 1;
+  return BODY_TYPES_BASE.find((item) => item.value === bodyType)?.timelineMultiplier || 1;
 }
 
 function estimateTransformationWeeks({
@@ -273,100 +220,33 @@ function estimateTransformationWeeks({
 
   if (goal === "lose-fat") {
     weeks = isLowerTarget ? kgChange / 0.55 : kgChange / 0.25 + 8;
-  }
-
-  if (goal === "build-muscle") {
-    const pace =
-      experience === "Advanced" ? 0.16 : experience === "Intermediate" ? 0.23 : 0.32;
+  } else if (goal === "build-muscle") {
+    const pace = experience === "Advanced" ? 0.16 : experience === "Intermediate" ? 0.23 : 0.32;
     weeks = isHigherTarget ? kgChange / pace : kgChange / 0.35 + 8;
-  }
-
-  if (goal === "tone-shape") {
+  } else if (goal === "tone-shape") {
     weeks = kgChange <= 3 ? 10 : kgChange / 0.35 + 6;
-  }
-
-  if (goal === "athletic-performance") {
+  } else if (goal === "athletic-performance") {
     weeks = kgChange <= 5 ? 12 : kgChange / 0.45 + 8;
   }
 
   const total = weeks * getBodyMultiplier(bodyType) * getExperienceMultiplier(experience) * getWorkoutMultiplier(workoutType);
-
   return Math.max(4, Math.min(78, Math.ceil(total)));
 }
 
-function buildEstimatedText(weeks, goal) {
-  if (!goal) return "Select your goal to calculate timeline";
-  if (!weeks) return "Complete your stats to calculate timeline";
-  return `${weeks} weeks / about ${Math.ceil(weeks / 4)} months`;
-}
-
-function getGoalPhase(goal, weekNumber, totalWeeks) {
-  if (!goal) return "Foundation";
+function getGoalPhase(goal, weekNumber, totalWeeks, t) {
+  if (!goal) return t(createTranslationObject("Foundation", "Basis"));
 
   const progress = totalWeeks ? weekNumber / totalWeeks : 0;
 
-  if (progress < 0.25) return "Foundation";
-  if (progress < 0.65) return goal === "athletic-performance" ? "Performance Build" : "Progress Build";
-  if (progress < 0.9) return "Push Phase";
-  return "Final Shape";
-}
-
-function workoutForDay({ dayIndex, goal, workoutType, trainingLocation, experience }) {
-  if (workoutType === "food-only") return "No workout — nutrition focus day";
-
-  const level = experience || "Beginner";
-  const location = trainingLocation || "Hybrid";
-
-  if (dayIndex % 7 === 2 || dayIndex % 7 === 6) {
-    return "Recovery, mobility and steps";
+  if (progress < 0.25) return t(createTranslationObject("Foundation", "Basis"));
+  if (progress < 0.65) {
+    if (goal === "athletic-performance") {
+      return t(createTranslationObject("Performance Build", "Prestatie Opbouw"));
+    }
+    return t(createTranslationObject("Progress Build", "Voortgang Opbouw"));
   }
-
-  if (goal === "build-muscle") {
-    return `${location} hypertrophy workout (${level})`;
-  }
-
-  if (goal === "athletic-performance") {
-    return `${location} strength + conditioning (${level})`;
-  }
-
-  if (goal === "tone-shape") {
-    return `${location} full body tone + core (${level})`;
-  }
-
-  return `${location} fat loss strength circuit (${level})`;
-}
-
-function cardioForDay({ dayIndex, goal, bodyType, workoutType }) {
-  if (workoutType === "training-only") return "Nutrition not included — train and track steps";
-  if (workoutType === "food-only") return "8,000–12,000 steps";
-
-  if (goal === "lose-fat") {
-    return bodyType === "heavy-set"
-      ? "30–45 min incline walk or zone 2 cardio"
-      : "20–35 min zone 2 cardio + 10,000 steps";
-  }
-
-  if (goal === "build-muscle") {
-    return dayIndex % 2 === 0 ? "6,000–9,000 steps" : "Optional light recovery cardio";
-  }
-
-  if (goal === "athletic-performance") {
-    return dayIndex % 3 === 0 ? "Intervals or conditioning" : "10,000–14,000 steps";
-  }
-
-  return "8,000–12,000 steps";
-}
-
-function nutritionForDay({ goal, dietType, workoutType }) {
-  if (workoutType === "training-only") return "Training only selected — nutrition plan not included";
-
-  const diet = getTitle(DIETS, dietType) || "Balanced";
-
-  if (goal === "lose-fat") return `${diet} meal plan in a controlled calorie deficit`;
-  if (goal === "build-muscle") return `${diet} high protein meal plan with calorie surplus`;
-  if (goal === "athletic-performance") return `${diet} performance fuel with carbs around training`;
-
-  return `${diet} recomposition meal plan with high protein`;
+  if (progress < 0.9) return t(createTranslationObject("Push Phase", "Push Fase"));
+  return t(createTranslationObject("Final Shape", "Eindvorm"));
 }
 
 function addDays(date, days) {
@@ -379,6 +259,249 @@ function formatDate(date) {
   return date.toISOString().slice(0, 10);
 }
 
+// ============================================================================
+// TRANSLATED UI HELPER FUNCTIONS
+// ============================================================================
+
+function getTranslatedBmiLabel(rawBmi, bodyType, t) {
+  const adjusted = getAdjustedBmi(rawBmi, bodyType);
+  const value = adjusted || rawBmi;
+
+  if (!value) {
+    return t(createTranslationObject("Complete weight and height", "Vul gewicht en lengte in"));
+  }
+
+  if (bodyType === "athletic") {
+    if (value < 20) return t(createTranslationObject("Lean athletic range", "Spierslank bereik"));
+    if (value < 26) return t(createTranslationObject("Athletic / muscular range", "Atletisch / gespierd bereik"));
+    if (value < 29) return t(createTranslationObject("High muscle or body mass", "Hoge spiermassa of lichaamsmassa"));
+    return t(createTranslationObject("Very high body mass", "Zeer hoge lichaamsmassa"));
+  }
+
+  if (bodyType === "slim") {
+    if (value < 18.5) return t(createTranslationObject("Very slim range", "Zeer slank bereik"));
+    if (value < 24) return t(createTranslationObject("Slim healthy range", "Slank gezond bereik"));
+    return t(createTranslationObject("This may not match Slim well", "Dit past mogelijk niet goed bij Slank"));
+  }
+
+  if (bodyType === "heavy-set") {
+    if (value < 23) return t(createTranslationObject("This may not match Heavy Set well", "Dit past mogelijk niet goed bij Zwaar Gebouwd"));
+    if (value < 30) return t(createTranslationObject("Higher bodyweight range", "Hoger lichaamsgewicht bereik"));
+    return t(createTranslationObject("High bodyweight range", "Hoog lichaamsgewicht bereik"));
+  }
+
+  if (value < 18.5) return t(createTranslationObject("Lean / underweight range", "Slank / ondergewicht bereik"));
+  if (value < 25) return t(createTranslationObject("Healthy range", "Gezond bereik"));
+  if (value < 30) return t(createTranslationObject("Overweight range", "Overgewicht bereik"));
+  return t(createTranslationObject("High bodyweight range", "Hoog lichaamsgewicht bereik"));
+}
+
+function getTranslatedBodyTypeWarning(bodyType, rawBmi, t) {
+  if (!bodyType || !rawBmi) return "";
+
+  if (bodyType === "slim" && rawBmi >= 27) {
+    return t(createTranslationObject(
+      "Slim usually does not match this BMI. Check weight/height or choose Average/Athletic.",
+      "Slank past meestal niet bij deze BMI. Controleer gewicht/lengte of kies Gemiddeld/Atletisch."
+    ));
+  }
+
+  if (bodyType === "athletic" && rawBmi >= 32) {
+    return t(createTranslationObject(
+      "Athletic can have a higher BMI, but this is very high. Check stats or choose another body type.",
+      "Atletisch kan een hogere BMI hebben, maar dit is erg hoog. Controleer statistieken of kies een ander lichaamstype."
+    ));
+  }
+
+  if (bodyType === "heavy-set" && rawBmi < 23) {
+    return t(createTranslationObject(
+      "Heavy Set usually does not match this BMI. Check stats or choose another body type.",
+      "Zwaar Gebouwd past meestal niet bij deze BMI. Controleer statistieken of kies een ander lichaamstype."
+    ));
+  }
+
+  return "";
+}
+
+function getTranslatedGoalConflictMessage({ goal, weight, targetWeight }, t) {
+  if (!goal) return "";
+
+  const current = numberValue(weight);
+  const target = numberValue(targetWeight);
+
+  if (!current || !target) return "";
+
+  const difference = round1(Math.abs(target - current));
+
+  if (goal === "lose-fat" && target >= current) {
+    return t(createTranslationObject(
+      `Your target is ${difference} kg higher than your current weight. That does not usually match Lose Fat. Keep this target if you want, but Build Muscle, Tone & Shape or Athletic Performance fits it better.`,
+      `Je streefgewicht is ${difference} kg hoger dan je huidige gewicht. Dat past meestal niet bij Vet Verliezen. Houd dit doel als je wilt, maar Spieren Opbouwen, Vormgeven & Definiëren of Atletische Prestaties past er beter bij.`
+    ));
+  }
+
+  if (goal === "build-muscle" && target <= current) {
+    return t(createTranslationObject(
+      `Your target is ${difference} kg lower than your current weight. That does not usually match Build Muscle. Keep this target if you want, but Lose Fat or Tone & Shape fits it better.`,
+      `Je streefgewicht is ${difference} kg lager dan je huidige gewicht. Dat past meestal niet bij Spieren Opbouwen. Houd dit doel als je wilt, maar Vet Verliezen of Vormgeven & Definiëren past er beter bij.`
+    ));
+  }
+
+  if (goal === "tone-shape" && difference > 12) {
+    return t(createTranslationObject(
+      "Tone & Shape is normally a recomposition goal. Your target change is large, so the roadmap becomes longer and more gradual.",
+      "Vormgeven & Definiëren is normaal een recompositiedoel. Je streefverandering is groot, dus de routekaart wordt langer en geleidelijker."
+    ));
+  }
+
+  if (goal === "athletic-performance" && difference > 10) {
+    return t(createTranslationObject(
+      "Athletic Performance is mostly about strength, cardio and habits. Because your target change is large, the roadmap will combine performance with body composition.",
+      "Atletische Prestaties gaan meestal over kracht, cardio en gewoonten. Omdat je streefverandering groot is, combineert de routekaart prestaties met lichaamssamenstelling."
+    ));
+  }
+
+  return "";
+}
+
+function getTranslatedEstimatedText(weeks, goal, t) {
+  if (!goal) {
+    return t(createTranslationObject("Select your goal to calculate timeline", "Selecteer je doel om tijdlijn te berekenen"));
+  }
+  if (!weeks) {
+    return t(createTranslationObject("Complete your stats to calculate timeline", "Vul je statistieken in om tijdlijn te berekenen"));
+  }
+  
+  const weeksText = t(createTranslationObject("weeks", "weken"));
+  const aboutText = t(createTranslationObject("about", "ongeveer"));
+  const monthsText = t(createTranslationObject("months", "maanden"));
+  
+  return `${weeks} ${weeksText} / ${aboutText} ${Math.ceil(weeks / 4)} ${monthsText}`;
+}
+
+function getTranslatedWorkoutForDay({ dayIndex, goal, workoutType, trainingLocation, experience, t }) {
+  if (workoutType === "food-only") {
+    return t(createTranslationObject("No workout — nutrition focus day", "Geen training — voedingsfocus dag"));
+  }
+
+  const level = experience || "Beginner";
+  let location = trainingLocation || "Hybrid";
+  
+  let locationTranslated = location;
+  if (location === "Gym") locationTranslated = t(createTranslationObject("Gym", "Sportschool"));
+  else if (location === "Home") locationTranslated = t(createTranslationObject("Home", "Thuis"));
+  else if (location === "Hybrid") locationTranslated = t(createTranslationObject("Hybrid", "Hybride"));
+
+  if (dayIndex % 7 === 2 || dayIndex % 7 === 6) {
+    return t(createTranslationObject("Recovery, mobility and steps", "Herstel, mobiliteit en stappen"));
+  }
+
+  const levelLower = level.toLowerCase();
+  const levelTranslated = t(level === "Beginner" ? createTranslationObject("Beginner", "Beginner") :
+                            level === "Intermediate" ? createTranslationObject("Intermediate", "Gevorderd") :
+                            createTranslationObject("Advanced", "Expert"));
+
+  if (goal === "build-muscle") {
+    return t(createTranslationObject(
+      `${locationTranslated} hypertrophy workout (${levelTranslated})`,
+      `${locationTranslated} hypertrofie training (${levelTranslated})`
+    ));
+  }
+
+  if (goal === "athletic-performance") {
+    return t(createTranslationObject(
+      `${locationTranslated} strength + conditioning (${levelTranslated})`,
+      `${locationTranslated} kracht + conditionering (${levelTranslated})`
+    ));
+  }
+
+  if (goal === "tone-shape") {
+    return t(createTranslationObject(
+      `${locationTranslated} full body tone + core (${levelTranslated})`,
+      `${locationTranslated} full body vorm + core (${levelTranslated})`
+    ));
+  }
+
+  return t(createTranslationObject(
+    `${locationTranslated} fat loss strength circuit (${levelTranslated})`,
+    `${locationTranslated} vetverlies krachtcircuit (${levelTranslated})`
+  ));
+}
+
+function getTranslatedCardioForDay({ dayIndex, goal, bodyType, workoutType, t }) {
+  if (workoutType === "training-only") {
+    return t(createTranslationObject("Nutrition not included — train and track steps", "Voeding niet inbegrepen — train en volg stappen"));
+  }
+  if (workoutType === "food-only") {
+    return t(createTranslationObject("8,000–12,000 steps", "8.000–12.000 stappen"));
+  }
+
+  if (goal === "lose-fat") {
+    if (bodyType === "heavy-set") {
+      return t(createTranslationObject("30–45 min incline walk or zone 2 cardio", "30–45 min hellingwandeling of zone 2 cardio"));
+    }
+    return t(createTranslationObject("20–35 min zone 2 cardio + 10,000 steps", "20–35 min zone 2 cardio + 10.000 stappen"));
+  }
+
+  if (goal === "build-muscle") {
+    if (dayIndex % 2 === 0) {
+      return t(createTranslationObject("6,000–9,000 steps", "6.000–9.000 stappen"));
+    }
+    return t(createTranslationObject("Optional light recovery cardio", "Optionele lichte herstel cardio"));
+  }
+
+  if (goal === "athletic-performance") {
+    if (dayIndex % 3 === 0) {
+      return t(createTranslationObject("Intervals or conditioning", "Intervallen of conditionering"));
+    }
+    return t(createTranslationObject("10,000–14,000 steps", "10.000–14.000 stappen"));
+  }
+
+  return t(createTranslationObject("8,000–12,000 steps", "8.000–12.000 stappen"));
+}
+
+function getTranslatedNutritionForDay({ goal, dietType, workoutType, t }) {
+  if (workoutType === "training-only") {
+    return t(createTranslationObject("Training only selected — nutrition plan not included", "Alleen training geselecteerd — voedingsplan niet inbegrepen"));
+  }
+
+  let diet = "";
+  if (dietType === "balanced") diet = t(createTranslationObject("Balanced", "Gebalanceerd"));
+  else if (dietType === "high-protein") diet = t(createTranslationObject("High Protein", "Hoog Eiwit"));
+  else if (dietType === "vegan") diet = t(createTranslationObject("Vegan", "Veganistisch"));
+  else diet = t(createTranslationObject("Vegetarian", "Vegetarisch"));
+
+  if (goal === "lose-fat") {
+    return t(createTranslationObject(`${diet} meal plan in a controlled calorie deficit`, `${diet} maaltijdplan in een gecontroleerd calorietekort`));
+  }
+  if (goal === "build-muscle") {
+    return t(createTranslationObject(`${diet} high protein meal plan with calorie surplus`, `${diet} hoog eiwit maaltijdplan met calorieoverschot`));
+  }
+  if (goal === "athletic-performance") {
+    return t(createTranslationObject(`${diet} performance fuel with carbs around training`, `${diet} prestatiebrandstof met koolhydraten rond training`));
+  }
+
+  return t(createTranslationObject(`${diet} recomposition meal plan with high protein`, `${diet} recompositie maaltijdplan met hoog eiwit`));
+}
+
+function getTranslatedFastingText(fastingEnabled, fastingWindow, t) {
+  if (!fastingEnabled) {
+    return t(createTranslationObject("No fasting", "Geen vasten"));
+  }
+  return t(createTranslationObject(`Fasting window ${fastingWindow || "16:8"}`, `Vastenvenster ${fastingWindow || "16:8"}`));
+}
+
+function getTranslatedAccountabilityText(partner, t) {
+  if (partner?.name) {
+    return t(createTranslationObject(`Couple check-in with ${partner.name || "partner"}`, `Koppel check-in met ${partner.name || "partner"}`));
+  }
+  return t(createTranslationObject("Daily check-in: training, steps, nutrition and mood", "Dagelijkse check-in: training, stappen, voeding en stemming"));
+}
+
+// ============================================================================
+// DATA BUILDERS
+// ============================================================================
+
 function buildCalendarPlan({
   goal,
   workoutType,
@@ -390,6 +513,7 @@ function buildCalendarPlan({
   bodyType,
   experience,
   partner,
+  t,
 }) {
   const weeks = Math.max(1, numberValue(estimatedWeeks) || 4);
   const days = Math.min(weeks * 7, 365);
@@ -398,35 +522,35 @@ function buildCalendarPlan({
   return Array.from({ length: days }, (_, index) => {
     const date = addDays(start, index);
     const weekNumber = Math.floor(index / 7) + 1;
-    const dayName = WEEK_DAYS[index % 7];
 
     return {
       date: formatDate(date),
-      day: dayName,
+      day: index % 7,
       week: weekNumber,
-      phase: getGoalPhase(goal, weekNumber, weeks),
-      workout: workoutForDay({
+      phase: getGoalPhase(goal, weekNumber, weeks, t),
+      workout: getTranslatedWorkoutForDay({
         dayIndex: index,
         goal,
         workoutType,
         trainingLocation,
         experience,
+        t,
       }),
-      cardio: cardioForDay({
+      cardio: getTranslatedCardioForDay({
         dayIndex: index,
         goal,
         bodyType,
         workoutType,
+        t,
       }),
-      nutrition: nutritionForDay({
+      nutrition: getTranslatedNutritionForDay({
         goal,
         dietType,
         workoutType,
+        t,
       }),
-      fasting: fastingEnabled ? `Fasting window ${fastingWindow || "16:8"}` : "No fasting",
-      accountability: partner
-        ? `Couple check-in with ${partner.name || "partner"}`
-        : "Daily check-in: training, steps, nutrition and mood",
+      fasting: getTranslatedFastingText(fastingEnabled, fastingWindow, t),
+      accountability: getTranslatedAccountabilityText(partner, t),
     };
   });
 }
@@ -443,9 +567,7 @@ function buildGroceryList({ goal, dietType, allergies, profileType, partnerGoal 
     : ["chicken breast", "eggs", "Greek yogurt", "lean beef", "salmon"];
 
   if (allergyValues.includes("lactose_free")) {
-    proteins = proteins.filter(
-      (item) => !["Greek yogurt", "cottage cheese"].includes(item)
-    );
+    proteins = proteins.filter((item) => !["Greek yogurt", "cottage cheese"].includes(item));
     proteins.push("lactose-free protein option");
   }
 
@@ -453,24 +575,15 @@ function buildGroceryList({ goal, dietType, allergies, profileType, partnerGoal 
     proteins = proteins.filter((item) => item !== "shrimp");
   }
 
-  const carbs =
-    goal === "build-muscle" || partnerGoal === "build-muscle"
-      ? ["rice", "oats", "potatoes", "pasta", "bananas"]
-      : ["rice", "oats", "sweet potato", "berries", "vegetables"];
+  const carbs = goal === "build-muscle" || partnerGoal === "build-muscle"
+    ? ["rice", "oats", "potatoes", "pasta", "bananas"]
+    : ["rice", "oats", "sweet potato", "berries", "vegetables"];
 
   const fats = allergyValues.includes("nut_free")
     ? ["olive oil", "avocado", "seeds"]
     : ["olive oil", "avocado", "almonds", "peanut butter"];
 
-  const base = [
-    ...proteins,
-    ...carbs,
-    ...fats,
-    "broccoli",
-    "spinach",
-    "cucumber",
-    "tomatoes",
-  ];
+  const base = [...proteins, ...carbs, ...fats, "broccoli", "spinach", "cucumber", "tomatoes"];
 
   if (profileType === "couple") {
     base.push("extra shared meal prep containers", "couple snack options");
@@ -479,60 +592,67 @@ function buildGroceryList({ goal, dietType, allergies, profileType, partnerGoal 
   return Array.from(new Set(base));
 }
 
-function buildRoadmap({ goal, estimatedWeeks, bodyType }) {
+function buildRoadmap({ goal, estimatedWeeks, bodyType, t }) {
   const weeks = numberValue(estimatedWeeks) || 8;
 
   return [
     {
-      title: "Foundation",
-      weeks: `Week 1–${Math.max(2, Math.ceil(weeks * 0.25))}`,
-      text: "Build routine, steps, food structure and baseline training form.",
+      title: t(createTranslationObject("Foundation", "Basis")),
+      weeks: t(createTranslationObject(`Week 1–${Math.max(2, Math.ceil(weeks * 0.25))}`, `Week 1–${Math.max(2, Math.ceil(weeks * 0.25))}`)),
+      text: t(createTranslationObject(
+        "Build routine, steps, food structure and baseline training form.",
+        "Bouw routine, stappen, voedselstructuur en basis trainingsvorm op."
+      )),
     },
     {
-      title: "Progress Build",
-      weeks: `Week ${Math.max(3, Math.ceil(weeks * 0.25))}–${Math.ceil(weeks * 0.65)}`,
-      text:
-        goal === "build-muscle"
-          ? "Increase volume, protein consistency and recovery."
-          : "Increase consistency, calorie control and visible progress habits.",
+      title: t(createTranslationObject("Progress Build", "Voortgang Opbouw")),
+      weeks: t(createTranslationObject(
+        `Week ${Math.max(3, Math.ceil(weeks * 0.25))}–${Math.ceil(weeks * 0.65)}`,
+        `Week ${Math.max(3, Math.ceil(weeks * 0.25))}–${Math.ceil(weeks * 0.65)}`
+      )),
+      text: goal === "build-muscle"
+        ? t(createTranslationObject("Increase volume, protein consistency and recovery.", "Verhoog volume, eiwitconsistentie en herstel."))
+        : t(createTranslationObject("Increase consistency, calorie control and visible progress habits.", "Verhoog consistentie, caloriecontrole en zichtbare voortgangsgewoonten.")),
     },
     {
-      title: "Push Phase",
-      weeks: `Week ${Math.ceil(weeks * 0.65)}–${weeks}`,
-      text:
-        bodyType === "heavy-set"
-          ? "Keep intensity safe while improving conditioning and weekly adherence."
-          : "Push performance, shape and consistency toward the target.",
+      title: t(createTranslationObject("Push Phase", "Push Fase")),
+      weeks: t(createTranslationObject(`Week ${Math.ceil(weeks * 0.65)}–${weeks}`, `Week ${Math.ceil(weeks * 0.65)}–${weeks}`)),
+      text: bodyType === "heavy-set"
+        ? t(createTranslationObject("Keep intensity safe while improving conditioning and weekly adherence.", "Houd intensiteit veilig terwijl je conditionering en wekelijkse naleving verbetert."))
+        : t(createTranslationObject("Push performance, shape and consistency toward the target.", "Stuw prestaties, vorm en consistentie naar het doel.")),
     },
   ];
 }
 
-function buildAccountabilitySystem(profileType) {
+function buildAccountabilitySystem(profileType, t) {
   return {
     mode: profileType === "couple" ? "couple" : "solo",
     checkins: ["weight", "steps", "training", "nutrition", "mood"],
-    scoring:
-      profileType === "couple"
-        ? "Combined weekly couple score plus individual score"
-        : "Individual weekly score",
-    streaks:
-      profileType === "couple"
-        ? "Shared streak when both partners complete check-ins"
-        : "Solo streak for completed check-ins",
+    scoring: profileType === "couple"
+      ? t(createTranslationObject("Combined weekly couple score plus individual score", "Gecombineerde wekelijkse koppelscore plus individuele score"))
+      : t(createTranslationObject("Individual weekly score", "Individuele wekelijkse score")),
+    streaks: profileType === "couple"
+      ? t(createTranslationObject("Shared streak when both partners complete check-ins", "Gedeelde streak wanneer beide partners check-ins voltooien"))
+      : t(createTranslationObject("Solo streak for completed check-ins", "Solo streak voor voltooide check-ins")),
   };
 }
 
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
+
 export default function OnboardingPage() {
   const supabase = createClient();
+  const { language, t, hydrated } = useLanguage();
 
   const [loading, setLoading] = useState(false);
 
+  // User state
   const [profileType, setProfileType] = useState("");
   const [age, setAge] = useState("");
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [targetWeight, setTargetWeight] = useState("");
-
   const [goal, setGoal] = useState("");
   const [workoutType, setWorkoutType] = useState("training-food");
   const [dietType, setDietType] = useState("balanced");
@@ -543,6 +663,7 @@ export default function OnboardingPage() {
   const [experienceLevel, setExperienceLevel] = useState("");
   const [bodyType, setBodyType] = useState("");
 
+  // Partner state
   const [partnerName, setPartnerName] = useState("");
   const [partnerAge, setPartnerAge] = useState("");
   const [partnerWeight, setPartnerWeight] = useState("");
@@ -552,52 +673,59 @@ export default function OnboardingPage() {
   const [partnerBodyType, setPartnerBodyType] = useState("");
   const [partnerExperience, setPartnerExperience] = useState("");
 
-  // Add responsive CSS fixes
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      @media (max-width: 768px) {
-        .locked-feature-grid {
-          grid-template-columns: repeat(2, 1fr) !important;
-        }
-        .body-type-grid {
-          grid-template-columns: 1fr !important;
-        }
-        .profile-grid {
-          grid-template-columns: 1fr !important;
-        }
-        .choice-grid {
-          grid-template-columns: 1fr !important;
-        }
-        .result-grid {
-          grid-template-columns: 1fr !important;
-        }
-      }
-      
-      @media (max-width: 480px) {
-        .locked-feature-grid {
-          grid-template-columns: 1fr !important;
-        }
-      }
-      
-      * {
-        max-width: 100%;
-        word-break: break-word;
-        box-sizing: border-box;
-      }
-      
-      button {
-        white-space: normal !important;
-        word-wrap: break-word !important;
-      }
-    `;
-    document.head.appendChild(style);
-    
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
+  // Get translated arrays
+  const PROFILE_TYPES = useMemo(() => 
+    PROFILE_TYPES_BASE.map(item => ({
+      ...item,
+      title: t(item.titleTranslations),
+      text: t(item.textTranslations)
+    })), [t]);
 
+  const GOALS = useMemo(() => 
+    GOALS_BASE.map(item => ({
+      ...item,
+      title: t(item.titleTranslations),
+      text: t(item.textTranslations)
+    })), [t]);
+
+  const BODY_TYPES = useMemo(() => 
+    BODY_TYPES_BASE.map(item => ({
+      ...item,
+      title: t(item.titleTranslations),
+      text: t(item.textTranslations)
+    })), [t]);
+
+  const DIETS = useMemo(() => 
+    DIETS_BASE.map(item => ({
+      ...item,
+      title: t(item.titleTranslations)
+    })), [t]);
+
+  const ALLERGIES = useMemo(() => 
+    ALLERGIES_BASE.map(item => ({
+      ...item,
+      title: t(item.titleTranslations)
+    })), [t]);
+
+  const WORKOUT_TYPES = useMemo(() => 
+    WORKOUT_TYPES_BASE.map(item => ({
+      ...item,
+      title: t(item.titleTranslations)
+    })), [t]);
+
+  const TRAINING_LOCATIONS = useMemo(() => 
+    TRAINING_LOCATIONS_BASE.map(item => ({
+      value: item.value,
+      title: t(item.titleTranslations)
+    })), [t]);
+
+  const EXPERIENCE_LEVELS = useMemo(() => 
+    EXPERIENCE_LEVELS_BASE.map(item => ({
+      value: item.value,
+      title: t(item.titleTranslations)
+    })), [t]);
+
+  // Computed values
   const isCoupleMode = profileType === "couple";
   const gender = profileType === "men" ? "Male" : profileType === "female" ? "Female" : null;
   const mode = isCoupleMode ? "Couple Mode" : "Solo";
@@ -605,169 +733,110 @@ export default function OnboardingPage() {
   const bmi = useMemo(() => calculateBmi(weight, height), [weight, height]);
   const adjustedBmi = useMemo(() => getAdjustedBmi(bmi, bodyType), [bmi, bodyType]);
 
-  const partnerBmi = useMemo(
-    () => calculateBmi(partnerWeight, partnerHeight),
-    [partnerWeight, partnerHeight]
-  );
+  const partnerBmi = useMemo(() => calculateBmi(partnerWeight, partnerHeight), [partnerWeight, partnerHeight]);
+  const partnerAdjustedBmi = useMemo(() => getAdjustedBmi(partnerBmi, partnerBodyType), [partnerBmi, partnerBodyType]);
 
-  const partnerAdjustedBmi = useMemo(
-    () => getAdjustedBmi(partnerBmi, partnerBodyType),
-    [partnerBmi, partnerBodyType]
-  );
+  const goalConflictMessage = useMemo(() => getTranslatedGoalConflictMessage({ goal, weight, targetWeight }, t), [goal, weight, targetWeight, t]);
+  const partnerGoalConflictMessage = useMemo(() => getTranslatedGoalConflictMessage({ goal: partnerGoal, weight: partnerWeight, targetWeight: partnerTargetWeight }, t), [partnerGoal, partnerWeight, partnerTargetWeight, t]);
 
-  const goalConflictMessage = useMemo(
-    () => getGoalConflictMessage({ goal, weight, targetWeight }),
-    [goal, weight, targetWeight]
-  );
-
-  const partnerGoalConflictMessage = useMemo(
-    () =>
-      getGoalConflictMessage({
-        goal: partnerGoal,
-        weight: partnerWeight,
-        targetWeight: partnerTargetWeight,
-      }),
-    [partnerGoal, partnerWeight, partnerTargetWeight]
-  );
-
-  const estimatedWeeks = useMemo(
-    () =>
-      estimateTransformationWeeks({
-        goal,
-        weight,
-        targetWeight,
-        bodyType,
-        experience: experienceLevel,
-        workoutType,
-      }),
-    [goal, weight, targetWeight, bodyType, experienceLevel, workoutType]
-  );
-
-  const partnerEstimatedWeeks = useMemo(
-    () =>
-      estimateTransformationWeeks({
-        goal: partnerGoal,
-        weight: partnerWeight,
-        targetWeight: partnerTargetWeight,
-        bodyType: partnerBodyType,
-        experience: partnerExperience,
-        workoutType,
-      }),
-    [partnerGoal, partnerWeight, partnerTargetWeight, partnerBodyType, partnerExperience, workoutType]
-  );
+  const estimatedWeeks = useMemo(() => estimateTransformationWeeks({ goal, weight, targetWeight, bodyType, experience: experienceLevel, workoutType }), [goal, weight, targetWeight, bodyType, experienceLevel, workoutType]);
+  const partnerEstimatedWeeks = useMemo(() => estimateTransformationWeeks({ goal: partnerGoal, weight: partnerWeight, targetWeight: partnerTargetWeight, bodyType: partnerBodyType, experience: partnerExperience, workoutType }), [partnerGoal, partnerWeight, partnerTargetWeight, partnerBodyType, partnerExperience, workoutType]);
 
   const combinedEstimatedWeeks = useMemo(() => {
     if (!isCoupleMode) return estimatedWeeks;
     return Math.max(numberValue(estimatedWeeks), numberValue(partnerEstimatedWeeks)) || null;
   }, [isCoupleMode, estimatedWeeks, partnerEstimatedWeeks]);
 
-  const groceryList = useMemo(
-    () =>
-      buildGroceryList({
-        goal,
-        dietType,
-        allergies,
-        profileType,
-        partnerGoal,
-      }),
-    [goal, dietType, allergies, profileType, partnerGoal]
-  );
+  const groceryList = useMemo(() => buildGroceryList({ goal, dietType, allergies, profileType, partnerGoal }), [goal, dietType, allergies, profileType, partnerGoal]);
 
-  const fullCalendarPlan = useMemo(
-    () =>
-      buildCalendarPlan({
-        goal,
-        workoutType,
-        trainingLocation,
-        fastingEnabled,
-        fastingWindow,
-        estimatedWeeks: combinedEstimatedWeeks,
-        dietType,
-        bodyType,
-        experience: experienceLevel,
-        partner: isCoupleMode ? { name: partnerName, goal: partnerGoal } : null,
-      }),
-    [
-      goal,
-      workoutType,
-      trainingLocation,
-      fastingEnabled,
-      fastingWindow,
-      combinedEstimatedWeeks,
-      dietType,
-      bodyType,
-      experienceLevel,
-      isCoupleMode,
-      partnerName,
-      partnerGoal,
-    ]
-  );
+  const fullCalendarPlan = useMemo(() => buildCalendarPlan({
+    goal,
+    workoutType,
+    trainingLocation,
+    fastingEnabled,
+    fastingWindow,
+    estimatedWeeks: combinedEstimatedWeeks,
+    dietType,
+    bodyType,
+    experience: experienceLevel,
+    partner: isCoupleMode ? { name: partnerName, goal: partnerGoal } : null,
+    t,
+  }), [goal, workoutType, trainingLocation, fastingEnabled, fastingWindow, combinedEstimatedWeeks, dietType, bodyType, experienceLevel, isCoupleMode, partnerName, partnerGoal, t]);
 
-  const roadmap = useMemo(
-    () => buildRoadmap({ goal, estimatedWeeks: combinedEstimatedWeeks, bodyType }),
-    [goal, combinedEstimatedWeeks, bodyType]
-  );
+  const roadmap = useMemo(() => buildRoadmap({ goal, estimatedWeeks: combinedEstimatedWeeks, bodyType, t }), [goal, combinedEstimatedWeeks, bodyType, t]);
 
-  const accountabilitySystem = useMemo(
-    () => buildAccountabilitySystem(profileType),
-    [profileType]
-  );
+  const accountabilitySystem = useMemo(() => buildAccountabilitySystem(profileType, t), [profileType, t]);
 
-  const bodyTypeWarning = getBodyTypeWarning(bodyType, bmi);
-  const partnerBodyTypeWarning = getBodyTypeWarning(partnerBodyType, partnerBmi);
+  const translatedBodyTypeWarning = useMemo(() => getTranslatedBodyTypeWarning(bodyType, bmi, t), [bodyType, bmi, t]);
+  const translatedPartnerBodyTypeWarning = useMemo(() => getTranslatedBodyTypeWarning(partnerBodyType, partnerBmi, t), [partnerBodyType, partnerBmi, t]);
 
-  function toggleAllergy(value) {
-    setAllergies((prev) =>
-      prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
-    );
-  }
+  // CSS injection
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @media (max-width: 768px) {
+        .locked-feature-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        .body-type-grid { grid-template-columns: 1fr !important; }
+        .profile-grid { grid-template-columns: 1fr !important; }
+        .choice-grid { grid-template-columns: 1fr !important; }
+        .result-grid { grid-template-columns: 1fr !important; }
+      }
+      @media (max-width: 480px) {
+        .locked-feature-grid { grid-template-columns: 1fr !important; }
+      }
+      * { max-width: 100%; word-break: break-word; box-sizing: border-box; }
+      button { white-space: normal !important; word-wrap: break-word !important; }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
 
-  function validateBeforeSave() {
-    if (!profileType) return "Choose Men, Female or Couple.";
+  // Helper functions
+  const toggleAllergy = useCallback((value) => {
+    setAllergies((prev) => prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]);
+  }, []);
+
+  const validateBeforeSave = useCallback(() => {
+    if (!profileType) return t(createTranslationObject("Choose Men, Female or Couple.", "Kies Mannen, Vrouwen of Koppel."));
     if (!age || !weight || !height || !targetWeight) {
-      return "Fill in your age, weight, height and target weight.";
+      return t(createTranslationObject("Fill in your age, weight, height and target weight.", "Vul je leeftijd, gewicht, lengte en streefgewicht in."));
     }
-    if (!bodyType) return "Choose your current body type.";
-    if (!goal) return "Choose your goal.";
-    if (workoutType !== "food-only" && !trainingLocation) {
-      return "Choose your training location.";
-    }
-    if (workoutType !== "food-only" && !experienceLevel) {
-      return "Choose your training experience.";
+    if (!bodyType) return t(createTranslationObject("Choose your current body type.", "Kies je huidige lichaamstype."));
+    if (!goal) return t(createTranslationObject("Choose your goal.", "Kies je doel."));
+    
+    if (workoutType !== "food-only") {
+      if (!trainingLocation) return t(createTranslationObject("Choose your training location.", "Kies je trainingslocatie."));
+      if (!experienceLevel) return t(createTranslationObject("Choose your training experience.", "Kies je trainingservaring."));
     }
 
     if (isCoupleMode) {
-      if (!partnerName) return "Fill in partner name.";
+      if (!partnerName) return t(createTranslationObject("Fill in partner name.", "Vul de naam van je partner in."));
       if (!partnerAge || !partnerWeight || !partnerHeight || !partnerTargetWeight) {
-        return "Fill in partner age, weight, height and target weight.";
+        return t(createTranslationObject("Fill in partner age, weight, height and target weight.", "Vul de leeftijd, gewicht, lengte en streefgewicht van je partner in."));
       }
-      if (!partnerBodyType) return "Choose partner current body type.";
-      if (!partnerGoal) return "Choose partner goal.";
+      if (!partnerBodyType) return t(createTranslationObject("Choose partner current body type.", "Kies het huidige lichaamstype van je partner."));
+      if (!partnerGoal) return t(createTranslationObject("Choose partner goal.", "Kies het doel van je partner."));
       if (workoutType !== "food-only" && !partnerExperience) {
-        return "Choose partner training experience.";
+        return t(createTranslationObject("Choose partner training experience.", "Kies de trainingservaring van je partner."));
       }
     }
 
     return "";
-  }
+  }, [profileType, age, weight, height, targetWeight, bodyType, goal, workoutType, trainingLocation, experienceLevel, isCoupleMode, partnerName, partnerAge, partnerWeight, partnerHeight, partnerTargetWeight, partnerBodyType, partnerGoal, partnerExperience, t]);
 
-  function buildOnboardingPayload(userId = null) {
+  const buildOnboardingPayload = useCallback((userId = null) => {
     return {
       ...(userId ? { user_id: userId } : {}),
-
       profile_type: profileType,
       gender,
       mode,
-
       age: age ? Number(age) : null,
       weight_kg: weight ? Number(weight) : null,
       height_cm: height ? Number(height) : null,
       target_weight_kg: targetWeight ? Number(targetWeight) : null,
-
       bmi: bmi ? Number(bmi) : null,
       adjusted_bmi: adjustedBmi ? Number(adjustedBmi) : null,
-      bmi_label: getBmiLabel(bmi, bodyType),
-
+      bmi_label: getTranslatedBmiLabel(bmi, bodyType, t),
       goal,
       workout_type: workoutType,
       diet_type: dietType,
@@ -777,119 +846,103 @@ export default function OnboardingPage() {
       training_location: trainingLocation,
       experience_level: experienceLevel,
       body_type: bodyType,
-
       vegan: dietType === "vegan",
       vegetarian: dietType === "vegetarian" || dietType === "vegan",
       gluten_free: allergies.includes("gluten_free"),
       lactose_free: allergies.includes("lactose_free"),
       nut_free: allergies.includes("nut_free"),
       shellfish_free: allergies.includes("shellfish_free"),
-
       estimated_weeks: estimatedWeeks,
       combined_estimated_weeks: combinedEstimatedWeeks,
-
-      partner_profile: isCoupleMode
-        ? {
-            name: partnerName,
-            age: partnerAge ? Number(partnerAge) : null,
-            weight_kg: partnerWeight ? Number(partnerWeight) : null,
-            height_cm: partnerHeight ? Number(partnerHeight) : null,
-            target_weight_kg: partnerTargetWeight ? Number(partnerTargetWeight) : null,
-            bmi: partnerBmi ? Number(partnerBmi) : null,
-            adjusted_bmi: partnerAdjustedBmi ? Number(partnerAdjustedBmi) : null,
-            bmi_label: getBmiLabel(partnerBmi, partnerBodyType),
-            goal: partnerGoal,
-            body_type: partnerBodyType,
-            experience_level: partnerExperience,
-            estimated_weeks: partnerEstimatedWeeks,
-          }
-        : null,
-
+      partner_profile: isCoupleMode ? {
+        name: partnerName,
+        age: partnerAge ? Number(partnerAge) : null,
+        weight_kg: partnerWeight ? Number(partnerWeight) : null,
+        height_cm: partnerHeight ? Number(partnerHeight) : null,
+        target_weight_kg: partnerTargetWeight ? Number(partnerTargetWeight) : null,
+        bmi: partnerBmi ? Number(partnerBmi) : null,
+        adjusted_bmi: partnerAdjustedBmi ? Number(partnerAdjustedBmi) : null,
+        bmi_label: getTranslatedBmiLabel(partnerBmi, partnerBodyType, t),
+        goal: partnerGoal,
+        body_type: partnerBodyType,
+        experience_level: partnerExperience,
+        estimated_weeks: partnerEstimatedWeeks,
+      } : null,
       grocery_list: groceryList,
       calendar_plan: fullCalendarPlan,
       transformation_roadmap: roadmap,
       accountability_system: accountabilitySystem,
     };
-  }
+  }, [profileType, gender, mode, age, weight, height, targetWeight, bmi, adjustedBmi, bodyType, t, goal, workoutType, dietType, allergies, fastingEnabled, fastingWindow, trainingLocation, experienceLevel, estimatedWeeks, combinedEstimatedWeeks, isCoupleMode, partnerName, partnerAge, partnerWeight, partnerHeight, partnerTargetWeight, partnerBmi, partnerAdjustedBmi, partnerGoal, partnerBodyType, partnerExperience, partnerEstimatedWeeks, groceryList, fullCalendarPlan, roadmap, accountabilitySystem]);
 
-  async function handleSave() {
+  const handleSave = useCallback(async () => {
     try {
       const validationMessage = validateBeforeSave();
-
       if (validationMessage) {
         alert(validationMessage);
         return;
       }
 
       setLoading(true);
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        const pendingPayload = buildOnboardingPayload();
-
-        localStorage.setItem(
-          "fit_onboarding_pending",
-          JSON.stringify({
-            saved_at: new Date().toISOString(),
-            data: pendingPayload,
-          })
-        );
-
+        localStorage.setItem("fit_onboarding_pending", JSON.stringify({
+          saved_at: new Date().toISOString(),
+          data: buildOnboardingPayload(),
+        }));
         window.location.href = "/signup?from=onboarding";
         return;
       }
 
-      const payload = buildOnboardingPayload(user.id);
-
-      const { error } = await supabase.from("member_preferences").upsert(payload);
-
-      if (error) {
-        console.error(error);
-        alert(error.message);
-        return;
-      }
+      const { error } = await supabase.from("member_preferences").upsert(buildOnboardingPayload(user.id));
+      if (error) throw error;
 
       localStorage.removeItem("fit_onboarding_pending");
       window.location.href = "/dashboard";
     } catch (error) {
       console.error(error);
-      alert("Something went wrong");
+      alert(error.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
+  }, [validateBeforeSave, supabase, buildOnboardingPayload]);
+
+  // Loading state
+  if (!hydrated) {
+    return (
+      <main style={main}>
+        <div style={overlay} />
+        <section style={card}>
+          <div style={{ textAlign: "center", padding: "60px", color: "white" }}>Loading...</div>
+        </section>
+      </main>
+    );
   }
 
+  // Main render
   return (
     <main style={main}>
       <div style={overlay} />
-
       <section style={card}>
         <div style={eyebrow}>FIT COUPLE CLUB</div>
-
-        <h1 style={title}>Build your personalized system.</h1>
-
+        <h1 style={title}>{t(createTranslationObject("Build your personalized system.", "Bouw jouw persoonlijke systeem."))}</h1>
         <p style={subtitle}>
-          Your nutrition, workouts, fasting structure and transformation timeline adapt
-          to your profile, body type, goal, target weight, training setup and Couple Mode.
+          {t(createTranslationObject(
+            "Your nutrition, workouts, fasting structure and transformation timeline adapt to your profile, body type, goal, target weight, training setup and Couple Mode.",
+            "Jouw voeding, trainingen, vastenstructuur en transformatietijdlijn passen zich aan jouw profiel, lichaamstype, doel, streefgewicht, trainingsopzet en Koppelmodus aan."
+          ))}
         </p>
 
+        {/* Profile Section */}
         <div style={section}>
-          <h3 style={sectionTitle}>Your Profile</h3>
+          <h3 style={sectionTitle}>{t(createTranslationObject("Your Profile", "Jouw Profiel"))}</h3>
           <p style={miniDescription}>
-            Choose one. This replaces the old Male/Female and Solo/Couple buttons.
+            {t(createTranslationObject("Choose one. This replaces the old Male/Female and Solo/Couple buttons.", "Kies er een. Dit vervangt de oude Man/Vrouw en Solo/Koppel knoppen."))}
           </p>
-
           <div style={profileGrid} className="profile-grid">
             {PROFILE_TYPES.map((item) => (
-              <button
-                key={item.value}
-                type="button"
-                onClick={() => setProfileType(item.value)}
-                style={imageCard(profileType === item.value)}
-              >
+              <button key={item.value} type="button" onClick={() => setProfileType(item.value)} style={imageCard(profileType === item.value)}>
                 <img src={item.image} alt={item.title} style={profileImage} />
                 <strong>{item.title}</strong>
                 <small>{item.text}</small>
@@ -898,94 +951,61 @@ export default function OnboardingPage() {
           </div>
         </div>
 
+        {/* Body Stats Section */}
         <div style={section}>
-          <h3 style={sectionTitle}>Body Stats</h3>
-
+          <h3 style={sectionTitle}>{t(createTranslationObject("Body Stats", "Lichaamsgegevens"))}</h3>
           <div style={inputGrid}>
             <label style={field}>
-              Age
-              <input
-                style={input}
-                value={age}
-                onChange={(event) => setAge(event.target.value)}
-                placeholder="36"
-                inputMode="numeric"
-              />
+              {t(createTranslationObject("Age", "Leeftijd"))}
+              <input style={input} value={age} onChange={(e) => setAge(e.target.value)} placeholder="36" inputMode="numeric" />
             </label>
-
             <label style={field}>
-              Weight kg
-              <input
-                style={input}
-                value={weight}
-                onChange={(event) => setWeight(event.target.value)}
-                placeholder="93"
-                inputMode="decimal"
-              />
+              {t(createTranslationObject("Weight kg", "Gewicht kg"))}
+              <input style={input} value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="93" inputMode="decimal" />
             </label>
-
             <label style={field}>
-              Height cm
-              <input
-                style={input}
-                value={height}
-                onChange={(event) => setHeight(event.target.value)}
-                placeholder="188"
-                inputMode="decimal"
-              />
+              {t(createTranslationObject("Height cm", "Lengte cm"))}
+              <input style={input} value={height} onChange={(e) => setHeight(e.target.value)} placeholder="188" inputMode="decimal" />
             </label>
-
             <label style={field}>
-              Target weight kg
-              <input
-                style={input}
-                value={targetWeight}
-                onChange={(event) => setTargetWeight(event.target.value)}
-                placeholder="86"
-                inputMode="decimal"
-              />
+              {t(createTranslationObject("Target weight kg", "Streefgewicht kg"))}
+              <input style={input} value={targetWeight} onChange={(e) => setTargetWeight(e.target.value)} placeholder="86" inputMode="decimal" />
             </label>
           </div>
-
           {goalConflictMessage && <p style={warningText}>{goalConflictMessage}</p>}
         </div>
 
+        {/* BMI Results */}
         <div style={resultGrid} className="result-grid">
           <div style={resultCard}>
-            <span style={smallLabel}>BMI</span>
+            <span style={smallLabel}>{t(createTranslationObject("BMI", "BMI"))}</span>
             <strong style={resultNumber}>{bmi || "—"}</strong>
-            <small style={mutedText}>{getBmiLabel(bmi, bodyType)}</small>
+            <small style={mutedText}>{getTranslatedBmiLabel(bmi, bodyType, t)}</small>
             {bodyType && bmi && (
               <small style={mutedText}>
-                Body-type adjusted BMI: {adjustedBmi}
+                {t(createTranslationObject("Body-type adjusted BMI:", "Lichaamstype aangepaste BMI:"))} {adjustedBmi}
               </small>
             )}
-            {bodyTypeWarning && <small style={warningText}>{bodyTypeWarning}</small>}
+            {translatedBodyTypeWarning && <small style={warningText}>{translatedBodyTypeWarning}</small>}
           </div>
-
           <div style={resultCard}>
-            <span style={smallLabel}>Estimated Time</span>
-            <strong style={resultNumber}>{buildEstimatedText(estimatedWeeks, goal)}</strong>
+            <span style={smallLabel}>{t(createTranslationObject("Estimated Time", "Geschatte Tijd"))}</span>
+            <strong style={resultNumber}>{getTranslatedEstimatedText(estimatedWeeks, goal, t)}</strong>
             <small style={mutedText}>
-              Uses your goal, current weight, target weight, body type, training type and experience.
+              {t(createTranslationObject("Uses your goal, current weight, target weight, body type, training type and experience.", "Gebruikt je doel, huidige gewicht, streefgewicht, lichaamstype, trainingstype en ervaring."))}
             </small>
           </div>
         </div>
 
+        {/* Goal Section */}
         <div style={section}>
-          <h3 style={sectionTitle}>Goal</h3>
+          <h3 style={sectionTitle}>{t(createTranslationObject("Goal", "Doel"))}</h3>
           <p style={miniDescription}>
-            Choose the goal that best matches your target. The app warns you if the target and goal do not match, but it never changes your target.
+            {t(createTranslationObject("Choose the goal that best matches your target. The app warns you if the target and goal do not match, but it never changes your target.", "Kies het doel dat het beste bij jouw streefdoel past. De app waarschuwt als het doel en streefgewicht niet overeenkomen, maar verandert nooit jouw streefgewicht."))}
           </p>
-
           <div style={choiceGrid} className="choice-grid">
             {GOALS.map((item) => (
-              <button
-                key={item.value}
-                type="button"
-                onClick={() => setGoal(item.value)}
-                style={option(goal === item.value)}
-              >
+              <button key={item.value} type="button" onClick={() => setGoal(item.value)} style={option(goal === item.value)}>
                 <strong>{item.title}</strong>
                 <small>{item.text}</small>
               </button>
@@ -993,79 +1013,54 @@ export default function OnboardingPage() {
           </div>
         </div>
 
+        {/* Workout Type */}
         <div style={section}>
-          <h3 style={sectionTitle}>Training, food or both?</h3>
-
+          <h3 style={sectionTitle}>{t(createTranslationObject("Training, food or both?", "Training, voeding of beide?"))}</h3>
           <div style={grid}>
             {WORKOUT_TYPES.map((item) => (
-              <button
-                key={item.value}
-                type="button"
-                onClick={() => setWorkoutType(item.value)}
-                style={option(workoutType === item.value)}
-              >
+              <button key={item.value} type="button" onClick={() => setWorkoutType(item.value)} style={option(workoutType === item.value)}>
                 {item.title}
               </button>
             ))}
           </div>
         </div>
 
+        {/* Diet Style */}
         <div style={section}>
-          <h3 style={sectionTitle}>Diet Style</h3>
-
+          <h3 style={sectionTitle}>{t(createTranslationObject("Diet Style", "Dieetstijl"))}</h3>
           <div style={grid}>
             {DIETS.map((item) => (
-              <button
-                key={item.value}
-                type="button"
-                onClick={() => setDietType(item.value)}
-                style={option(dietType === item.value)}
-              >
+              <button key={item.value} type="button" onClick={() => setDietType(item.value)} style={option(dietType === item.value)}>
                 {item.title}
               </button>
             ))}
           </div>
         </div>
 
+        {/* Allergies */}
         <div style={section}>
-          <h3 style={sectionTitle}>Allergies & Filters</h3>
-          <p style={miniDescription}>Only select what you really need to avoid.</p>
-
+          <h3 style={sectionTitle}>{t(createTranslationObject("Allergies & Filters", "Allergieën & Filters"))}</h3>
+          <p style={miniDescription}>{t(createTranslationObject("Only select what you really need to avoid.", "Selecteer alleen wat je echt moet vermijden."))}</p>
           <div style={grid}>
             {ALLERGIES.map((item) => (
-              <button
-                key={item.value}
-                type="button"
-                onClick={() => toggleAllergy(item.value)}
-                style={option(allergies.includes(item.value))}
-              >
+              <button key={item.value} type="button" onClick={() => toggleAllergy(item.value)} style={option(allergies.includes(item.value))}>
                 {item.title}
               </button>
             ))}
           </div>
         </div>
 
+        {/* Intermittent Fasting */}
         <div style={section}>
-          <h3 style={sectionTitle}>Intermittent Fasting</h3>
-
+          <h3 style={sectionTitle}>{t(createTranslationObject("Intermittent Fasting", "Intermittent Fasting"))}</h3>
           <label style={toggle}>
-            <input
-              type="checkbox"
-              checked={fastingEnabled}
-              onChange={(event) => setFastingEnabled(event.target.checked)}
-            />
-            Enable fasting mode
+            <input type="checkbox" checked={fastingEnabled} onChange={(e) => setFastingEnabled(e.target.checked)} />
+            {t(createTranslationObject("Enable fasting mode", "Activeer vastenmodus"))}
           </label>
-
           {fastingEnabled && (
             <div style={gridWithTop}>
               {FASTING_WINDOWS.map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => setFastingWindow(item)}
-                  style={option(fastingWindow === item)}
-                >
+                <button key={item} type="button" onClick={() => setFastingWindow(item)} style={option(fastingWindow === item)}>
                   {item}
                 </button>
               ))}
@@ -1073,37 +1068,25 @@ export default function OnboardingPage() {
           )}
         </div>
 
+        {/* Training Location & Experience (only if not food-only) */}
         {workoutType !== "food-only" && (
           <>
             <div style={section}>
-              <h3 style={sectionTitle}>Training Location</h3>
-
+              <h3 style={sectionTitle}>{t(createTranslationObject("Training Location", "Trainingslocatie"))}</h3>
               <div style={grid}>
                 {TRAINING_LOCATIONS.map((item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => setTrainingLocation(item)}
-                    style={option(trainingLocation === item)}
-                  >
-                    {item}
+                  <button key={item.value} type="button" onClick={() => setTrainingLocation(item.value)} style={option(trainingLocation === item.value)}>
+                    {item.title}
                   </button>
                 ))}
               </div>
             </div>
-
             <div style={section}>
-              <h3 style={sectionTitle}>Experience</h3>
-
+              <h3 style={sectionTitle}>{t(createTranslationObject("Experience", "Ervaring"))}</h3>
               <div style={grid}>
                 {EXPERIENCE_LEVELS.map((item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => setExperienceLevel(item)}
-                    style={option(experienceLevel === item)}
-                  >
-                    {item}
+                  <button key={item.value} type="button" onClick={() => setExperienceLevel(item.value)} style={option(experienceLevel === item.value)}>
+                    {item.title}
                   </button>
                 ))}
               </div>
@@ -1111,20 +1094,15 @@ export default function OnboardingPage() {
           </>
         )}
 
+        {/* Body Type */}
         <div style={section}>
-          <h3 style={sectionTitle}>Current Body Type</h3>
+          <h3 style={sectionTitle}>{t(createTranslationObject("Current Body Type", "Huidig Lichaamstype"))}</h3>
           <p style={miniDescription}>
-            Pick the picture that looks closest to your current body. This changes BMI interpretation, timeline and calendar intensity.
+            {t(createTranslationObject("Pick the picture that looks closest to your current body. This changes BMI interpretation, timeline and calendar intensity.", "Kies de afbeelding die het meest op jouw huidige lichaam lijkt. Dit verandert de BMI-interpretatie, tijdlijn en kalenderintensiteit."))}
           </p>
-
           <div style={bodyTypeGrid} className="body-type-grid">
             {BODY_TYPES.map((item) => (
-              <button
-                key={item.value}
-                type="button"
-                onClick={() => setBodyType(item.value)}
-                style={imageCard(bodyType === item.value)}
-              >
+              <button key={item.value} type="button" onClick={() => setBodyType(item.value)} style={imageCard(bodyType === item.value)}>
                 <img src={item.image} alt={item.title} style={bodyTypeImage} />
                 <strong>{item.title}</strong>
                 <small>{item.text}</small>
@@ -1133,84 +1111,42 @@ export default function OnboardingPage() {
           </div>
         </div>
 
+        {/* Partner Section */}
         {isCoupleMode && (
           <div style={partnerSection}>
-            <h3 style={sectionTitle}>Partner Profile</h3>
+            <h3 style={sectionTitle}>{t(createTranslationObject("Partner Profile", "Partner Profiel"))}</h3>
             <p style={miniDescription}>
-              Couple Mode uses separate stats, body type, goal and timeline for your partner,
-              then combines both into one shared calendar and accountability system.
+              {t(createTranslationObject("Couple Mode uses separate stats, body type, goal and timeline for your partner, then combines both into one shared calendar and accountability system.", "Koppelmodus gebruikt aparte statistieken, lichaamstype, doel en tijdlijn voor jouw partner, en combineert beide in één gedeelde kalender en verantwoordingssysteem."))}
             </p>
-
             <div style={inputGrid}>
               <label style={field}>
-                Partner name
-                <input
-                  style={input}
-                  value={partnerName}
-                  onChange={(event) => setPartnerName(event.target.value)}
-                  placeholder="Partner name"
-                />
+                {t(createTranslationObject("Partner name", "Naam partner"))}
+                <input style={input} value={partnerName} onChange={(e) => setPartnerName(e.target.value)} placeholder="Partner name" />
               </label>
-
               <label style={field}>
-                Partner age
-                <input
-                  style={input}
-                  value={partnerAge}
-                  onChange={(event) => setPartnerAge(event.target.value)}
-                  placeholder="28"
-                  inputMode="numeric"
-                />
+                {t(createTranslationObject("Partner age", "Leeftijd partner"))}
+                <input style={input} value={partnerAge} onChange={(e) => setPartnerAge(e.target.value)} placeholder="28" inputMode="numeric" />
               </label>
-
               <label style={field}>
-                Partner weight kg
-                <input
-                  style={input}
-                  value={partnerWeight}
-                  onChange={(event) => setPartnerWeight(event.target.value)}
-                  placeholder="65"
-                  inputMode="decimal"
-                />
+                {t(createTranslationObject("Partner weight kg", "Gewicht partner kg"))}
+                <input style={input} value={partnerWeight} onChange={(e) => setPartnerWeight(e.target.value)} placeholder="65" inputMode="decimal" />
               </label>
-
               <label style={field}>
-                Partner height cm
-                <input
-                  style={input}
-                  value={partnerHeight}
-                  onChange={(event) => setPartnerHeight(event.target.value)}
-                  placeholder="170"
-                  inputMode="decimal"
-                />
+                {t(createTranslationObject("Partner height cm", "Lengte partner cm"))}
+                <input style={input} value={partnerHeight} onChange={(e) => setPartnerHeight(e.target.value)} placeholder="170" inputMode="decimal" />
               </label>
-
               <label style={field}>
-                Partner target weight kg
-                <input
-                  style={input}
-                  value={partnerTargetWeight}
-                  onChange={(event) => setPartnerTargetWeight(event.target.value)}
-                  placeholder="60"
-                  inputMode="decimal"
-                />
+                {t(createTranslationObject("Partner target weight kg", "Streefgewicht partner kg"))}
+                <input style={input} value={partnerTargetWeight} onChange={(e) => setPartnerTargetWeight(e.target.value)} placeholder="60" inputMode="decimal" />
               </label>
             </div>
-
-            {partnerGoalConflictMessage && (
-              <p style={warningText}>{partnerGoalConflictMessage}</p>
-            )}
+            {partnerGoalConflictMessage && <p style={warningText}>{partnerGoalConflictMessage}</p>}
 
             <div style={subBlock}>
-              <h4 style={subTitle}>Partner Goal</h4>
+              <h4 style={subTitle}>{t(createTranslationObject("Partner Goal", "Partner Doel"))}</h4>
               <div style={choiceGrid}>
                 {GOALS.map((item) => (
-                  <button
-                    key={item.value}
-                    type="button"
-                    onClick={() => setPartnerGoal(item.value)}
-                    style={option(partnerGoal === item.value)}
-                  >
+                  <button key={item.value} type="button" onClick={() => setPartnerGoal(item.value)} style={option(partnerGoal === item.value)}>
                     <strong>{item.title}</strong>
                     <small>{item.text}</small>
                   </button>
@@ -1219,15 +1155,10 @@ export default function OnboardingPage() {
             </div>
 
             <div style={subBlock}>
-              <h4 style={subTitle}>Partner Body Type</h4>
+              <h4 style={subTitle}>{t(createTranslationObject("Partner Body Type", "Partner Lichaamstype"))}</h4>
               <div style={bodyTypeGrid}>
                 {BODY_TYPES.map((item) => (
-                  <button
-                    key={item.value}
-                    type="button"
-                    onClick={() => setPartnerBodyType(item.value)}
-                    style={imageCard(partnerBodyType === item.value)}
-                  >
+                  <button key={item.value} type="button" onClick={() => setPartnerBodyType(item.value)} style={imageCard(partnerBodyType === item.value)}>
                     <img src={item.image} alt={item.title} style={bodyTypeImage} />
                     <strong>{item.title}</strong>
                     <small>{item.text}</small>
@@ -1238,16 +1169,11 @@ export default function OnboardingPage() {
 
             {workoutType !== "food-only" && (
               <div style={subBlock}>
-                <h4 style={subTitle}>Partner Experience</h4>
+                <h4 style={subTitle}>{t(createTranslationObject("Partner Experience", "Partner Ervaring"))}</h4>
                 <div style={grid}>
                   {EXPERIENCE_LEVELS.map((item) => (
-                    <button
-                      key={item}
-                      type="button"
-                      onClick={() => setPartnerExperience(item)}
-                      style={option(partnerExperience === item)}
-                    >
-                      {item}
+                    <button key={item.value} type="button" onClick={() => setPartnerExperience(item.value)} style={option(partnerExperience === item.value)}>
+                      {item.title}
                     </button>
                   ))}
                 </div>
@@ -1256,53 +1182,48 @@ export default function OnboardingPage() {
 
             <div style={resultGrid}>
               <div style={resultCard}>
-                <span style={smallLabel}>Partner BMI</span>
+                <span style={smallLabel}>{t(createTranslationObject("Partner BMI", "Partner BMI"))}</span>
                 <strong style={resultNumber}>{partnerBmi || "—"}</strong>
-                <small style={mutedText}>{getBmiLabel(partnerBmi, partnerBodyType)}</small>
+                <small style={mutedText}>{getTranslatedBmiLabel(partnerBmi, partnerBodyType, t)}</small>
                 {partnerBodyType && partnerBmi && (
                   <small style={mutedText}>
-                    Body-type adjusted BMI: {partnerAdjustedBmi}
+                    {t(createTranslationObject("Body-type adjusted BMI:", "Lichaamstype aangepaste BMI:"))} {partnerAdjustedBmi}
                   </small>
                 )}
-                {partnerBodyTypeWarning && (
-                  <small style={warningText}>{partnerBodyTypeWarning}</small>
-                )}
+                {translatedPartnerBodyTypeWarning && <small style={warningText}>{translatedPartnerBodyTypeWarning}</small>}
               </div>
-
               <div style={resultCard}>
-                <span style={smallLabel}>Partner Estimated Time</span>
-                <strong style={resultNumber}>
-                  {buildEstimatedText(partnerEstimatedWeeks, partnerGoal)}
-                </strong>
+                <span style={smallLabel}>{t(createTranslationObject("Partner Estimated Time", "Partner Geschatte Tijd"))}</span>
+                <strong style={resultNumber}>{getTranslatedEstimatedText(partnerEstimatedWeeks, partnerGoal, t)}</strong>
                 <small style={mutedText}>
-                  The couple calendar uses the longer timeline so both partners stay aligned.
+                  {t(createTranslationObject("The couple calendar uses the longer timeline so both partners stay aligned.", "De koppelkalender gebruikt de langere tijdlijn zodat beide partners op elkaar afgestemd blijven."))}
                 </small>
               </div>
             </div>
           </div>
         )}
 
+        {/* Locked Preview Card */}
         <div style={lockedPreviewCard}>
-          <h3 style={lockedPreviewTitle}>🔓 UNLOCK YOUR FULL TRANSFORMATION SYSTEM</h3>
-
+          <h3 style={lockedPreviewTitle}>
+            {t(createTranslationObject("🔓 UNLOCK YOUR FULL TRANSFORMATION SYSTEM", "🔓 ONTGRENDEL JOUW VOLLEDIGE TRANSFORMATIESYSTEEM"))}
+          </h3>
           <p style={lockedPreviewText}>
-            After signup, your full plan creates the transformation roadmap, calendar,
-            grocery list, daily tasks and accountability system. These member features are
-            saved to <strong style={{color: "#dc2626"}}>Supabase</strong> and unlocked inside the dashboard.
+            {t(createTranslationObject("After signup, your full plan creates the transformation roadmap, calendar, grocery list, daily tasks and accountability system. These member features are saved to Supabase and unlocked inside the dashboard.", "Na aanmelding creëert jouw volledige plan de transformatieroutekaart, kalender, boodschappenlijst, dagelijkse taken en verantwoordingssysteem. Deze ledenfuncties worden opgeslagen in Supabase en ontgrendeld in het dashboard."))}
           </p>
-
           <div style={lockedFeatureGrid} className="locked-feature-grid">
-            <span style={lockedFeature}>📋 Transformation roadmap</span>
-            <span style={lockedFeature}>📅 Member calendar</span>
-            <span style={lockedFeature}>🛒 Combined grocery list</span>
-            <span style={lockedFeature}>✅ Daily check-ins</span>
-            <span style={lockedFeature}>👫 Couple accountability</span>
-            <span style={lockedFeature}>📊 Progress tracking</span>
+            <span style={lockedFeature}>📋 {t(createTranslationObject("Transformation roadmap", "Transformatieroutekaart"))}</span>
+            <span style={lockedFeature}>📅 {t(createTranslationObject("Member calendar", "Ledenkalender"))}</span>
+            <span style={lockedFeature}>🛒 {t(createTranslationObject("Combined grocery list", "Gecombineerde boodschappenlijst"))}</span>
+            <span style={lockedFeature}>✅ {t(createTranslationObject("Daily check-ins", "Dagelijkse check-ins"))}</span>
+            <span style={lockedFeature}>👫 {t(createTranslationObject("Couple accountability", "Koppel verantwoording"))}</span>
+            <span style={lockedFeature}>📊 {t(createTranslationObject("Progress tracking", "Voortgangsregistratie"))}</span>
           </div>
         </div>
 
+        {/* Save Button */}
         <button type="button" onClick={handleSave} disabled={loading} style={saveBtn}>
-          {loading ? "Saving..." : "🚀 CREATE MY PLAN"}
+          {loading ? t(createTranslationObject("Saving...", "Opslaan...")) : t(createTranslationObject("🚀 CREATE MY PLAN", "🚀 MAAK MIJN PLAN"))}
         </button>
       </section>
     </main>
@@ -1310,7 +1231,7 @@ export default function OnboardingPage() {
 }
 
 // ============================================================================
-// STYLES - FIXED FOR TEXT WRAPPING
+// STYLES
 // ============================================================================
 
 const main = {
