@@ -181,12 +181,6 @@ function getAdjustedBmi(rawBmi, bodyType) {
   return round1(rawBmi + (type?.bmiOffset || 0));
 }
 
-function getExperienceMultiplier(experience) {
-  if (experience === "Advanced") return 0.9;
-  if (experience === "Intermediate") return 1;
-  return 1.15;
-}
-
 function getWorkoutMultiplier(workoutType) {
   if (workoutType === "food-only") return 1.35;
   if (workoutType === "training-only") return 1.25;
@@ -196,6 +190,48 @@ function getWorkoutMultiplier(workoutType) {
 function getBodyMultiplier(bodyType) {
   return BODY_TYPES_BASE.find((item) => item.value === bodyType)?.timelineMultiplier || 1;
 }
+
+// ============================================================================
+// FIXED: CORRECT TIMELINE CALCULATION
+// Higher experience = FASTER progress (lower multiplier, higher weekly rate)
+// ============================================================================
+
+// Experience timeline multiplier (applied at the end)
+// Lower number = FASTER completion
+function getExperienceMultiplier(experience) {
+  if (experience === "Advanced") return 0.85;      // EXPERT: 15% FASTER
+  if (experience === "Intermediate") return 1.0;   // INTERMEDIATE: NORMAL
+  return 1.25;                                      // BEGINNER: 25% SLOWER
+}
+
+// Weekly progress rates (kg per week)
+// Higher number = FASTER progress
+const WEEKLY_RATES = {
+  // FAT LOSS: Higher number = lose fat faster
+  loseFat: {
+    Beginner: 0.4,        // 0.4 kg per week (slowest)
+    Intermediate: 0.55,   // 0.55 kg per week
+    Advanced: 0.7,        // 0.7 kg per week (fastest)
+  },
+  // MUSCLE GAIN: Higher number = gain muscle faster
+  buildMuscle: {
+    Beginner: 0.12,       // 0.12 kg per week (slowest)
+    Intermediate: 0.22,   // 0.22 kg per week
+    Advanced: 0.35,       // 0.35 kg per week (fastest)
+  },
+  // TONE & SHAPE: Multiplier based on experience
+  toneShape: {
+    Beginner: 1.35,
+    Intermediate: 1.0,
+    Advanced: 0.8,
+  },
+  // ATHLETIC PERFORMANCE: Multiplier based on experience
+  athleticPerformance: {
+    Beginner: 1.3,
+    Intermediate: 1.0,
+    Advanced: 0.8,
+  },
+};
 
 function estimateTransformationWeeks({
   goal,
@@ -219,17 +255,41 @@ function estimateTransformationWeeks({
   let weeks = 10;
 
   if (goal === "lose-fat") {
-    weeks = isLowerTarget ? kgChange / 0.55 : kgChange / 0.25 + 8;
-  } else if (goal === "build-muscle") {
-    const pace = experience === "Advanced" ? 0.16 : experience === "Intermediate" ? 0.23 : 0.32;
-    weeks = isHigherTarget ? kgChange / pace : kgChange / 0.35 + 8;
-  } else if (goal === "tone-shape") {
-    weeks = kgChange <= 3 ? 10 : kgChange / 0.35 + 6;
-  } else if (goal === "athletic-performance") {
-    weeks = kgChange <= 5 ? 12 : kgChange / 0.45 + 8;
+    // Use experience-based weekly loss rate
+    const rate = WEEKLY_RATES.loseFat[experience] || WEEKLY_RATES.loseFat.Intermediate;
+    if (isLowerTarget) {
+      weeks = kgChange / rate;
+    } else {
+      // Gaining weight while trying to lose fat - slower
+      weeks = kgChange / 0.25 + 8;
+    }
+  } 
+  else if (goal === "build-muscle") {
+    // Use experience-based weekly gain rate
+    const rate = WEEKLY_RATES.buildMuscle[experience] || WEEKLY_RATES.buildMuscle.Intermediate;
+    if (isHigherTarget) {
+      weeks = kgChange / rate;
+    } else {
+      // Losing weight while trying to gain muscle - body recomposition
+      weeks = kgChange / 0.35 + 8;
+    }
+  } 
+  else if (goal === "tone-shape") {
+    // Body recomposition - experience affects speed
+    const multiplier = WEEKLY_RATES.toneShape[experience] || WEEKLY_RATES.toneShape.Intermediate;
+    const baseWeeks = kgChange <= 3 ? 10 : kgChange / 0.35 + 6;
+    weeks = baseWeeks * multiplier;
+  } 
+  else if (goal === "athletic-performance") {
+    // Performance goals - experience affects speed
+    const multiplier = WEEKLY_RATES.athleticPerformance[experience] || WEEKLY_RATES.athleticPerformance.Intermediate;
+    const baseWeeks = kgChange <= 5 ? 12 : kgChange / 0.45 + 8;
+    weeks = baseWeeks * multiplier;
   }
 
-  const total = weeks * getBodyMultiplier(bodyType) * getExperienceMultiplier(experience) * getWorkoutMultiplier(workoutType);
+  // Apply body type and workout multipliers
+  const total = weeks * getBodyMultiplier(bodyType) * getWorkoutMultiplier(workoutType) * getExperienceMultiplier(experience);
+  
   return Math.max(4, Math.min(78, Math.ceil(total)));
 }
 
@@ -396,7 +456,6 @@ function getTranslatedWorkoutForDay({ dayIndex, goal, workoutType, trainingLocat
     return t(createTranslationObject("Recovery, mobility and steps", "Herstel, mobiliteit en stappen"));
   }
 
-  const levelLower = level.toLowerCase();
   const levelTranslated = t(level === "Beginner" ? createTranslationObject("Beginner", "Beginner") :
                             level === "Intermediate" ? createTranslationObject("Intermediate", "Gevorderd") :
                             createTranslationObject("Advanced", "Expert"));
@@ -643,7 +702,7 @@ function buildAccountabilitySystem(profileType, t) {
 
 export default function OnboardingPage() {
   const supabase = createClient();
-  const { language, t, hydrated } = useLanguage();
+  const { t, hydrated } = useLanguage();
 
   const [loading, setLoading] = useState(false);
 
