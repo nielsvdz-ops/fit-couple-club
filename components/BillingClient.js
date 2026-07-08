@@ -187,7 +187,7 @@ export default function BillingClient({ membershipType, isActive }) {
         <div style={heroOverlay} />
 
         <img
-          src="/images/background.png"
+          src="/images/background.webp"
           alt=""
           style={heroImage}
         />

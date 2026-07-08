@@ -247,7 +247,7 @@ const main = {
 const backgroundImage = {
   position: "absolute",
   inset: 0,
-  backgroundImage: "url('/images/background.png')",
+  backgroundImage: "url('/images/background.webp')",
   backgroundSize: "cover",
   backgroundPosition: "center",
   filter: "grayscale(1) brightness(0.28) contrast(1.2)",

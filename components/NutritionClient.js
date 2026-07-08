@@ -397,7 +397,7 @@ const locked = selectedRoutine >= accessLimit;
   return (
     <div style={page}>
       <section style={hero}>
-        <img src="/images/background.png" alt="" style={heroImage} />
+        <img src="/images/background.webp" alt="" style={heroImage} />
         <div style={heroOverlay} />
 
         <div style={heroContent}>

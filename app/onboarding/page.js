@@ -13,7 +13,7 @@ const PROFILE_TYPES_BASE = [
   {
     value: "men",
     titleTranslations: createTranslationObject("Men", "Mannen"),
-    image: "/images/profile-types/men.png",
+    image: "/images/profile-types/men.webp",
     textTranslations: createTranslationObject(
       "A personal physique plan for men.",
       "Een persoonlijk fysiek plan voor mannen."
@@ -22,7 +22,7 @@ const PROFILE_TYPES_BASE = [
   {
     value: "female",
     titleTranslations: createTranslationObject("Female", "Vrouwen"),
-    image: "/images/profile-types/female.png",
+    image: "/images/profile-types/female.webp",
     textTranslations: createTranslationObject(
       "A personal physique plan for women.",
       "Een persoonlijk fysiek plan voor vrouwen."
@@ -31,7 +31,7 @@ const PROFILE_TYPES_BASE = [
   {
     value: "couple",
     titleTranslations: createTranslationObject("Couple", "Koppel"),
-    image: "/images/profile-types/couple.png",
+    image: "/images/profile-types/couple.webp",
     textTranslations: createTranslationObject(
       "A shared transformation system for two partners.",
       "Een gedeeld transformatiesysteem voor twee partners."
@@ -78,7 +78,7 @@ const BODY_TYPES_BASE = [
   {
     value: "slim",
     titleTranslations: createTranslationObject("Slim", "Slank"),
-    image: "/images/body-types/slim.png",
+    image: "/images/body-types/slim.webp",
     textTranslations: createTranslationObject(
       "Naturally lighter. Usually needs muscle, shape and healthy structure.",
       "Natuurlijk lichter. Heeft meestal spiermassa, vorm en gezonde structuur nodig."
@@ -89,7 +89,7 @@ const BODY_TYPES_BASE = [
   {
     value: "athletic",
     titleTranslations: createTranslationObject("Athletic", "Atletisch"),
-    image: "/images/body-types/athletic.png",
+    image: "/images/body-types/athletic.webp",
     textTranslations: createTranslationObject(
       "Sporty or muscular. BMI can look higher because muscle weighs more.",
       "Sportief of gespierd. BMI kan hoger lijken omdat spieren meer wegen."
@@ -100,7 +100,7 @@ const BODY_TYPES_BASE = [
   {
     value: "average",
     titleTranslations: createTranslationObject("Average", "Gemiddeld"),
-    image: "/images/body-types/average.png",
+    image: "/images/body-types/average.webp",
     textTranslations: createTranslationObject(
       "Normal starting point. Good for fat loss, tone or muscle goals.",
       "Normaal startpunt. Goed voor vetverlies, vorm of spierdoelen."
@@ -111,7 +111,7 @@ const BODY_TYPES_BASE = [
   {
     value: "heavy-set",
     titleTranslations: createTranslationObject("Heavy Set", "Zwaar Gebouwd"),
-    image: "/images/body-types/heavy-set.png",
+    image: "/images/body-types/heavy-set.webp",
     textTranslations: createTranslationObject(
       "Higher body fat/bodyweight. Plan starts safer and more gradual.",
       "Hoger lichaamsvet/lichaamsgewicht. Plan start veiliger en geleidelijker."
@@ -1295,7 +1295,7 @@ export default function OnboardingPage() {
 
 const main = {
   minHeight: "100vh",
-  background: "url('/images/background.png') center/cover no-repeat",
+  background: "url('/images/background.webp') center/cover no-repeat",
   padding: "40px 20px",
   position: "relative",
   overflow: "auto",

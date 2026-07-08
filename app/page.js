@@ -318,7 +318,7 @@ export default function Home() {
 
         <img
           className="hero-couple"
-          src="/images/couple.png"
+          src="/images/couple.webp"
           alt="FitCoupleClub couple"
           style={heroCouple}
         />
@@ -372,7 +372,7 @@ export default function Home() {
 
       <section style={split}>
         <div style={imagePanel}>
-          <img src="/images/background.png" alt="FitCoupleClub gym" style={panelImage} />
+          <img src="/images/background.webp" alt="FitCoupleClub gym" style={panelImage} />
         </div>
 
         <div>
@@ -527,7 +527,7 @@ const hero = {
 const heroBackground = {
   position: "absolute",
   inset: 0,
-  backgroundImage: "url('/images/background.png')",
+  backgroundImage: "url('/images/background.webp')",
   backgroundSize: "cover",
   backgroundPosition: "center",
   filter: "grayscale(1) brightness(0.42) contrast(1.15)",

@@ -318,7 +318,7 @@ function Toggle({ label, checked, onChange }) {
 
 const main = {
   minHeight: "100vh",
-  background: "url('/images/background.png') center/cover no-repeat",
+  background: "url('/images/background.webp') center/cover no-repeat",
   padding: "40px 20px",
   position: "relative",
 };

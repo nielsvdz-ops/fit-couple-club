@@ -47,7 +47,7 @@ export default async function BillingPage() {
           <div style={heroOverlay} />
 
           <img
-            src="/images/background.png"
+            src="/images/background.webp"
             alt="FitCoupleClub"
             style={heroImage}
           />
